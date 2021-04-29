@@ -110,6 +110,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
 client.on('guildMemberAdd', member => {
     ; (async () => {
+        member.guild.channels.cache.get("837367366227853423").name = 'Ornitorrincos: ' + member.guild.memberCount;
         const canvas = Canvas.createCanvas(1600, 814);
         const ctx = canvas.getContext('2d');
         const background = await Canvas.loadImage('./platyWall.jpg');
@@ -141,6 +142,7 @@ client.on('guildMemberAdd', member => {
     })()
 })
 client.on('guildMemberRemove', member => {
+    member.guild.channels.cache.get("837367366227853423").name = 'Ornitorrincos: ' + member.guild.memberCount;
     member.guild.channels.cache.get("836730119023493140").send(`${member.user} ha abandonado la familia de ornitorrincos :'<`);
 })
 client.on('messageReactionAdd', (reaction, user) => {
