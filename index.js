@@ -150,8 +150,7 @@ client.on('messageReactionAdd', (reaction, user) => {
     if (reaction.message.id == '837347810705539173') {
         if (emoji.name == '⭐') {
             reaction.message.guild.members.cache.get(user.id).roles.add(idBrawlStars);
-        }
-        if (emoji.name == '💥') {
+        } else if (emoji.name == '💥') {
             reaction.message.guild.members.cache.get(user.id).roles.add(idSub);
         } else {
             reaction.remove(user);
