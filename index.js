@@ -169,7 +169,56 @@ client.on('messageReactionRemove', (reaction, user) => {
 })
 
 client.on('message', message => {
-    if (message.author.bot || (message.channel.id != 836721843955040339 && message.channel.id != 836879630815985674)) return;
+    if (message.author.bot) return;
+    if (msg() == '!timeout' && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
+        message.delete();
+        var toUser = message.mentions.members.first();
+        if (toUser) {
+            if (!toUser.roles.cache.has(idMaltratador)) {
+                var tiempo = 10;
+                if (msg(2, 3)) {
+                    if (Number(msg(2, 3))) {
+                        tiempo = Number(msg(2, 3));
+                    }
+                }
+                toUser.roles.add(idMaltratador).then(() => {
+                    setTimeout(function () {
+                        toUser.roles.remove(idMaltratador);
+                    }, (tiempo * 60 * 1000));
+                });
+                message.channel.send(`${toUser} ha sido enviado a la cárcel durante ${tiempo} minutos`);
+                toUser.send(`${toUser} te han puesto un timeout de ${tiempo} minutos, revisa bien las **normas** para que no vuelva a ocurrir. Ahora solo tendrás disponible la cárcel en este tiempo. Si crees que ha sido un malentendido, habla con los moderadores. Si el timeout no se te quita en ${tiempo} minutos (por posible mantenimiento inesperado del bot) pídelo en el canal de la cárcel :>`);
+            } else {
+                message.channel.send(`${toUser} ya está en la cárcel por timeout o ban`);
+            }
+        }
+    }
+    if (msg() == '!ban' && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
+        message.delete();
+        var toUser = message.mentions.members.first();
+        if (toUser) {
+            if (!toUser.roles.cache.has(idMaltratador)) {
+                toUser.roles.add(idMaltratador);
+                message.channel.send(`${toUser} ha sido enviado a la cárcel permanentemente`);
+                toUser.send(`${toUser} has sido **baneado** de el server de **Fiuva**, ahora solo tendrás disponible la cárcel y poco más, si te sientes arrepentido/a o crees que ha podido ser un error, puedes hablar con los **moderadores** sobre tu situación y se intentará **solucionar** (siempre con respeto :>) es importante hacer caso a las **normas**`);
+            } else {
+                message.channel.send(`${toUser} ya está en la cárcel por timeout o ban`);
+            }
+        }
+    }
+    if (msg() == '!unban' || msg() == '!untimeout' && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
+        message.delete();
+        var toUser = message.mentions.members.first();
+        if (toUser) {
+            if (toUser.roles.cache.has(idMaltratador)) {
+                toUser.roles.remove(idMaltratador);
+                message.channel.send(`${toUser} ha sido liberad@`);
+            } else {
+                message.channel.send(`${toUser} no está en la carcel`);
+            }
+        }
+    }
+    if (message.channel.id != 836721843955040339 && message.channel.id != 836879630815985674) return;
 
     if (message.channel.id == 836721843955040339) {
         if (msg()) {
@@ -618,42 +667,6 @@ client.on('message', message => {
                     message.channel.send(`${message.author}: añadir ${nombreMonedas} !addpc <@user> <lerdocoins> [razón]`);
                 }
             })()
-        }
-        if (msg() == '!timeout' && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
-            message.delete();
-            var toUser = message.mentions.members.first();
-            if (toUser) {
-                if (!toUser.roles.cache.has(idMaltratador)) {
-                    var tiempo = 10;
-                    if (msg(2, 3)) {
-                        if (Number(msg(2, 3))) {
-                            tiempo = Number(msg(2, 3));
-                        }
-                    }
-                    toUser.roles.add(idMaltratador).then(() => {
-                        setTimeout(function () {
-                            toUser.roles.remove(idMaltratador);
-                        }, (tiempo * 60 * 1000));
-                    });
-                    message.channel.send(`${toUser} ha sido enviado a la cárcel durante ${tiempo} minutos`);
-                    toUser.send(`${toUser} te han puesto un timeout de ${tiempo} minutos, revisa bien las **normas** para que no vuelva a ocurrir. Ahora solo tendrás disponible la cárcel en este tiempo. Si crees que ha sido un malentendido, habla con los moderadores. Si el timeout no se te quita en ${tiempo} minutos (por posible mantenimiento inesperado del bot) pídelo en el canal de la cárcel :>`);
-                } else {
-                    message.channel.send(`${toUser} ya está en la cárcel por timeout o ban`);
-                }
-            }
-        }
-        if (msg() == '!ban' && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
-            message.delete();
-            var toUser = message.mentions.members.first();
-            if (toUser) {
-                if (!toUser.roles.cache.has(idMaltratador)) {
-                    toUser.roles.add(idMaltratador);
-                    message.channel.send(`${toUser} ha sido enviado a la cárcel permanentemente`);
-                    toUser.send(`${toUser} has sido **baneado** de el server de **Fiuva**, ahora solo tendrás disponible la cárcel y poco más, si te sientes arrepentido/a o crees que ha podido ser un error, puedes hablar con los **moderadores** sobre tu situación y se intentará **solucionar** (siempre con respeto :>) es importante hacer caso a las **normas**`);
-                } else {
-                    message.channel.send(`${toUser} ya está en la cárcel por timeout o ban`);
-                }
-            }
         }
         if (msg() == '!top' || msg() == '!lb' || msg() == '!ranking') {
             /*
