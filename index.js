@@ -670,7 +670,6 @@ client.on('message', message => {
             })()
         }
         if (msg() == '!top' || msg() == '!lb' || msg() == '!ranking') {
-            /*
             Usuario.find({}).sort({ expTotal: -1 }).exec(function (err, docs) {
                 var top = new Discord.MessageEmbed()
                     .setTitle(message.guild.name)
@@ -688,7 +687,7 @@ client.on('message', message => {
                     )
                 }
                 message.channel.send(top);
-            });*/
+            });
         }
         if (msg() === '!ayuda' || msg() === '!help' || msg() === '!comandos') {
             const mensajeAyuda = new Discord.MessageEmbed()
