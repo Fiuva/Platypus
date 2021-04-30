@@ -24,7 +24,7 @@ const router = express.Router();
 
 var date = new Date();
 const nExp = 1;
-const aumentaNivel = 15;
+const aumentaNivel = 10;
 const aumentaMonedas = 25;
 const precioAnillo = 30;
 const precioMillonario = 2000;
@@ -318,7 +318,10 @@ client.on('message', message => {
             ; (async () => {
                 var user = await Usuario.find({ idDiscord: message.author.id }).exec();
                 var toUser = await Usuario.find({ idDiscord: message.mentions.users.first().id }).exec();
-                if (user[0].parejaId == '0' && toUser[0].parejaId == '0' && user[0].anillo >= 2) {
+                if (message.author.id == message.mentions.users.first().id) {
+                    message.channel.send(`${message.author} no puedes casarte con extraterrestres`);
+                    return;
+                } else if (user[0].parejaId == '0' && toUser[0].parejaId == '0' && user[0].anillo >= 2) {
                     message.channel.send(`${message.author.username} se quiere casar con ${message.mentions.users.first().username}, aceptas?`).then(message2 => {
                         message2.react('✅');
                         message2.react('❌');
