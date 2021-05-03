@@ -724,6 +724,183 @@ client.on('message', message => {
     }
 })
 
+const ytsr = require('ytsr');
+const Genius = require("genius-lyrics");
+const Client = new Genius.Client();
+const ytdl = require('ytdl-core');
+const { search } = require('ffmpeg-static');
+const queue = new Map();
+
+client.on('message', async message => {
+    if (message.author.bot || message.channel.id != 838801241341558825) return;
+
+    const serverQueue = queue.get(message.guild.id);
+
+    if (msg() == '!play') {
+        message.delete();
+        execute(message, serverQueue);
+        return;
+    } else if (msg() == '!skip') {
+        skip(message, serverQueue);
+        return;
+    } else if (msg() == '!stop') {
+        stop(message, serverQueue);
+        return;
+    } else if (msg() == '!lyrics' || msg() == '!letra') {
+        var tituloCompleto = queue.get(message.guild.id).songs[0].title;
+        var tituloFix = '';
+        var parentesis = false;
+        for (i = 0; i < tituloCompleto.length; i++) {
+            if (tituloCompleto[i] == '(') {
+                parentesis = true;
+            } else if (tituloCompleto[i] == ')') {
+                parentesis = false;
+            }
+            if (!parentesis) {
+                tituloFix = tituloFix + tituloCompleto[i];
+            }
+        }
+        const searches = await Client.songs.search(tituloFix).catch(message.channel.send('Canción no encontrada'));
+
+        const firstSong = await searches[0];
+        if (firstSong) {
+            message.channel.send(`Buscando letra`).then(message2 => {
+                letr();
+                async function letr() {
+                    await firstSong.lyrics().then(lyrics => {
+                        const letras = new Discord.MessageEmbed()
+                            .setTitle(tituloCompleto)
+                            .setDescription(lyrics)
+                            .setURL(queue.get(message.guild.id).songs[0].url)
+                        message.channel.send(letras);
+                        message2.delete();
+                    }).catch(() => {
+                        letr();
+                    });
+                }
+                message2.edit(`Buscando letra.`).then(message2.edit(`Buscando letra..`)).then(message2.edit(`Buscando letra...`));
+            })
+
+        }
+    } else if (msg() === '!ayuda' || msg() === '!help' || msg() === '!comandos') {
+        const mensajeAyuda = new Discord.MessageEmbed()
+            .setColor('#FEA0FA')
+            .setTitle('COMANDOS MÚSICA')
+            .setAuthor('PLATYPUS', 'https://images.vexels.com/media/users/3/206179/isolated/preview/abd45dacf6e78736c9cf49e6ae3d9bba-trazo-de-signo-de-interrogaci-oacute-n-by-vexels.png')
+            .setDescription(`Veo que necesitas ayuda`)
+            .addFields(
+                { name: '!play', value: `Añadir canción a la cola !play <url/nombre canción>`, inline: true },
+                { name: '!skip', value: `Saltar a la siguiente canción`, inline: true },
+                { name: '!stop', value: `Desconectar el bot de musica` },
+                { name: '!letra', value: `Se muestra la letra de la canción que se está reproducioendo actualmente` },
+            );
+        message.channel.send(mensajeAyuda);
+    }
+    function msg(c = 0, f = 1, same = false) {
+        if (same) {
+            return message.content.split(' ').slice(c, f).join(' ');
+        }
+        else {
+            return message.content.split(' ').slice(c, f).join(' ').toLowerCase();
+        }
+    }
+})
+async function execute(message, serverQueue) {
+    function msg(c = 0, f = 1, same = false) {
+        if (same) {
+            return message.content.split(' ').slice(c, f).join(' ');
+        }
+        else {
+            return message.content.split(' ').slice(c, f).join(' ').toLowerCase();
+        }
+    }
+
+    const voiceChannel = message.member.guild.channels.cache.get('838776417768046622');
+    if (message.member.voice.channel.id != '838776417768046622') {
+        return message.channel.send(`${message.author} necesitass estar en el canal de música`);
+    }
+    const search = await ytsr(msg(1, 150), { pages: 1 });
+    const songInfo = await ytdl.getInfo(search.items[0].url);
+    const song = {
+        title: songInfo.videoDetails.title,
+        url: songInfo.videoDetails.video_url,
+        thumbnail: songInfo.videoDetails.thumbnails[0].url,
+        lengthSeconds: songInfo.videoDetails.lengthSeconds,
+    };
+
+    if (!serverQueue) {
+        const queueContruct = {
+            textChannel: message.channel,
+            voiceChannel: voiceChannel,
+            connection: null,
+            songs: [],
+            volume: 5,
+            playing: true
+        };
+
+        queue.set(message.guild.id, queueContruct);
+
+        queueContruct.songs.push(song);
+
+        try {
+            var connection = await voiceChannel.join();
+            queueContruct.connection = connection;
+            play(message.guild, queueContruct.songs[0]);
+        } catch (err) {
+            console.log(err);
+            queue.delete(message.guild.id);
+            return message.channel.send(err);
+        }
+    } else {
+        serverQueue.songs.push(song);
+        return message.channel.send(`${message.author}: ${song.title} ha sido añadida a la cola`);
+    }
+}
+function skip(message, serverQueue) {
+    if (!message.member.voice.channel)
+        return message.channel.send(
+            `${message.author} necesitass estar en un canal de voz para escuchar musica`
+        );
+    if (!serverQueue)
+        return message.channel.send("No hay canciones para saltar");
+    serverQueue.connection.dispatcher.end();
+}
+function stop(message, serverQueue) {
+    if (!message.member.voice.channel)
+        return message.channel.send(
+            `${message.author} necesitass estar en un canal de voz para escuchar musica`
+        );
+
+    if (!serverQueue)
+        return message.channel.send("No hay canciones para parar");
+
+    serverQueue.songs = [];
+    serverQueue.connection.dispatcher.end();
+}
+function play(guild, song) {
+    const serverQueue = queue.get(guild.id);
+    if (!song) {
+        serverQueue.voiceChannel.leave();
+        queue.delete(guild.id);
+        return;
+    }
+
+    const dispatcher = serverQueue.connection
+        .play(ytdl(song.url))
+        .on("finish", () => {
+            serverQueue.songs.shift();
+            play(guild, serverQueue.songs[0]);
+        })
+        .on("error", error => console.error(error));
+    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+    const escuchando = new Discord.MessageEmbed()
+        .setTitle(song.title)
+        .setURL(song.url)
+        .setThumbnail(song.thumbnail)
+        .setAuthor(`Ahora escuchando (${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60}) :`)
+    serverQueue.textChannel.send(escuchando);
+}
+
 function calcularNivel(experienciaTotal) {
     var expActual = experienciaTotal;
     var nivel = 0;
