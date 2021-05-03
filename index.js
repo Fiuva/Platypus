@@ -737,7 +737,6 @@ client.on('message', async message => {
     const serverQueue = queue.get(message.guild.id);
 
     if (msg() == '!play') {
-        message.delete();
         execute(message, serverQueue);
         return;
     } else if (msg() == '!skip') {
@@ -760,7 +759,7 @@ client.on('message', async message => {
                 tituloFix = tituloFix + tituloCompleto[i];
             }
         }
-        const searches = await Client.songs.search(tituloFix).catch(message.channel.send('Canción no encontrada'));
+        const searches = await Client.songs.search(tituloFix).catch(e => message.channel.send('Canción no encontrada'));
 
         const firstSong = await searches[0];
         if (firstSong) {
