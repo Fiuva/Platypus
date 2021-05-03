@@ -750,9 +750,9 @@ client.on('message', async message => {
         var tituloFix = '';
         var parentesis = false;
         for (i = 0; i < tituloCompleto.length; i++) {
-            if (tituloCompleto[i] == '(') {
+            if (tituloCompleto[i] == '(' || tituloCompleto[i] == '[') {
                 parentesis = true;
-            } else if (tituloCompleto[i] == ')') {
+            } else if (tituloCompleto[i] == ')' || tituloCompleto[i] == ']') {
                 parentesis = false;
             }
             if (!parentesis) {
