@@ -767,12 +767,24 @@ client.on('message', async message => {
                 letr();
                 async function letr() {
                     await firstSong.lyrics().then(lyrics => {
-                        const letras = new Discord.MessageEmbed()
-                            .setTitle(tituloCompleto)
-                            .setDescription(lyrics)
-                            .setURL(queue.get(message.guild.id).songs[0].url)
-                        message.channel.send(letras);
-                        message2.delete();
+                        if (lyrics.length > 2048) {
+                            const letras1 = new Discord.MessageEmbed()
+                                .setTitle(tituloCompleto)
+                                .setDescription(lyrics.substr(-lyrics.length, 2048))
+                                .setURL(queue.get(message.guild.id).songs[0].url)
+                            message.channel.send(letras1);
+                            const letras2 = new Discord.MessageEmbed()
+                                .setDescription(lyrics.substr(2048))
+                            message.channel.send(letras2);
+                            message2.delete();
+                        } else {
+                            const letras = new Discord.MessageEmbed()
+                                .setTitle(tituloCompleto)
+                                .setDescription(lyrics)
+                                .setURL(queue.get(message.guild.id).songs[0].url)
+                            message.channel.send(letras);
+                            message2.delete();
+                        }
                     }).catch(() => {
                         letr();
                     });
