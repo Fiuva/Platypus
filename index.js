@@ -752,6 +752,7 @@ client.on('message', async message => {
         for (i = 0; i < tituloCompleto.length; i++) {
             if (tituloCompleto[i] == '(' || tituloCompleto[i] == '[') {
                 parentesis = true;
+                break;
             } else if (tituloCompleto[i] == ')' || tituloCompleto[i] == ']') {
                 parentesis = false;
             }
@@ -759,7 +760,7 @@ client.on('message', async message => {
                 tituloFix = tituloFix + tituloCompleto[i];
             }
         }
-        const searches = await Client.songs.search(tituloFix).catch(e => message.channel.send('Canción no encontrada'));
+        const searches = await Client.songs.search(tituloFix.replace(/videoclip/i, '').replace(/|/g, '').replace(/-/g, '').replace(/"/g, '')).catch(e => message.channel.send('Canción no encontrada'));
 
         const firstSong = await searches[0];
         if (firstSong) {
@@ -806,6 +807,10 @@ client.on('message', async message => {
                 { name: '!letra', value: `Se muestra la letra de la canción que se está reproducioendo actualmente` },
             );
         message.channel.send(mensajeAyuda);
+    } else if (msg() == '!reset') {
+        queue.delete(message.guild.id)
+        message.member.guild.channels.cache.get('838776417768046622').leave();
+        message.channel.send('Platypus reseteado porque alguien lo solicitó por algún posible bug de la musica :> Perdonen las molestias')
     }
     function msg(c = 0, f = 1, same = false) {
         if (same) {
@@ -863,8 +868,25 @@ async function execute(message, serverQueue) {
             return message.channel.send(err);
         }
     } else {
-        serverQueue.songs.push(song);
-        return message.channel.send(`${message.author}: ${song.title} ha sido añadida a la cola`);
+        await serverQueue.songs.push(song);
+        const canciones = queue.get(message.guild.id).songs;
+        var tiempoDeEspera = 0;
+        var i = 0;
+        for (i; i < canciones.length - 1; i++) {
+            tiempoDeEspera = tiempoDeEspera + parseInt(canciones[i].lengthSeconds);
+
+        }
+        const mensCancion = new Discord.MessageEmbed()
+            .setTitle(song.title)
+            .setColor('#006ABD')
+            .setURL(song.url)
+            .setThumbnail(song.thumbnail)
+            .setAuthor(`Se ha añadido a la cola:`)
+            .addField('Tiempo estimado de espera:', `${Math.floor(tiempoDeEspera / 60)}:${tiempoDeEspera - Math.floor(tiempoDeEspera / 60) * 60 < 10 ? '0' : ''}${tiempoDeEspera - Math.floor(tiempoDeEspera / 60) * 60}`, true)
+            .addField('Posición:', i, true)
+            .setFooter(`Duración:  ${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60 < 10 ? '0' : ''}${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60}`)
+
+        return message.channel.send(mensCancion);
     }
 }
 function skip(message, serverQueue) {
@@ -906,9 +928,11 @@ function play(guild, song) {
     dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
     const escuchando = new Discord.MessageEmbed()
         .setTitle(song.title)
+        .setColor('#00FF3C')
         .setURL(song.url)
         .setThumbnail(song.thumbnail)
-        .setAuthor(`Ahora escuchando (${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60}) :`)
+        .setAuthor(`Ahora escuchando:`)
+        .setFooter(`Duración:  ${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60 < 10 ? '0' : ''}${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60}`)
     serverQueue.textChannel.send(escuchando);
 }
 
