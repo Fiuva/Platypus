@@ -730,6 +730,8 @@ const Client = new Genius.Client();
 const ytdl = require('ytdl-core');
 const { search } = require('ffmpeg-static');
 const queue = new Map();
+const translate = require("translate");
+translate.engine = "libre";
 
 client.on('message', async message => {
     if (message.author.bot || message.channel.id != 838801241341558825) return;
@@ -790,7 +792,7 @@ client.on('message', async message => {
                         letr();
                     });
                 }
-                message2.edit(`Buscando letra.`).then(message2.edit(`Buscando letra..`)).then(message2.edit(`Buscando letra...`));
+                cargar(message2);
             })
 
         }
@@ -811,6 +813,69 @@ client.on('message', async message => {
         queue.delete(message.guild.id)
         message.member.guild.channels.cache.get('838776417768046622').leave();
         message.channel.send('Platypus reseteado porque alguien lo solicitó por algún posible bug de la musica :> Perdonen las molestias')
+    } else if (msg() == '!save' || msg() == '!guardar') {
+        if (queue.get(message.guild.id)) {
+            var song = queue.get(message.guild.id).songs[0];
+            const fav = new Discord.MessageEmbed()
+                .setTitle(song.title)
+                .setColor('#E1FF00')
+                .setURL(song.url)
+                .setThumbnail(song.thumbnail)
+                .setAuthor(`Canción añadida a favoritos:`)
+                .setFooter(`Duración:  ${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60 < 10 ? '0' : ''}${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60}`)
+            message.author.send(fav)
+            message.channel.send(`${message.author} canción guardada en tu MD :> (${song.title})`)
+        }
+    } else if (msg() == '!traducir' || msg() == '!traduccion') {
+        var tituloCompleto = queue.get(message.guild.id).songs[0].title;
+        var tituloFix = '';
+        var parentesis = false;
+        for (i = 0; i < tituloCompleto.length; i++) {
+            if (tituloCompleto[i] == '(' || tituloCompleto[i] == '[') {
+                parentesis = true;
+                break;
+            } else if (tituloCompleto[i] == ')' || tituloCompleto[i] == ']') {
+                parentesis = false;
+            }
+            if (!parentesis) {
+                tituloFix = tituloFix + tituloCompleto[i];
+            }
+        }
+        const searches = await Client.songs.search(tituloFix.replace(/videoclip/i, '').replace(/|/g, '').replace(/-/g, '').replace(/"/g, '')).catch(e => message.channel.send('Canción no encontrada'));
+
+        const firstSong = await searches[0];
+        if (firstSong) {
+            message.channel.send(`Buscando letra`).then(message2 => {
+                letr();
+                async function letr() {
+                    await firstSong.lyrics().then(async lyrics => {
+                        lyrics = await translate(lyrics, "es");
+                        if (lyrics.length > 2048) {
+                            const letras1 = new Discord.MessageEmbed()
+                                .setTitle(tituloCompleto)
+                                .setDescription(lyrics.substr(-lyrics.length, 2048))
+                                .setURL(queue.get(message.guild.id).songs[0].url)
+                            message.channel.send(letras1);
+                            const letras2 = new Discord.MessageEmbed()
+                                .setDescription(lyrics.substr(2048))
+                            message.channel.send(letras2);
+                            message2.delete();
+                        } else {
+                            const letras = new Discord.MessageEmbed()
+                                .setTitle(tituloCompleto)
+                                .setDescription(lyrics)
+                                .setURL(queue.get(message.guild.id).songs[0].url)
+                            message.channel.send(letras);
+                            message2.delete();
+                        }
+                    }).catch(() => {
+                        letr();
+                    });
+                }
+                cargar(message2);
+            })
+
+        }
     }
     function msg(c = 0, f = 1, same = false) {
         if (same) {
@@ -870,6 +935,7 @@ async function execute(message, serverQueue) {
     } else {
         await serverQueue.songs.push(song);
         const canciones = queue.get(message.guild.id).songs;
+        //const song = canciones[canciones.length];
         var tiempoDeEspera = 0;
         var i = 0;
         for (i; i < canciones.length - 1; i++) {
@@ -975,3 +1041,28 @@ async function modificarMonedas(id, sumar) {
     await Usuario.findOneAndUpdate({ idDiscord: id }, { monedas: user[0].monedas + sumar }, { new: true });
 }
 
+function cargar(message) {
+    const platypus1 = client.emojis.cache.find(emoji => emoji.name === "platypus1");
+    const platypus2 = client.emojis.cache.find(emoji => emoji.name === "platypus2");
+    const platypusEnfadado = client.emojis.cache.find(emoji => emoji.name === "platypusEnfadado");
+
+    message.channel.send(`${platypus1}${platypus2}         👈`).then(message2 => {
+        var func = function (i) {
+
+            return function () {
+                if (i >= 6) return message2.edit(`${platypusEnfadado}`);
+                if (message.deleted) {
+                    return message2.delete();
+                }
+                if (i % 2 != 0) {
+                    message2.edit(`${platypus1}${platypus2}👈`)
+                } else {
+                    message2.edit(`${platypus1}${platypus2}         👈`)
+                }
+                setTimeout(func(++i), 1200);
+            }
+        }
+        setTimeout(func(1), 100);
+    })
+
+}
