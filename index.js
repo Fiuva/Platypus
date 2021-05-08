@@ -181,6 +181,14 @@ client.on('message', message => {
     if (message.guild === null) {
         client.channels.cache.get('840558534495174676').send(`${message.author}: ${message.content}`);
     }
+    if (message.channel.id == 840558534495174676) {
+        if (msg().startsWith('<@')) {
+            const to = message.mentions.members.first();
+            to.send(msg(1, 1000)).then(message.channel.send('Mensaje enviado'));
+        } else {
+            message.channel.send('Error al enviar MD');
+        }
+    }
     if (msg() == '!estado' && message.author.id == '431071887372845061') {
         var tipo;
         const mensaje = msg(1, 1000).replace('-p ', '').replace('-s ', '').replace('-w ', '').replace('-c ', '').replace('-l ', '').replace('-dnd ', '').replace('-inv ', '').replace('-idl ', '')
