@@ -53,7 +53,7 @@ client.on('ready', () => {
     client.user.setPresence({
         status: 'online',
         activity: {
-            name: 'sonidos de ornitorrinco',
+            name: 'tus problemas por MD bb',
             type: 'LISTENING',
         }
     })
@@ -178,6 +178,9 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 client.on('message', message => {
     if (message.author.bot) return;
+    if (message.guild === null) {
+        client.channels.cache.get('840558534495174676').send(`${message.author}: ${message.content}`);
+    }
     if (msg() == '!estado' && message.author.id == '431071887372845061') {
         var tipo;
         const mensaje = msg(1, 1000).replace('-p ', '').replace('-s ', '').replace('-w ', '').replace('-c ', '').replace('-l ', '').replace('-dnd ', '').replace('-inv ', '').replace('-idl ', '')
