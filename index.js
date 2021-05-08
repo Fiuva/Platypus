@@ -50,7 +50,14 @@ const idVQuinteto = '836991212124241941';
 
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
-    client.user.setStatus('online');
+    client.user.setPresence({
+        status: 'online',
+        activity: {
+            name: 'sonidos de ornitorrinco',
+            type: 'LISTENING',
+        }
+    })
+    client.channels.cache.get('836734022184861706').send('Bot reiniciado');
 })
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
@@ -171,6 +178,46 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 client.on('message', message => {
     if (message.author.bot) return;
+    if (msg() == '!estado' && message.author.id == '431071887372845061') {
+        var tipo;
+        const mensaje = msg(1, 1000).replace('-p ', '').replace('-s ', '').replace('-w ', '').replace('-c ', '').replace('-l ', '').replace('-dnd ', '').replace('-inv ', '').replace('-idl ', '')
+        if (msg(1, 100).match('-p')) {
+            tipo = 'PLAYING';
+        } else if (msg(1, 100).match('-s')) {
+            client.user.setActivity(mensaje, {
+                type: 'STREAMING',
+                url: 'https://www.twitch.tv/killeryetii'
+            }).then(message.channel.send(`Estado actualizado`))
+            return;
+        } else if (msg(1, 100).match('-w')) {
+            tipo = 'WATCHING';
+        } else if (msg(1, 100).match('-c')) {
+            tipo = 'COMPETING';
+        } else if (msg(1, 100).match('-l')) {
+            tipo = 'LISTENING';
+        } else {
+            tipo = 'CUSTOM_STATUS';
+            message.channel.send('!estado <-p, -c, -l, -w, -s>')
+            return;
+        }
+        var status;
+        if (msg(1, 100).match('-dnd')) {
+            status = 'dnd';
+        } else if (msg(1, 100).match('-inv')) {
+            status = 'invisible';
+        } else if (msg(1, 100).match('-idl')) {
+            status = 'idle';
+        } else {
+            status = 'online';
+        }
+        client.user.setPresence({
+            status: status,
+            activity: {
+                name: mensaje,
+                type: tipo,
+            }
+        }).then(message.channel.send(`Estado actualizado`))
+    }
     if (msg() == '!timeout' && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
         message.delete();
         var toUser = message.mentions.members.first();
