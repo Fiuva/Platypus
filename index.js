@@ -179,15 +179,19 @@ client.on('messageReactionRemove', (reaction, user) => {
 client.on('message', message => {
     if (message.author.bot) return;
     if (message.guild === null) {
-        client.channels.cache.get('840558534495174676').send(`${message.author}: ${message.content}`);
+        client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content}`);
     }
     if (message.channel.id == 840558534495174676) {
-        if (msg().startsWith('<@')) {
-            const to = message.mentions.members.first();
-            to.send(msg(1, 1000)).then(message.channel.send('Mensaje enviado'));
-        } else {
-            message.channel.send('Error al enviar MD');
-        }
+        ; (async () => {
+            if (message.reference) {
+                const mens = await message.channel.messages.fetch(message.reference.messageID)
+                const to = mens.mentions.members.first();
+                if (!to) return message.channel.send('Error al enviar MD');
+                to.send(message.content).then(message.react('✅'));
+            } else if (message.reference == null) {
+                message.channel.send('No has respondido a nadie')
+            }
+        })()
     }
     if (msg() == '!estado' && message.author.id == '431071887372845061') {
         var tipo;
