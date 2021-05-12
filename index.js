@@ -179,7 +179,7 @@ client.on('messageReactionRemove', (reaction, user) => {
 client.on('message', message => {
     if (message.author.bot) return;
     if (message.guild === null) {
-        client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content}`);
+        client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || '+message.attachments.array()[0].url : ''}`);
     }
     if (message.channel.id == 840558534495174676) {
         ; (async () => {
