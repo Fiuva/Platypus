@@ -889,6 +889,8 @@ client.on('message', async message => {
             message.channel.send(`${message.author} canción guardada en tu MD :> (${song.title})`)
         }
     } else if (msg() == '!traducir' || msg() == '!traduccion') {
+        message.channel.send('Comando de traducción en mantenimiento :<');
+        /*
         var tituloCompleto = queue.get(message.guild.id).songs[0].title;
         var tituloFix = '';
         var parentesis = false;
@@ -937,7 +939,7 @@ client.on('message', async message => {
                 cargar(message2);
             })
 
-        }
+        }*/
     }
     function msg(c = 0, f = 1, same = false) {
         if (same) {
