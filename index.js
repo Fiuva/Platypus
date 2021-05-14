@@ -174,16 +174,6 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
         }
     }
 })
-client.on('presenceUpdate', (oldPresence, newPresence) => {
-    let member = newPresence.member;
-    if (member.id == "807763566849163264") {
-        if (oldPresence.status != newPresence.status) {
-            client.users.cache.get('431071887372845061').send(`Se ha cambiado a ${newPresence.status}`)
-        } else {
-            client.users.cache.get('431071887372845061').send(`Se ha cambiado de estado`)
-        }
-    }
-})
 client.on('messageReactionRemove', (reaction, user) => {
     let emoji = reaction.emoji;
     if (reaction.message.id == '837347810705539173') {
