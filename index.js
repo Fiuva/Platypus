@@ -70,10 +70,20 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
         } else if (newUserChannel == undefined) {
             //SALIR (de oldUserChannel)
             eliminarCanalDeVoz(oldUserChannel);
+            if (oldUserChannel.members.size == 1 && oldUserChannel.members.first().id == '836972868055203850' && oldUserChannel.id == 838776417768046622) {
+                queue.delete(oldUserChannel.guild.id);
+                client.channels.cache.get('838776417768046622').leave();
+                return;
+            }
         } else {
             //CAMBIAR (de oldUserChannel a newUserChannel)
             crearCanalDeVoz(newUserChannel.id);
             eliminarCanalDeVoz(oldUserChannel);
+            if (oldUserChannel.members.size == 1 && oldUserChannel.members.first().id == '836972868055203850' && oldUserChannel.id == 838776417768046622) {
+                queue.delete(oldUserChannel.guild.id);
+                client.channels.cache.get('838776417768046622').leave();
+                return;
+            }
         }
     }
 
@@ -290,6 +300,23 @@ client.on('message', message => {
                 message.channel.send(`${toUser} no está en la carcel`);
             }
         }
+    }
+    if (msg() === '!addpc' && message.author.id == 431071887372845061) {
+        ; (async () => {
+            message.delete();
+            if (msg(1, 2).startsWith('<@')) {
+                var user = await Usuario.find({ idDiscord: message.mentions.users.first().id }).exec();
+                username = message.mentions.users.first();
+                var monedasAntes = user[0].monedas;
+                if (!isNaN(parseInt(msg(2, 3)))) {
+                    Usuario.findOneAndUpdate({ idDiscord: user[0].idDiscord }, { monedas: monedasAntes + parseInt(msg(2, 3)) }, { new: true }).then(message.channel.send(`${message.author}: Se han añadido ${msg(2, 3)} ${nombreMonedas} a ${message.mentions.users.first()} (Antes: ${monedasAntes} -> __Ahora: ${monedasAntes + parseInt(msg(2, 3))}__) | _Razón:_ **${msg(3, 20, true) || 'Porque sí xd'}**`));
+                } else {
+                    message.channel.send(`${message.author}: añadir ${nombreMonedas} !addpc <@user> <lerdocoins> [razón]`);
+                }
+            } else {
+                message.channel.send(`${message.author}: añadir ${nombreMonedas} !addpc <@user> <lerdocoins> [razón]`);
+            }
+        })()
     }
     if (message.channel.id != 836721843955040339 && message.channel.id != 836879630815985674) return;
 
@@ -726,24 +753,7 @@ client.on('message', message => {
                     )
                 message.channel.send(mensajeInventario)
             })()
-        }
-        if (msg() === '!addpc' && message.author.id == 431071887372845061) {
-            ; (async () => {
-                message.delete();
-                if (msg(1, 2).startsWith('<@')) {
-                    var user = await Usuario.find({ idDiscord: message.mentions.users.first().id }).exec();
-                    username = message.mentions.users.first();
-                    var monedasAntes = user[0].monedas;
-                    if (!isNaN(parseInt(msg(2, 3)))) {
-                        Usuario.findOneAndUpdate({ idDiscord: user[0].idDiscord }, { monedas: monedasAntes + parseInt(msg(2, 3)) }, { new: true }).then(message.channel.send(`${message.author}: Se han añadido ${msg(2, 3)} ${nombreMonedas} a ${message.mentions.users.first()} (Antes: ${monedasAntes} -> __Ahora: ${monedasAntes + parseInt(msg(2, 3))}__) | _Razón:_ **${msg(3, 20, true) || 'Porque sí xd'}**`));
-                    } else {
-                        message.channel.send(`${message.author}: añadir ${nombreMonedas} !addpc <@user> <lerdocoins> [razón]`);
-                    }
-                } else {
-                    message.channel.send(`${message.author}: añadir ${nombreMonedas} !addpc <@user> <lerdocoins> [razón]`);
-                }
-            })()
-        }
+        }    
         if (msg() == '!top' || msg() == '!lb' || msg() == '!ranking') {
             Usuario.find({}).sort({ expTotal: -1 }).exec(function (err, docs) {
                 var top = new Discord.MessageEmbed()
@@ -804,6 +814,7 @@ const { search } = require('ffmpeg-static');
 const queue = new Map();
 const translate = require("translate");
 translate.engine = "libre";
+var bucle = false;
 
 client.on('message', async message => {
     if (message.author.bot || message.channel.id != 838801241341558825) return;
@@ -879,6 +890,7 @@ client.on('message', async message => {
                 { name: '!skip', value: `Saltar a la siguiente canción`, inline: true },
                 { name: '!stop', value: `Desconectar el bot de musica` },
                 { name: '!letra', value: `Se muestra la letra de la canción que se está reproducioendo actualmente` },
+                { name: '!bucle', value: `Se pone la canción actual en modo repeteición` },
             );
         message.channel.send(mensajeAyuda);
     } else if (msg() == '!reset') {
@@ -897,6 +909,14 @@ client.on('message', async message => {
                 .setFooter(`Duración:  ${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60 < 10 ? '0' : ''}${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60}`)
             message.author.send(fav)
             message.channel.send(`${message.author} canción guardada en tu MD :> (${song.title})`)
+        }
+    } else if (msg() == '!repetir' || '!repeat' || '!bucle') {
+        if (bucle == true) {
+            bucle = false;
+            message.channel.send(`Se ha desactivado el modo bucle ❌`);
+        } else {
+            bucle = true;
+            message.channel.send(`Se ha activado el modo bucle ✅`);
         }
     } else if (msg() == '!traducir' || msg() == '!traduccion') {
         message.channel.send('Comando de traducción en mantenimiento :<');
@@ -1061,7 +1081,9 @@ function play(guild, song) {
     const dispatcher = serverQueue.connection
         .play(ytdl(song.url))
         .on("finish", () => {
-            serverQueue.songs.shift();
+            if (!bucle) {
+                serverQueue.songs.shift();
+            }
             play(guild, serverQueue.songs[0]);
         })
         .on("error", error => console.error(error));
@@ -1072,7 +1094,7 @@ function play(guild, song) {
         .setURL(song.url)
         .setThumbnail(song.thumbnail)
         .setAuthor(`Ahora escuchando:`)
-        .setFooter(`Duración:  ${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60 < 10 ? '0' : ''}${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60}`)
+        .setFooter(`Duración:  ${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60 < 10 ? '0' : ''}${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60} ${bucle ? '♻' : ''}`)
     serverQueue.textChannel.send(escuchando);
 }
 
