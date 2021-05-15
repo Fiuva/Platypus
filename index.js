@@ -1019,6 +1019,7 @@ async function execute(message, serverQueue) {
 
         try {
             var connection = await voiceChannel.join();
+            bucle = false;
             queueContruct.connection = connection;
             play(message.guild, queueContruct.songs[0]);
         } catch (err) {
