@@ -910,7 +910,7 @@ client.on('message', async message => {
             message.author.send(fav)
             message.channel.send(`${message.author} canción guardada en tu MD :> (${song.title})`)
         }
-    } else if (msg() == '!repetir' || '!repeat' || '!bucle') {
+    } else if (msg() == '!repetir' || msg() == '!repeat' || msg() == '!bucle') {
         if (bucle == true) {
             bucle = false;
             message.channel.send(`Se ha desactivado el modo bucle ❌`);
