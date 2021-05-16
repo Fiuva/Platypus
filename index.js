@@ -351,38 +351,38 @@ client.on('message', message => {
                             message.channel.send(`Felicidades! ${message.author}, ahora eres un Lechuzo Lloroso :'<`);
                             break;
                         case 20:
-                            message.member.roles.add(message.guild.roles.cache.get('836946505490366514'));
+                            message.member.roles.add(message.guild.roles.cache.get('836946476647186499'));
                             message.member.roles.remove(message.guild.roles.cache.get('836946511199207435'));
                             message.channel.send(`Felicidades! ${message.author}, ahora eres un Cerdo Rotatorio`);
                             modificarMonedas(message.author.id, 40);
                             break;
                         case 30:
-                            message.member.roles.add(message.guild.roles.cache.get('836946499023142992'));
-                            message.member.roles.remove(message.guild.roles.cache.get('836946505490366514'));
+                            message.member.roles.add(message.guild.roles.cache.get('836946505490366514'));
+                            message.member.roles.remove(message.guild.roles.cache.get('836946476647186499'));
                             message.channel.send(`Felicidades! ${message.author}, ahora eres un Lechuzo Inverso :>`);
                             modificarMonedas(message.author.id, 60);
                             break;
                         case 40:
-                            message.member.roles.add(message.guild.roles.cache.get('836946491733573662'));
-                            message.member.roles.remove(message.guild.roles.cache.get('836946499023142992'));
+                            message.member.roles.add(message.guild.roles.cache.get('836946499023142992'));
+                            message.member.roles.remove(message.guild.roles.cache.get('836946505490366514'));
                             message.channel.send(`Felicidades! ${message.author}, ahora eres un Mamífero Ovíparo`);
                             modificarMonedas(message.author.id, 100);
                             break;
                         case 50:
-                            message.member.roles.add(message.guild.roles.cache.get('836946484376502282'));
-                            message.member.roles.remove(message.guild.roles.cache.get('836946491733573662'));
+                            message.member.roles.add(message.guild.roles.cache.get('836946491733573662'));
+                            message.member.roles.remove(message.guild.roles.cache.get('836946499023142992'));
                             message.channel.send(`Felicidades! ${message.author}, ahora eres un Ornitorrinco Venenso`);
                             modificarMonedas(message.author.id, 100);
                             break;
                         case 60:
-                            message.member.roles.add(message.guild.roles.cache.get('836946476647186499'));
-                            message.member.roles.remove(message.guild.roles.cache.get('836946484376502282'));
+                            message.member.roles.add(message.guild.roles.cache.get('836946484376502282'));
+                            message.member.roles.remove(message.guild.roles.cache.get('836946491733573662'));
                             message.channel.send(`Felicidades! ${message.author}, ahora eres una Nutria Sudorosa <3`);
                             modificarMonedas(message.author.id, 150);
                             break;
                         case 70:
                             message.member.roles.add(message.guild.roles.cache.get('836946467469918269'));
-                            message.member.roles.remove(message.guild.roles.cache.get('836946476647186499'));
+                            message.member.roles.remove(message.guild.roles.cache.get('836946484376502282'));
                             message.channel.send(`Felicidades! ${message.author}, ahora eres un Castor con sabor a vainilla`);
                             modificarMonedas(message.author.id, 250);
                             break;
