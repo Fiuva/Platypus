@@ -756,22 +756,31 @@ client.on('message', message => {
         }    
         if (msg() == '!top' || msg() == '!lb' || msg() == '!ranking') {
             Usuario.find({}).sort({ expTotal: -1 }).exec(function (err, docs) {
+                var j = 0;
                 var top = new Discord.MessageEmbed()
                     .setTitle(message.guild.name)
                     .setThumbnail(message.guild.iconURL())
                     .setColor('#FFCB00')
                     .setDescription(`Este es el top de 10 personas más activas :sparkles:`)
                     .addFields(
-                        { name: `:first_place: :white_small_square: ${message.guild.members.cache.get(docs[0].idDiscord).user.username}`, value: `:black_small_square: Nivel: \`${calcularNivel(docs[0].expTotal)[0]}\` \n :black_small_square: Exp: \`${docs[0].expTotal}/${calcularNivel(docs[0].expTotal)[1]}\`` },
-                        { name: `:second_place: :white_small_square: ${message.guild.members.cache.get(docs[1].idDiscord).user.username}`, value: `:black_small_square: Nivel: \`${calcularNivel(docs[1].expTotal)[0]}\` \n :black_small_square: Exp: \`${docs[1].expTotal}/${calcularNivel(docs[1].expTotal)[1]}\`` },
-                        { name: `:third_place: :white_small_square: ${message.guild.members.cache.get(docs[2].idDiscord).user.username}`, value: `:black_small_square: Nivel: \`${calcularNivel(docs[2].expTotal)[0]}\` \n :black_small_square: Exp: \`${docs[2].expTotal}/${calcularNivel(docs[2].expTotal)[1]}\`` }
+                        { name: `:first_place: :white_small_square: ${test(0)}`, value: `:black_small_square: Nivel: \`${calcularNivel(docs[0 + j].expTotal)[0]}\` \n :black_small_square: Exp: \`${docs[0 + j].expTotal}/${calcularNivel(docs[0 + j].expTotal)[1]}\`` },
+                        { name: `:second_place: :white_small_square: ${test(1)}`, value: `:black_small_square: Nivel: \`${calcularNivel(docs[1 + j].expTotal)[0]}\` \n :black_small_square: Exp: \`${docs[1 + j].expTotal}/${calcularNivel(docs[1 + j].expTotal)[1]}\`` },
+                        { name: `:third_place: :white_small_square: ${test(2)}`, value: `:black_small_square: Nivel: \`${calcularNivel(docs[2 + j].expTotal)[0]}\` \n :black_small_square: Exp: \`${docs[2 + j].expTotal}/${calcularNivel(docs[2 + j].expTotal)[1]}\`` }
                     )
                 for (i = 3; i < 10; i++) {
                     top.addFields(
-                        { name: `#${i + 1} :white_small_square: ${message.guild.members.cache.get(docs[i].idDiscord).user.username}`, value: `:black_small_square: Nivel: \`${calcularNivel(docs[i].expTotal)[0]}\` \n :black_small_square: Exp: \`${docs[i].expTotal}/${calcularNivel(docs[i].expTotal)[1]}\`` }
+                        { name: `#${i + 1} :white_small_square: ${test(i)}`, value: `:black_small_square: Nivel: \`${calcularNivel(docs[i + j].expTotal)[0]}\` \n :black_small_square: Exp: \`${docs[i + j].expTotal}/${calcularNivel(docs[i + j].expTotal)[1]}\`` }
                     )
                 }
                 message.channel.send(top);
+                function test(i) {
+                    if (message.guild.members.cache.get(docs[i + j].idDiscord) == undefined) {
+                        j++;
+                        return test(i, j);
+                    } else {
+                        return message.guild.members.cache.get(docs[i + j].idDiscord).user.username;
+                    }
+                }
             });
         }
         if (msg() === '!ayuda' || msg() === '!help' || msg() === '!comandos') {
