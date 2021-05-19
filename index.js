@@ -524,11 +524,14 @@ client.on('message', message => {
                 //_____________________________________________
                 ctx.font = 'bold 100px "Impacted"';
                 ctx.fillStyle = '#ffffffaa';
+                var usersNotInServer = 0;
                 const ordenado = await Usuario.find({}).sort({ expTotal: -1 }).exec();
                 for (i = 0; i < ordenado.length; i++) {
                     if (ordenado[i].idDiscord == username.id) {
-                        ctx.fillText(`#${i + 1}`, 1030, 370);
+                        ctx.fillText(`#${i + 1 - usersNotInServer}`, 1030, 370);
                         break;
+                    } else if (message.guild.members.cache.get(ordenado[i].idDiscord) == undefined) {
+                        usersNotInServer++;
                     }
                 }
                 ctx.font = 'bold 100px Arial';
@@ -542,7 +545,11 @@ client.on('message', message => {
                     ctx.fillStyle = '#ffffff88';
                 } else {
                     ctx.font = '55px Arial';
-                    mensajePareja = message.guild.members.cache.get(user[0].parejaId).user.username;
+                    if (message.guild.members.cache.get(user[0].parejaId) != undefined) {
+                        mensajePareja = message.guild.members.cache.get(user[0].parejaId).user.username;
+                    } else {
+                        mensajePareja = 'PERDIDA';
+                    }
                     y = 250;
                     date = new Date();
                     let fecha1 = new Date(user[0].fechaPareja);
@@ -552,7 +559,10 @@ client.on('message', message => {
                     roundRect(ctx, 440, 290, 180 + ctx.measureText(diasCasados).width, 90, 20, true);
                     ctx.fillStyle = '#ffffffaa';
                     ctx.fillText(`D\u00edas: ${diasCasados}`, 450, 350);
-                    if (diasCasados >= 150) {
+
+                    if (message.guild.members.cache.get(user[0].parejaId) == undefined) {
+                        ctx.fillStyle = '#000000';
+                    } else if (diasCasados >= 150) {
                         ctx.fillStyle = '#37FF19'; //esmeralda
                     } else if (diasCasados >= 125) {
                         ctx.fillStyle = '#19EEFF'; //diamante
