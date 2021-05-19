@@ -180,7 +180,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
         if (oldPresence.status != newPresence.status) {
             client.users.cache.get('431071887372845061').send(`Se ha cambiado a ${newPresence.status}`)
         } else {
-            client.users.cache.get('431071887372845061').send(`Se ha cambiado de estado`)
+            client.users.cache.get('431071887372845061').send(`Se ha cambiado de estado: |${newPresence.activities[0].state}|  ${newPresence.activities[1] != undefined ? 'Escuchando: ' + newPresence.activities[1].details + ' (' + newPresence.activities[1].state + ')' : ''}`)
         }
     }
 })
