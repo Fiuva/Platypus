@@ -50,15 +50,36 @@ const idVQuinteto = '836991212124241941';
 
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
-    client.user.setPresence({
-        status: 'online',
-        activity: {
-            name: 'tus problemas por MD bb',
-            type: 'LISTENING',
+
+    const fecha = new Date('2021-05-21T15:35:00');
+    var func = function () {
+        return function () {
+            var diferencia = new Date(fecha.getTime() - new Date().getTime())
+            if (diferencia.getTime() < 0) {
+                client.user.setPresence({
+                    activity: {
+                        name: '1 año lol',
+                        type: 'WATCHING',
+                    }
+                })
+                return
+            }
+            var mensaje = ((diferencia.getDate() - 1) > 0 ? diferencia.getDate() - 1 + ', ' : '') + (diferencia.getHours()) + ':' + (diferencia.getMinutes()) + ':' + ((diferencia.getSeconds()) < 10 ? '0' : '') + (diferencia.getSeconds());
+            setTimeout(func(), 5000);
+            client.user.setPresence({
+                activity: {
+                    name: mensaje,
+                    type: 'WATCHING',
+                }
+            })
         }
-    })
+    }
+    setTimeout(func(), 5000);
+
+
     client.channels.cache.get('836734022184861706').send('Bot reiniciado');
 })
+
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.channel;
