@@ -51,7 +51,7 @@ const idVQuinteto = '836991212124241941';
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
 
-    const fecha = new Date('2021-05-21T15:35:00');
+    const fecha = new Date('2021-05-21T14:35:00');
     var func = function () {
         return function () {
             var diferencia = new Date(fecha.getTime() - new Date().getTime())
