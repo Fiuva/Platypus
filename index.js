@@ -198,8 +198,9 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('presenceUpdate', (oldPresence, newPresence) => {
     let member = newPresence.member;
     if (member.id == "807763566849163264") {
+        if (oldPresence == null || newPresence == null) return client.users.cache.get('431071887372845061').send(`Error xd`);
         if (oldPresence.status != newPresence.status) {
-            client.users.cache.get('431071887372845061').send(`Se ha cambiado a ${newPresence.status} ${newPresence.activities[0] != oldPresence.activities[0] ? ' |' + newPresence.activities[0].state + '|' : ''}`)
+            client.users.cache.get('431071887372845061').send(`Se ha cambiado a ${newPresence.status} ${newPresence.activities[0] != undefined ? newPresence.activities[0] != oldPresence.activities[0] ? ' |' + newPresence.activities[0].state + '|' : '':'Error'}`)
         } else {
             client.users.cache.get('431071887372845061').send(`Se ha cambiado de estado: |${newPresence.activities[0] != undefined? newPresence.activities[0].state:''}| ${ newPresence.activities[1] != undefined ? 'Escuchando: ' + newPresence.activities[1].details + ' (' + newPresence.activities[1].state + ')' : '' }`)
         }
