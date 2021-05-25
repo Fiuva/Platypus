@@ -51,6 +51,7 @@ const idVQuinteto = '836991212124241941';
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
 
+    /*
     const fecha = new Date('2021-05-21T14:35:00');
     var func = function () {
         return function () {
@@ -75,7 +76,7 @@ client.on('ready', () => {
         }
     }
     setTimeout(func(), 5000);
-
+    */
 
     client.channels.cache.get('836734022184861706').send('Bot reiniciado');
 })
@@ -1122,6 +1123,11 @@ function play(guild, song) {
 
     const dispatcher = serverQueue.connection
         .play(ytdl(song.url))
+        .on('start', () => {
+            if (song.title.match(/worst of you/i)) {
+                worstOfYou();
+            }
+        })
         .on("finish", () => {
             if (!bucle) {
                 serverQueue.songs.shift();
@@ -1151,6 +1157,71 @@ function calcularNivel(experienciaTotal) {
     return [nivel, calcularExp];
 }
 
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+function timeout2(string, ms) {
+    setTimeout(function () {
+        setStatus('🎵' + string + '🎵')
+    }, ms)
+}
+function setStatus(string) {
+    client.user.setActivity(string, { type: 'LISTENING' });
+}
+async function worstOfYou() {
+    timeout2('You promise it\'s different', 5000)
+    timeout2('You swear that you listened', 8000)
+    timeout2('I don\'t mind if you didn\'t', 10500)
+    timeout2('\'Cause I just love the sound of your voice', 12750)
+    timeout2('You role-play the good guy', 15000)
+    timeout2('Then induce your white lies', 17300)
+    timeout2('But I see \'em in the sunrise', 19500)
+    timeout2('You got me right in the palm of your hand and you know it', 22800)
+    timeout2('Oh, it\'s what you do', 28300)
+    timeout2('So let me drown, I\'ll be there with the band, hit the sea bed', 31700)
+    timeout2('All I\'d see is you', 37500)
+    timeout2('So give me your worst excuses, any reason to stay', 43500)
+    timeout2('Give me your lips, the taste of her, I\'ll kiss them again', 47900)
+    timeout2('I\'d rather you walk all over me than walk away', 52600)
+    timeout2('Give me the worst of you', 56300)
+    timeout2('\'Cause I want you anyway', 59000)
+    timeout2('So take me to every party and just talk to your friends', 62000)
+    timeout2('Why don\'t you let me down, I\'ll let you do it again', 66800)
+    timeout2('Go on and walk all over me, just don\'t walk away', 71800)
+    timeout2('Give me the worst of you', 75500)
+    timeout2('\'Cause I want you anyway', 77700)
+    timeout2('We make up, but I know', 80600)
+    timeout2('We\'ll fistfight through iPhones', 83200)
+    timeout2('My left hook, a no-show', 85000)
+    timeout2('\'Cause I\'ll just keep letting you in', 87500)
+    timeout2('But baby, the truth is', 89500)
+    timeout2('I make your excuses', 92500)
+    timeout2('You let me down, and I\'m used to it', 94900)
+    timeout2('You got me right in the palm of your hand and you know it', 97700)
+    timeout2('Oh, it\'s what you do', 103700)
+    timeout2('So let me drown, I\'ll be there with the band, hit the sea bed', 107300)
+    timeout2('All I\'d see is you, oh', 112990)
+    timeout2('So give me your worst excuses, any reason to stay', 118000)
+    timeout2('Give me your lips, the taste of her, I\'ll kiss them again', 123100)
+    timeout2('I\'d rather you walk all over me than walk away', 128000)
+    timeout2('Give me the worst of you', 132000)
+    timeout2('\'Cause I want you anyway', 134000)
+    timeout2('So take me to every party and just talk to your friends', 137000)
+    timeout2('Why don\'t you let me down, I\'ll let you do it again', 141700)
+    timeout2('Go on and walk all over me, just don\'t walk away', 147000)
+    timeout2('Give me the worst of you', 150200)
+    timeout2('\'Cause I want you anyway', 153200)
+    timeout2('Anyway🎶🎶🎶', 156700)
+    timeout2('🎶🎶🎶Anyway', 159000)
+    timeout2('\'Cause I want you anyway', 162500)
+    timeout2('Anyway🎶🎶🎶', 166000)
+    timeout2('🎶🎶🎶Anyway', 168000)
+    timeout2('Another night, another dotted line', 173500)
+    timeout2('I sign my heart', 179500)
+    timeout2('Away to you, some call it foolish', 183000)
+    timeout2('Guess I\ll call it art', 188000)
+    timeout2('Pruebas', 195000)
+}
 
 function roundRect(ctx, x, y, width, height, radius = 5, fill, stroke = true, sinBordesArriba = false) {
     var r2;
