@@ -1126,6 +1126,8 @@ function play(guild, song) {
         .on('start', () => {
             if (song.title.match(/worst of you/i)) {
                 worstOfYou();
+            } else if (song.title.match(/crazier things/i)) {
+                crazierThings();
             }
         })
         .on("finish", () => {
@@ -1168,7 +1170,7 @@ function timeout2(string, ms) {
 function setStatus(string) {
     client.user.setActivity(string, { type: 'LISTENING' });
 }
-async function worstOfYou() {
+function worstOfYou() {
     timeout2('You promise it\'s different', 5000)
     timeout2('You swear that you listened', 8000)
     timeout2('I don\'t mind if you didn\'t', 10500)
@@ -1221,6 +1223,74 @@ async function worstOfYou() {
     timeout2('Away to you, some call it foolish', 183000)
     timeout2('Guess I\ll call it art', 188000)
     timeout2('Pruebas', 195000)
+}
+function crazierThings() {
+    timeout2('I\'ve been trying not to think about it, I can\'t help it', 5000)
+    timeout2('I know you don\'t wanna hear from me, but I am selfish', 15300)
+    timeout2('It kills me inside you can drink on Friday nights', 24900)
+    timeout2('Not even pick up the phone', 29300)
+    timeout2('It amazes me you move on so easily', 35500)
+    timeout2('From someone that you once called home', 39600)
+
+    timeout2('I wish you had enough discipline for the both of us', 45700)
+    timeout2('Just because I don\'t know how to turn off the way I feel', 49700)
+    timeout2('I know you always fell out love so damn easily, but honestly', 55600)
+    timeout2('I don\'t think you ever had something real', 60900)
+
+    timeout2('Until you met me', 65600)
+    timeout2('Drinks in New York City', 68300)
+    timeout2('Ooh, you looked so pretty', 70900)
+    timeout2('Think I fell in love before I even knew your birthday', 73300)
+    timeout2('Kissed you on our first date', 78500)
+    timeout2('Somehow, I knew someday', 80990)
+    timeout2('This would hurt \'cause I could never let you go', 83800)
+    timeout2('Oh, I\'ll spend my whole life', 89300)
+    timeout2('Missing a part of me, part of me', 94500)
+    timeout2('Oh, I\'ll spend my whole life', 99600)
+    timeout2('Hoping your heart is free, heart is free', 104800)
+
+    timeout2('I\'ve been trying not to think of this as something tragic', 108200)
+    timeout2('\'Cause our two paths might cross again', 118200)
+    timeout2('Crazier things have happened', 121700)
+    timeout2('And I realize lightning strikes just once, not twice', 127950)
+    timeout2('And shooting stars are burning rocks', 132700)
+    timeout2('So I spend weeks inside, drowning in these dreams of mine', 138300)
+    timeout2('And wondering if I\'m worth your thoughts', 142800)
+
+    timeout2('I wish you had enough discipline for the both of us', 148700)
+    timeout2('Just because I don\'t know how to turn off the way I feel', 153200)
+    timeout2('I know you always fell out love so damn easily, but honestly', 158900)
+    timeout2('I don\'t think you ever had something real', 164100)
+
+    timeout2('Until you met me', 168700)
+    timeout2('Drinks in New York City', 171000)
+    timeout2('Ooh, you looked so pretty', 174000)
+    timeout2('Think I fell in love before I even knew your birthday', 176300)
+    timeout2('Kissed you on our first date', 182000)
+    timeout2('Somehow, I knew someday', 184300)
+    timeout2('This would hurt \'cause I could never let you go', 187000)
+
+    timeout2('Do you not dream of me?', 191300)
+    timeout2('\'Cause I have visions in my sleep', 193700)
+    timeout2('I can\'t ever find my peace now', 196000)
+    timeout2('Do you wake up alone', 201600)
+    timeout2('And feel an aching in your bones?', 204000)
+    timeout2('Or are you happy without me now?', 206100)
+
+    timeout2('The first time that you told me', 210300)
+    timeout2('You thought that you loved me', 212700)
+    timeout2('That bar in the city', 215000)
+    timeout2('I thought you were drunk', 217900)
+    timeout2('But I knew deep down that you meant it', 219500)
+    timeout2('Wish that I had said it', 222500)
+    timeout2('I was scared to let it happen', 225500)
+    timeout2('But it happened and now I cannot forget it', 228500)
+    timeout2('Oh, I\'ll spend my whole life', 233700)
+    timeout2('Missing a part of me, part of me', 238700)
+    timeout2('Oh, I\'ll spend my whole life', 243700)
+    timeout2('Hoping your heart is free, heart is free', 249100)
+    timeout2('Pruebas', 264000)
+
 }
 
 function roundRect(ctx, x, y, width, height, radius = 5, fill, stroke = true, sinBordesArriba = false) {
