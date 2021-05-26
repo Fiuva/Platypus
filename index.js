@@ -1147,7 +1147,6 @@ function play(guild, song) {
         .setFooter(`Duración:  ${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60 < 10 ? '0' : ''}${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60} ${bucle ? '♻' : ''}`)
     serverQueue.textChannel.send(escuchando);
 }
-
 function calcularNivel(experienciaTotal) {
     var expActual = experienciaTotal;
     var nivel = 0;
