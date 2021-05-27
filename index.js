@@ -980,7 +980,7 @@ client.on('message', async message => {
                 return message.channel.send(`${message.author} por favor, inicie una cola de canciones con cualquier canción`)
             }
             if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist "!playlist play <nombre>"`)
-            var nombre = new RegExp(msg(2, 100).replace(username, ''), 'i');
+            var nombre = new RegExp(msg(2, 100).replace(' <@!' + username.id + '>', ''), 'i');
             var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
             if (playlistUser[nombreExacto] == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
             var usermm = await Usuario.find({ idDiscord: username.id }).exec();
