@@ -933,7 +933,14 @@ client.on('message', async message => {
                 { name: '!skip', value: `Saltar a la siguiente canción`, inline: true },
                 { name: '!stop', value: `Desconectar el bot de musica` },
                 { name: '!letra', value: `Se muestra la letra de la canción que se está reproducioendo actualmente` },
-                { name: '!bucle', value: `Se pone la canción actual en modo repeteición` },
+                { name: '!bucle', value: `Pone la canción que está sonando en modo repetición` },
+                { name: '!stats', value: `Ver las canciones que están en la cola` },
+                { name: '!playlist create <nombre>', value: `Para crear una nueva playlist`, inline: true },
+                { name: '!playlist delete <NombrePlaylist>', value: `Para eliminar una playlist`, inline: true },
+                { name: '!playlist *[@user(opcional)]*', value: `Para ver las playlists guardadas` },
+                { name: '!playlist add <NombrePlaylist>', value: `Para **añadir** la **canción** que está sonando a una playlist`, inline: true },
+                { name: '!playlist songs <NombrePlaylist> *[@user(opcional)]*', value: `Para ver las canciones de una playlist (si es de otro usuario, se necesita mencionarle)`, inline: true },
+                { name: '!playlist play <NombrePlaylist> *[@user(opcional)]*', value: `Para **reproducir** una playlist (si es de otro usuario, se necesita mencionarle)`, inline: true },
             );
         message.channel.send(mensajeAyuda);
     } else if (msg() == '!reset') {
@@ -973,7 +980,7 @@ client.on('message', async message => {
                 return message.channel.send(`${message.author} por favor, inicie una cola de canciones con cualquier canción`)
             }
             if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist "!playlist play <nombre>"`)
-            var nombre = new RegExp(msg(2, 30), 'i');
+            var nombre = new RegExp(msg(2, 100).replace(username, ''), 'i');
             var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
             if (playlistUser[nombreExacto] == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
             var usermm = await Usuario.find({ idDiscord: username.id }).exec();
