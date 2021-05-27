@@ -854,9 +854,10 @@ const Client = new Genius.Client();
 const ytdl = require('ytdl-core');
 const { search } = require('ffmpeg-static');
 const queue = new Map();
-const translate = require("translate");
-translate.engine = "libre";
+//const translate = require("translate");
+//translate.engine = "libre";
 var bucle = false;
+const Playlist = require('./models/playlist');
 
 client.on('message', async message => {
     if (message.author.bot || message.channel.id != 838801241341558825) return;
@@ -960,6 +961,115 @@ client.on('message', async message => {
             bucle = true;
             message.channel.send(`Se ha activado el modo bucle ✅`);
         }
+    } else if (msg() == '!playlist') {
+        var username;
+        message.mentions.users.first() ? username = message.mentions.users.first() : username = message.author;
+        await new Playlist({ idDiscord: username.id }).save().then().catch(() => null);
+        var playlist = await Playlist.find({ idDiscord: username.id }).exec();
+        var playlistUser = playlist[0].songs;
+        const keys = Object.keys(playlistUser)
+        if (msg(1, 2) == 'play') {
+            if (!serverQueue) {
+                return message.channel.send(`${message.author} por favor, inicie una cola de canciones con cualquier canción`)
+            }
+            if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist "!playlist play <nombre>"`)
+            var nombre = new RegExp(msg(2, 30), 'i');
+            var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
+            if (playlistUser[nombreExacto] == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
+            var usermm = await Usuario.find({ idDiscord: username.id }).exec();
+            var mensajeCanciones = '';
+            for (i = 0; i < playlistUser[nombreExacto].length; i++) {
+                execute2(message, playlistUser[nombreExacto][i], serverQueue)
+                mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + playlistUser[nombreExacto][i] + ' \n';
+            }
+            const mensajePlaylist = new Discord.MessageEmbed().setTitle(`Canciones de **${nombreExacto}**`).setColor(usermm[0].color).setDescription(mensajeCanciones).setAuthor(username.username)
+            message.channel.send(mensajePlaylist);
+        } else if (!msg(1, 2) || (!msg(2, 3) && message.mentions.users.first())) {
+            var usermm = await Usuario.find({ idDiscord: username.id }).exec();
+            var mensajePlaylist = new Discord.MessageEmbed().setTitle(`Playlists de ${username.username}`).setColor(usermm[0].color)
+
+            for (i = 0; i < keys.length; i++) {
+                mensajePlaylist.addField(keys[i], playlistUser[keys[i]].length + ' canciones');
+            }
+            message.channel.send(mensajePlaylist);
+        }
+        if (msg(1, 2) == 'create') {
+            if (!msg(2, 3)) return message.channel.send(`${message.author} inserte el nombre de la playlist que quiere crear \"!playlist create <nombre>\"`)
+            if (keys.includes(msg(2, 30))) return message.channel.send(`${message.author} esa playlist ya existe`)
+            const newPlaylist = {
+                [msg(2, 30)]: []
+            };
+            Object.assign(playlistUser, newPlaylist)
+            message.channel.send(`${message.author} se ha creado una nueva playlist \"${msg(2, 30)}\"`)
+            await Playlist.findOneAndUpdate({ idDiscord: message.author.id }, { $set: { songs: playlistUser } }, { new: true });
+        } else if (msg(1, 2) == 'add') {
+            if (!msg(2, 3)) return message.channel.send(`${message.author} inserte el nombre de la playlist para añadir la canción que está sonando \"!playlist add <nombre playlist>\"`)
+            if (!message.mentions.users.first()) {
+                var nombre = new RegExp(msg(2, 30), 'i');
+                var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
+                if (queue.get(message.guild.id)) {
+                    var song = queue.get(message.guild.id).songs[0];
+                    if (playlistUser[nombreExacto].includes(song.title)) {
+                        message.channel.send(`${message.author} esa canción ya está en la playlist`)
+                    } else {
+                        playlistUser[nombreExacto].push(song.title)
+                        await Playlist.findOneAndUpdate({ idDiscord: message.author.id }, { $set: { songs: playlistUser } }, { new: true });
+                        message.channel.send(`${message.author} se ha añadido \"${song.title}\" a la playlist: **${nombreExacto}**`)
+                    }
+                } else {
+                    message.channel.send(`${message.author} tiene que haber una canción sonando para añadirla a playlists`)
+                }
+
+            } else {
+                message.channel.send(`${message.author} solo puedes añadir canciones en tus playlists`);
+            }
+        } else if (msg(1, 2) == 'delete' && !message.mentions.users.first()) {
+            if (!msg(2, 3)) return message.channel.send(`${message.author} inserte el nombre de la playlist que quiere eliminar \"!playlist delete <nombre playlist>\"`)
+            var nombre = new RegExp(msg(2, 30), 'i');
+            var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
+            message.channel.send(`${message.author} está segur@ de querer eliminar la playlist **${nombreExacto}**??`).then(message2 => {
+                message2.react('✅');
+                message2.react('❌');
+                message2.awaitReactions((reaction, user) => user.id == message.author.id && (reaction.emoji.name == '❌' || reaction.emoji.name == '✅'),
+                    { max: 1, time: 30000 }).then(async collected => {
+                        if (collected.first().emoji.name == '❌') {
+                            message2.delete();
+                        }
+                        else {
+                            message.channel.send(`${message.author} se ha eliminado la playlist correctamente`);
+                            delete playlistUser[nombreExacto];
+                            await Playlist.findOneAndUpdate({ idDiscord: message.author.id }, { $set: { songs: playlistUser } }, { new: true });
+                        }
+                    }).catch(() => {
+                        message2.delete();
+                    });
+            })
+        } else if (msg(1, 2) == 'songs') {
+            if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist \"!playlist songs <nombre playlist> [@usuario(opcional)]\"`)
+            var nombre = new RegExp(msg(2, 30), 'i');
+            var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
+            var mensajeCanciones = '';
+            for (i = 0; i < playlistUser[nombreExacto].length && i < 20; i++) {
+                mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + playlistUser[nombreExacto][i] + '\n';
+            }
+            const mensajePlaylist = new Discord.MessageEmbed()
+                .setTitle(nombreExacto)
+                .setAuthor(username.username)
+                .setDescription(mensajeCanciones)
+                .setFooter(playlistUser[nombreExacto].length + ' canciones')
+            message.channel.send(mensajePlaylist);
+        }
+    } else if (msg() == '!stats') {
+        var songs = queue.get(message.guild.id).songs
+        var mensajeCanciones = '';
+        for (i = 0; i < songs.length && i < 20; i++) {
+            mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + songs[i].title + '\n';
+        }
+        const stats = new Discord.MessageEmbed()
+            .setTitle('Stats de la musica')
+            .setFooter(songs.length + ' canciones en cola')
+            .setDescription(mensajeCanciones)
+        message.channel.send(stats);
     } else if (msg() == '!traducir' || msg() == '!traduccion') {
         message.channel.send('Comando de traducción en mantenimiento :<');
         /*
@@ -1090,6 +1200,48 @@ async function execute(message, serverQueue) {
             .setFooter(`Duración:  ${Math.floor(song.lengthSeconds / 60)}:${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60 < 10 ? '0' : ''}${song.lengthSeconds - Math.floor(song.lengthSeconds / 60) * 60}`)
 
         return message.channel.send(mensCancion);
+    }
+}
+async function execute2(message, url, serverQueue) {
+    const voiceChannel = message.member.guild.channels.cache.get('838776417768046622');
+    if (message.member.voice.channel.id != '838776417768046622') {
+        return message.channel.send(`${message.author} necesitass estar en el canal de música`);
+    }
+    const search = await ytsr(url, { pages: 1 });
+    const songInfo = await ytdl.getInfo(search.items[0].url);
+    const song = {
+        title: songInfo.videoDetails.title,
+        url: songInfo.videoDetails.video_url,
+        thumbnail: songInfo.videoDetails.thumbnails[0].url,
+        lengthSeconds: songInfo.videoDetails.lengthSeconds,
+    };
+
+    if (!serverQueue) {
+        const queueContruct = {
+            textChannel: message.channel,
+            voiceChannel: voiceChannel,
+            connection: null,
+            songs: [],
+            volume: 5,
+            playing: true
+        };
+
+        queue.set(message.guild.id, queueContruct);
+
+        queueContruct.songs.push(song);
+
+        try {
+            var connection = await voiceChannel.join();
+            bucle = false;
+            queueContruct.connection = connection;
+            play(message.guild, queueContruct.songs[0]);
+        } catch (err) {
+            console.log(err);
+            queue.delete(message.guild.id);
+            return message.channel.send(err);
+        }
+    } else {
+        await serverQueue.songs.push(song);
     }
 }
 function skip(message, serverQueue) {
