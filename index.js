@@ -937,8 +937,9 @@ client.on('message', async message => {
                 { name: '!stats', value: `Ver las canciones que están en la cola` },
                 { name: '!playlist create <nombre>', value: `Para crear una nueva playlist`, inline: true },
                 { name: '!playlist delete <NombrePlaylist>', value: `Para eliminar una playlist`, inline: true },
+                { name: '!playlist delete <[index]> <NombrePlaylist>', value: `Para eliminar una canción (con el numero de canción)`, inline: true },
                 { name: '!playlist *[@user(opcional)]*', value: `Para ver las playlists guardadas` },
-                { name: '!playlist add <NombrePlaylist>', value: `Para **añadir** la **canción** que está sonando a una playlist`, inline: true },
+                { name: '!playlist add <NombrePlaylist> <[cancion](opcional)>', value: `Para **añadir** la **canción** que está sonando (u otra entre []) a una playlist`, inline: true },
                 { name: '!playlist songs <NombrePlaylist> *[@user(opcional)]*', value: `Para ver las canciones de una playlist (si es de otro usuario, se necesita mencionarle)`, inline: true },
                 { name: '!playlist play <NombrePlaylist> *[@user(opcional)]*', value: `Para **reproducir** una playlist (si es de otro usuario, se necesita mencionarle)`, inline: true },
             );
@@ -1010,10 +1011,30 @@ client.on('message', async message => {
             message.channel.send(`${message.author} se ha creado una nueva playlist \"${msg(2, 30)}\"`)
             await Playlist.findOneAndUpdate({ idDiscord: message.author.id }, { $set: { songs: playlistUser } }, { new: true });
         } else if (msg(1, 2) == 'add') {
-            if (!msg(2, 3)) return message.channel.send(`${message.author} inserte el nombre de la playlist para añadir la canción que está sonando \"!playlist add <nombre playlist>\"`)
+            if (!msg(2, 3)) return message.channel.send(`${message.author} inserte el nombre de la playlist para añadir la canción que está sonando \"!playlist add <nombre playlist> <[cancion](opcional)>\"`)
+            if (message.content.match(/\[\w*.*\]/)) {
+                const nombreDeLaCancion = message.content.match(/\[\w*.*\]/).toString().slice(1).slice(0, -1);
+                const nombrePlaylist = msg(2, 1000).replace('[' + nombreDeLaCancion + ']', '');
+                var nombre = new RegExp(nombrePlaylist, 'i');
+                var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
+                if (nombreExacto == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
+                const search = await ytsr(nombreDeLaCancion, { pages: 1 });
+                const songInfo = await ytdl.getInfo(search.items[0].url);
+                const songTitle = songInfo.videoDetails.title;
+                if (songTitle) {
+                    if (playlistUser[nombreExacto].includes(songTitle)) return message.channel.send(`${message.author} esa canción ya está en la playlist`);
+                    playlistUser[nombreExacto].push(songTitle)
+                    await Playlist.findOneAndUpdate({ idDiscord: message.author.id }, { $set: { songs: playlistUser } }, { new: true });
+                    message.channel.send(`${message.author} se ha añadido \"${songTitle}\" a la playlist: **${nombreExacto}** [${playlistUser[nombreExacto].length}]`)
+                } else {
+                    message.channel.send(`${message.author} no se ha podido encontrar la canción`)
+                }
+                return
+            }
             if (!message.mentions.users.first()) {
                 var nombre = new RegExp(msg(2, 30), 'i');
                 var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
+                if (nombreExacto == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
                 if (queue.get(message.guild.id)) {
                     var song = queue.get(message.guild.id).songs[0];
                     if (playlistUser[nombreExacto].includes(song.title)) {
@@ -1021,10 +1042,10 @@ client.on('message', async message => {
                     } else {
                         playlistUser[nombreExacto].push(song.title)
                         await Playlist.findOneAndUpdate({ idDiscord: message.author.id }, { $set: { songs: playlistUser } }, { new: true });
-                        message.channel.send(`${message.author} se ha añadido \"${song.title}\" a la playlist: **${nombreExacto}**`)
+                        message.channel.send(`${message.author} se ha añadido \"${song.title}\" a la playlist: **${nombreExacto}** [${playlistUser[nombreExacto].length}]`)
                     }
                 } else {
-                    message.channel.send(`${message.author} tiene que haber una canción sonando para añadirla a playlists`)
+                    message.channel.send(`${message.author} tiene que haber una canción sonando para añadirla a playlists o pon entre corchetes el nombre de la canción (al final)`)
                 }
 
             } else {
@@ -1032,8 +1053,19 @@ client.on('message', async message => {
             }
         } else if (msg(1, 2) == 'delete' && !message.mentions.users.first()) {
             if (!msg(2, 3)) return message.channel.send(`${message.author} inserte el nombre de la playlist que quiere eliminar \"!playlist delete <nombre playlist>\"`)
+            if (msg(2, 3).match(/\[\d*\]/)) {
+                if (!msg(3, 40)) return message.channel.send(`${message.author} inserte el nombre de la playlist \"**!playlist delete <[index]> <nombre playlist>**\" (\"!playlist delete [3] MiPlaylist\" -> Elimina la cancion 3 de MiPlaylist)`)
+                var nombre = new RegExp(msg(3, 40), 'i');
+                var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
+                if (nombreExacto == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
+                const cancionEliminada = playlistUser[nombreExacto].splice((parseInt(msg(2, 3).replace('[', '').replace(']', '')) - 1), 1);
+                await Playlist.findOneAndUpdate({ idDiscord: message.author.id }, { $set: { songs: playlistUser } }, { new: true });
+                message.channel.send(`${message.author} se ha eliminado la canción: ${cancionEliminada}`);
+                return
+            }
             var nombre = new RegExp(msg(2, 30), 'i');
             var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
+            if (nombreExacto == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
             message.channel.send(`${message.author} está segur@ de querer eliminar la playlist **${nombreExacto}**??`).then(message2 => {
                 message2.react('✅');
                 message2.react('❌');
@@ -1043,9 +1075,9 @@ client.on('message', async message => {
                             message2.delete();
                         }
                         else {
-                            message.channel.send(`${message.author} se ha eliminado la playlist correctamente`);
                             delete playlistUser[nombreExacto];
                             await Playlist.findOneAndUpdate({ idDiscord: message.author.id }, { $set: { songs: playlistUser } }, { new: true });
+                            message.channel.send(`${message.author} se ha eliminado la playlist correctamente`);
                         }
                     }).catch(() => {
                         message2.delete();
