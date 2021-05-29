@@ -978,7 +978,7 @@ client.on('message', async message => {
         const keys = Object.keys(playlistUser)
         if (msg(1, 2) == 'play') {
             if (!serverQueue) {
-                return message.channel.send(`${message.author} por favor, inicie una cola de canciones con cualquier canción`)
+                return message.channel.send(`${message.author} de momento está en beta y solo funciona cuando hay canciones activas. ("!play <cualquier cancion>" y luego ya la playlist)`)
             }
             if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist "!playlist play <nombre>"`)
             var nombre = new RegExp(msg(2, 100).replace(' <@!' + username.id + '>', ''), 'i');
@@ -1085,7 +1085,7 @@ client.on('message', async message => {
             })
         } else if (msg(1, 2) == 'songs') {
             if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist \"!playlist songs <nombre playlist> [@usuario(opcional)]\"`)
-            var nombre = new RegExp(msg(2, 30), 'i');
+            var nombre = new RegExp(msg(2, 100).replace(' <@!' + username.id + '>', ''), 'i');
             var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
             var mensajeCanciones = '';
             for (i = 0; i < playlistUser[nombreExacto].length && i < 20; i++) {
