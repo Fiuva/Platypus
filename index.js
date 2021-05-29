@@ -978,23 +978,22 @@ client.on('message', async message => {
         var playlistUser = playlist[0].songs;
         const keys = Object.keys(playlistUser)
         if (msg(1, 2) == 'play') {
-            if (!serverQueue) {
-                //return message.channel.send(`${message.author} de momento está en beta y solo funciona cuando hay canciones activas. ("!play <cualquier cancion>" y luego ya la playlist)`)
-            }
             if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist "!playlist play <nombre>"`)
             var nombre = new RegExp(msg(2, 100).replace(' <@!' + username.id + '>', ''), 'i');
             var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
             if (playlistUser[nombreExacto] == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
             var usermm = await Usuario.find({ idDiscord: username.id }).exec();
             var mensajeCanciones = '';
-            var serverQueue2;
-            for (i = 0; i < playlistUser[nombreExacto].length; i++) {
-                if (i == 0) {
-                    serverQueue2 = await execute2(message, playlistUser[nombreExacto][0], serverQueue)
+            var serverQueue2 = serverQueue;
+            var arr = playlistUser[nombreExacto];
+            shuffle(arr);
+            for (i = 0; i < arr.length; i++) {
+                if (i == 0 && !serverQueue) {
+                    serverQueue2 = await execute2(message, arr[0], serverQueue)
                 } else {
-                    execute3(playlistUser[nombreExacto][i], serverQueue2)
+                    execute3(arr[i], serverQueue2)
                 }
-                mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + playlistUser[nombreExacto][i] + ' \n';
+                mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + arr[i] + ' \n';
             }
             const mensajePlaylist = new Discord.MessageEmbed().setTitle(`Canciones de **${nombreExacto.toUpperCase()}**`).setColor(usermm[0].color).setDescription(mensajeCanciones).setAuthor(username.username)
             message.channel.send(mensajePlaylist);
