@@ -857,6 +857,7 @@ const queue = new Map();
 //const translate = require("translate");
 //translate.engine = "libre";
 var bucle = false;
+var cancionEspecial = false;
 const Playlist = require('./models/playlist');
 
 client.on('message', async message => {
@@ -978,7 +979,7 @@ client.on('message', async message => {
         const keys = Object.keys(playlistUser)
         if (msg(1, 2) == 'play') {
             if (!serverQueue) {
-                return message.channel.send(`${message.author} de momento está en beta y solo funciona cuando hay canciones activas. ("!play <cualquier cancion>" y luego ya la playlist)`)
+                //return message.channel.send(`${message.author} de momento está en beta y solo funciona cuando hay canciones activas. ("!play <cualquier cancion>" y luego ya la playlist)`)
             }
             if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist "!playlist play <nombre>"`)
             var nombre = new RegExp(msg(2, 100).replace(' <@!' + username.id + '>', ''), 'i');
@@ -986,11 +987,16 @@ client.on('message', async message => {
             if (playlistUser[nombreExacto] == undefined) return message.channel.send(`${message.author} playlist no encontrada`)
             var usermm = await Usuario.find({ idDiscord: username.id }).exec();
             var mensajeCanciones = '';
+            var serverQueue2;
             for (i = 0; i < playlistUser[nombreExacto].length; i++) {
-                execute2(message, playlistUser[nombreExacto][i], serverQueue)
+                if (i == 0) {
+                    serverQueue2 = await execute2(message, playlistUser[nombreExacto][0], serverQueue)
+                } else {
+                    execute3(playlistUser[nombreExacto][i], serverQueue2)
+                }
                 mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + playlistUser[nombreExacto][i] + ' \n';
             }
-            const mensajePlaylist = new Discord.MessageEmbed().setTitle(`Canciones de **${nombreExacto}**`).setColor(usermm[0].color).setDescription(mensajeCanciones).setAuthor(username.username)
+            const mensajePlaylist = new Discord.MessageEmbed().setTitle(`Canciones de **${nombreExacto.toUpperCase()}**`).setColor(usermm[0].color).setDescription(mensajeCanciones).setAuthor(username.username)
             message.channel.send(mensajePlaylist);
         } else if (!msg(1, 2) || (!msg(2, 3) && message.mentions.users.first())) {
             var usermm = await Usuario.find({ idDiscord: username.id }).exec();
@@ -1092,7 +1098,7 @@ client.on('message', async message => {
                 mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + playlistUser[nombreExacto][i] + '\n';
             }
             const mensajePlaylist = new Discord.MessageEmbed()
-                .setTitle(nombreExacto)
+                .setTitle(nombreExacto.toUpperCase())
                 .setAuthor(username.username)
                 .setDescription(mensajeCanciones)
                 .setFooter(playlistUser[nombreExacto].length + ' canciones')
@@ -1279,11 +1285,24 @@ async function execute2(message, url, serverQueue) {
             queue.delete(message.guild.id);
             return message.channel.send(err);
         }
+        return queueContruct;
     } else {
         await serverQueue.songs.push(song);
     }
 }
+async function execute3(url, serverQueue) {
+    const search = await ytsr(url, { pages: 1 });
+    const songInfo = await ytdl.getInfo(search.items[0].url);
+    const song = {
+        title: songInfo.videoDetails.title,
+        url: songInfo.videoDetails.video_url,
+        thumbnail: songInfo.videoDetails.thumbnails[0].url,
+        lengthSeconds: songInfo.videoDetails.lengthSeconds,
+    };
+    await serverQueue.songs.push(song);
+}
 function skip(message, serverQueue) {
+    if (cancionEspecial) return message.channel.send(`${message.author} no puedes skipear esta canción (canción especial con letra de estado)`)
     if (!message.member.voice.channel)
         return message.channel.send(
             `${message.author} necesitass estar en un canal de voz para escuchar musica`
@@ -1305,6 +1324,7 @@ function stop(message, serverQueue) {
     serverQueue.connection.dispatcher.end();
 }
 function play(guild, song) {
+    cancionEspecial = false;
     const serverQueue = queue.get(guild.id);
     if (!song) {
         serverQueue.voiceChannel.leave();
@@ -1361,6 +1381,7 @@ function setStatus(string) {
     client.user.setActivity(string, { type: 'LISTENING' });
 }
 function worstOfYou() {
+    cancionEspecial = true;
     timeout2('You promise it\'s different', 5000)
     timeout2('You swear that you listened', 8000)
     timeout2('I don\'t mind if you didn\'t', 10500)
@@ -1415,6 +1436,7 @@ function worstOfYou() {
     timeout2('Pruebas', 195000)
 }
 function crazierThings() {
+    cancionEspecial = true;
     timeout2('I\'ve been trying not to think about it, I can\'t help it', 5000)
     timeout2('I know you don\'t wanna hear from me, but I am selfish', 15300)
     timeout2('It kills me inside you can drink on Friday nights', 24900)
