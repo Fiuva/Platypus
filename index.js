@@ -79,8 +79,14 @@ client.on('ready', () => {
     */
 
     client.channels.cache.get('836734022184861706').send('Bot reiniciado');
+    cambiarEstadoConMensaje()
 })
-
+client.on('messageUpdate', (oldMessage, newMessage) => {
+    if (oldMessage.id != '848537769378578453') return
+    if (newMessage != oldMessage) {
+        cambiarEstadoConMensaje()
+    }
+})
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.channel;
@@ -839,11 +845,12 @@ client.on('message', message => {
         }
     }
     function msg(c = 0, f = 1, same = false) {
+        var content = message.content.replace(/\s+/g, ' ').trim();
         if (same) {
-            return message.content.split(' ').slice(c, f).join(' ');
+            return content.split(' ').slice(c, f).join(' ');
         }
         else {
-            return message.content.split(' ').slice(c, f).join(' ').toLowerCase();
+            return content.split(' ').slice(c, f).join(' ').toLowerCase();
         }
     }
 })
@@ -1168,21 +1175,23 @@ client.on('message', async message => {
         }*/
     }
     function msg(c = 0, f = 1, same = false) {
+        var content = message.content.replace(/\s+/g, ' ').trim();
         if (same) {
-            return message.content.split(' ').slice(c, f).join(' ');
+            return content.split(' ').slice(c, f).join(' ');
         }
         else {
-            return message.content.split(' ').slice(c, f).join(' ').toLowerCase();
+            return content.split(' ').slice(c, f).join(' ').toLowerCase();
         }
     }
 })
 async function execute(message, serverQueue) {
     function msg(c = 0, f = 1, same = false) {
+        var content = message.content.replace(/\s+/g, ' ').trim();
         if (same) {
-            return message.content.split(' ').slice(c, f).join(' ');
+            return content.split(' ').slice(c, f).join(' ');
         }
         else {
-            return message.content.split(' ').slice(c, f).join(' ').toLowerCase();
+            return content.split(' ').slice(c, f).join(' ').toLowerCase();
         }
     }
 
@@ -1323,7 +1332,10 @@ function stop(message, serverQueue) {
     serverQueue.connection.dispatcher.end();
 }
 function play(guild, song) {
-    cancionEspecial = false;
+    if (cancionEspecial) {
+        cambiarEstadoConMensaje();
+        cancionEspecial = false;
+    }
     const serverQueue = queue.get(guild.id);
     if (!song) {
         serverQueue.voiceChannel.leave();
@@ -1432,7 +1444,6 @@ function worstOfYou() {
     timeout2('I sign my heart', 179500)
     timeout2('Away to you, some call it foolish', 183000)
     timeout2('Guess I\ll call it art', 188000)
-    timeout2('Pruebas', 195000)
 }
 function crazierThings() {
     cancionEspecial = true;
@@ -1500,7 +1511,6 @@ function crazierThings() {
     timeout2('Missing a part of me, part of me', 238700)
     timeout2('Oh, I\'ll spend my whole life', 243700)
     timeout2('Hoping your heart is free, heart is free', 249100)
-    timeout2('Pruebas', 264000)
 
 }
 
@@ -1543,6 +1553,56 @@ function shuffle(array) {
     }
 
     return array;
+}
+async function cambiarEstadoConMensaje() {
+    const message = await client.channels.cache.get('836734022184861706').messages.fetch('848537769378578453')
+    function msg(c = 0, f = 1, same = false) {
+        var content = message.content.replace(/\s+/g, ' ').trim();
+        if (same) {
+            return content.split(' ').slice(c, f).join(' ');
+        }
+        else {
+            return content.split(' ').slice(c, f).join(' ').toLowerCase();
+        }
+    }
+    var tipo;
+    const mensaje = msg(0, 1000).replace('-p ', '').replace('-s ', '').replace('-w ', '').replace('-c ', '').replace('-l ', '').replace('-dnd ', '').replace('-inv ', '').replace('-idl ', '')
+    if (msg(0, 100).match('-p')) {
+        tipo = 'PLAYING';
+    } else if (msg(0, 100).match('-s')) {
+        client.user.setActivity(mensaje, {
+            type: 'STREAMING',
+            url: 'https://www.twitch.tv/fiuva2'
+        })
+        return;
+    } else if (msg(0, 100).match('-w')) {
+        tipo = 'WATCHING';
+    } else if (msg(0, 100).match('-c')) {
+        tipo = 'COMPETING';
+    } else if (msg(0, 100).match('-l')) {
+        tipo = 'LISTENING';
+    } else {
+        tipo = 'CUSTOM_STATUS';
+        message.channel.send('!estado <-p, -c, -l, -w, -s>')
+        return;
+    }
+    var status;
+    if (msg(0, 100).match('-dnd')) {
+        status = 'dnd';
+    } else if (msg(0, 100).match('-inv')) {
+        status = 'invisible';
+    } else if (msg(0, 100).match('-idl')) {
+        status = 'idle';
+    } else {
+        status = 'online';
+    }
+    client.user.setPresence({
+        status: status,
+        activity: {
+            name: mensaje,
+            type: tipo,
+        }
+    })
 }
 
 async function modificarMonedas(id, sumar) {
