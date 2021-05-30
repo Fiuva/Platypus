@@ -1350,6 +1350,8 @@ function play(guild, song) {
                 worstOfYou();
             } else if (song.title.match(/crazier things/i)) {
                 crazierThings();
+            } else if (song.title.match(/colegas/i) && song.title.match(/babi/i)) {
+                colegas();
             }
         })
         .on("finish", () => {
@@ -1512,6 +1514,108 @@ function crazierThings() {
     timeout2('Oh, I\'ll spend my whole life', 243700)
     timeout2('Hoping your heart is free, heart is free', 249100)
 
+}
+function colegas() {
+    cancionEspecial = true;
+    timeout2('Nene, yo no te veo como moneda de cambio', 17000)
+    timeout2('Y toda esa peña te quiere en estadios', 19000)
+    timeout2('No me sorprende ni un mínimo', 22500)
+    timeout2('Sé que no te comen el tarro', 24500)
+
+    timeout2('Y eso que llevas el talento implícito', 26500)
+    timeout2('Les das la mano y te cogen el brazo', 29000)
+    timeout2('No sé si te quieren, pero quieren algo', 30800)
+    timeout2('Y en tu ADN hay dinero grabado', 33100)
+
+    timeout2('Para el mundo, tus genes han sido un regalo', 35200)
+    timeout2('Y eso que casi los has descartado', 37500)
+    timeout2('Tus cuerdas autoras de un crimen perfecto', 40200)
+    timeout2('Por tu garganta muchos han matado', 42500)
+
+    timeout2('Nadie te puede tachar de sobrado', 44200)
+    timeout2('Eres lo más puro que yo he presenciado', 46500)
+    timeout2('Si no te da pa\' comprarte un tejado', 48700)
+    timeout2('Yo en nuestro banco te invito un helado', 50800)
+
+    timeout2('Pa\' recordarte que nada ha cambiado', 54000)
+    timeout2('Que sigues siendo mi hermano, sabes que en mi mesa no falta tu plato', 57000)
+    timeout2('Y que a mi perro le encanta tu gato', 61500)
+    timeout2('Y que si se gasta tu suela, sabes de sobra que tienes mi zapato', 65700)
+
+    timeout2('Soy tu colega', 70500)
+    timeout2('Cuando mueren las risas, dime, ¿quién se queda?', 72000)
+    timeout2('Y no lo hace pa\' llamar tu atención', 75200)
+
+    timeout2('Soy tu colega', 79500)
+    timeout2('Cuando todo son prisas, dime, ¿quién se frena?', 81200)
+    timeout2('Porque se te ha desatado un cordón', 84500)
+
+    timeout2('Soy tu colega', 86700)
+    timeout2('Cuando cambia la brisa, solo veo veletas', 89700)
+    timeout2('Se arriman al calor que da tu sol', 93500)
+
+    timeout2('Soy tu colega', 96000)
+    timeout2('¿Por cuántos pones la mano y nunca te quemas?', 98200)
+    timeout2('Los pocos que no han proba\'o tu rencor', 102000)
+
+    timeout2('Soy tu colega', 105000)
+    timeout2('Queriendo nombrarte hasta aquí, en la pecera', 107000)
+    timeout2('Mis grises han pillado tu color', 110000)
+
+    timeout2('Soy tu colega', 113500)
+    timeout2('Me la suda si hay ocho, que si hay ochenta', 115800)
+    timeout2('Prometo corearte la canción...', 119700)
+    timeout2('Prometo corearte la canción', 123500)
+
+    timeout2('Nene, recuerda cuando pises el escenario', 130000)
+    timeout2('Que estás pisando por todos aquellos', 132500)
+    timeout2('Que se inundan a diario', 135000)
+    timeout2('Vomitan en folios su desasosiego', 137200)
+
+    timeout2('Ahogados en copas, tricomas y labios', 139700)
+    timeout2('Mezclando el ron con las penas de antaño', 141200)
+    timeout2('Mueven el alma que habita en los barrios', 143000)
+    timeout2('Jarabe para el body, fruto del desgarro', 145000)
+
+    timeout2('Tan enamorada de tus ojos sabios', 148500)
+    timeout2('De tus cimientos y de tus peldaños', 150500)
+    timeout2('De lo poquito que duele a tu lado', 152400)
+    timeout2('No estar en paz con mi puto pasado', 154600)
+
+    timeout2('Sé que a tu verita, nada está cambiado', 157200)
+    timeout2('Hasta la médula siempre has calado', 159000)
+    timeout2('Si no te da pa\' comprarte un tejado', 161500)
+    timeout2('Yo en nuestro banco te invito un helado', 163800)
+
+    timeout2('Pa\' recordarte que nada ha cambiado', 166700)
+    timeout2('Que sigues siendo mi hermano, sabes que en mi mesa no falta tu plato', 170000)
+    timeout2('Y que a mi perro le encanta tu gato', 174000)
+    timeout2('Y que si se gasta tu suela, sabes de sobra que tienes mi zapato', 178000)
+
+    timeout2('Soy tu colega', 183000)
+    timeout2('Cuando mueren las risas, dime, ¿quién se queda?', 184200)
+    timeout2('Y no lo hace pa\' llamar tu atención', 188000)
+
+    timeout2('Soy tu colega', 191200)
+    timeout2('Cuando todo son prisas, dime, ¿quién se frena?', 193700)
+    timeout2('Porque se te ha desatado un cordón', 197000)
+
+    timeout2('Soy tu colega', 200000)
+    timeout2('Cuando cambia la brisa, solo veo veletas', 202500)
+    timeout2('Se arriman al calor que da tu sol', 205700)
+
+    timeout2('Soy tu colega', 208700)
+    timeout2('¿Por cuántos pones la mano y nunca te quemas?', 210700)
+    timeout2('Los pocos que no han proba\'o tu rencor', 214500)
+
+    timeout2('Soy tu colega', 217000)
+    timeout2('Queriendo nombrarte hasta aquí, en la pecera', 219500)
+    timeout2('Mis grises han pillado tu color', 222700)
+
+    timeout2('Soy tu colega', 226000)
+    timeout2('Me la suda si hay ocho, que si hay ochenta', 228500)
+    timeout2('Prometo corearte la canción...', 231800)
+    timeout2('Prometo corearte la canción', 236300)
 }
 
 function roundRect(ctx, x, y, width, height, radius = 5, fill, stroke = true, sinBordesArriba = false) {
