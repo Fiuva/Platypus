@@ -1000,9 +1000,9 @@ client.on('message', async message => {
                 } else {
                     execute3(arr[i], serverQueue2)
                 }
-                mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + arr[i] + ' \n';
+                if (i < 20) mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + arr[i] + ' \n';
             }
-            const mensajePlaylist = new Discord.MessageEmbed().setTitle(`Canciones de **${nombreExacto.toUpperCase()}**`).setColor(usermm[0].color).setDescription(mensajeCanciones).setAuthor(username.username)
+            const mensajePlaylist = new Discord.MessageEmbed().setTitle(`Canciones de **${nombreExacto.toUpperCase()}**`).setColor(usermm[0].color).setDescription(mensajeCanciones).setAuthor(username.username).setFooter(arr.length + ' canciones')
             message.channel.send(mensajePlaylist);
         } else if (!msg(1, 2) || (!msg(2, 3) && message.mentions.users.first())) {
             var usermm = await Usuario.find({ idDiscord: username.id }).exec();
@@ -1100,25 +1100,60 @@ client.on('message', async message => {
             var nombre = new RegExp(msg(2, 100).replace(' <@!' + username.id + '>', ''), 'i');
             var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
             var mensajeCanciones = '';
-            for (i = 0; i < playlistUser[nombreExacto].length && i < 20; i++) {
-                mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + playlistUser[nombreExacto][i] + '\n';
+            canciones(0);
+            function canciones(j) {
+                for (i = j; i < playlistUser[nombreExacto].length && i < j + 20; i++) {
+                    mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + playlistUser[nombreExacto][i] + '\n';
+                }
+                const mensajePlaylist = new Discord.MessageEmbed()
+                    .setTitle(nombreExacto.toUpperCase())
+                    .setAuthor(username.username)
+                    .setDescription(mensajeCanciones)
+                    .setFooter(playlistUser[nombreExacto].length + ' canciones')
+                message.channel.send(mensajePlaylist).then(message2 => {
+                    if (j > 0) message2.react('⬅')
+                    if (j + 20 < playlistUser[nombreExacto].length) message2.react('➡')
+                    message2.awaitReactions((reaction, user) => user.id == message.author && (reaction.emoji.name == '⬅' || reaction.emoji.name == '➡'),
+                        { max: 1, time: 30000 }).then(collected => {
+                            if (collected.first().emoji.name == '⬅') {
+                                mensajeCanciones = '';
+                                message2.delete();
+                                canciones(j - 20);
+                            }
+                            else {
+                                mensajeCanciones = '';
+                                message2.delete();
+                                canciones(j + 20);
+                            }
+                        }).catch(() => {
+                            message2.delete();
+                        })
+                });
             }
-            const mensajePlaylist = new Discord.MessageEmbed()
-                .setTitle(nombreExacto.toUpperCase())
-                .setAuthor(username.username)
-                .setDescription(mensajeCanciones)
-                .setFooter(playlistUser[nombreExacto].length + ' canciones')
-            message.channel.send(mensajePlaylist);
+
         }
     } else if (msg() == '!stats') {
         var songs = queue.get(message.guild.id).songs
         var mensajeCanciones = '';
-        for (i = 0; i < songs.length && i < 20; i++) {
-            mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + songs[i].title + '\n';
+        var tiempo = 0;
+        for (i = 0; i < songs.length; i++) {
+            tiempo = tiempo + parseInt(songs[i].lengthSeconds);
+            if (i < 20) mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + songs[i].title + '\n';
+        }
+        console.log(tiempo)
+        var horas = '';
+        var minutos = '';
+        if (tiempo >= 3600) {
+            horas = tiempo / 3600 << 0;
+            tiempo = tiempo - horas * 3600;
+        }
+        if (tiempo >= 60) {
+            minutos = tiempo / 60 << 0;
+            tiempo = tiempo - minutos * 60;
         }
         const stats = new Discord.MessageEmbed()
             .setTitle('Stats de la musica')
-            .setFooter(songs.length + ' canciones en cola')
+            .setFooter(`${songs.length} canciones en cola | ${horas != '' ? horas + 'h ' : ''}${minutos}min`)
             .setDescription(mensajeCanciones)
         message.channel.send(stats);
     } else if (msg() == '!traducir' || msg() == '!traduccion') {
