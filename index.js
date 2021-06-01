@@ -1345,7 +1345,10 @@ async function execute3(url, serverQueue) {
     await serverQueue.songs.push(song);
 }
 function skip(message, serverQueue) {
-    if (cancionEspecial) return message.channel.send(`${message.author} no puedes skipear esta canción (canción especial con letra de estado)`)
+    if (cancionEspecial) {
+        cancionEspecial = false;
+        cambiarEstadoConMensaje();
+    }
     if (!message.member.voice.channel)
         return message.channel.send(
             `${message.author} necesitass estar en un canal de voz para escuchar musica`
@@ -1387,6 +1390,8 @@ function play(guild, song) {
                 crazierThings();
             } else if (song.title.match(/colegas/i) && song.title.match(/babi/i)) {
                 colegas();
+            } else if (song.title.match(/I'll Break My Heart Again/i) && song.title.match(/Mimi Webb/i)) {
+                illBreakMyHeartAgain();
             }
         })
         .on("finish", () => {
@@ -1422,7 +1427,7 @@ function timeout(ms) {
 }
 function timeout2(string, ms) {
     setTimeout(function () {
-        setStatus('🎵' + string + '🎵')
+        if (cancionEspecial) setStatus('🎵' + string + '🎵')
     }, ms)
 }
 function setStatus(string) {
@@ -1651,6 +1656,55 @@ function colegas() {
     timeout2('Me la suda si hay ocho, que si hay ochenta', 228500)
     timeout2('Prometo corearte la canción...', 231800)
     timeout2('Prometo corearte la canción', 236300)
+}
+function illBreakMyHeartAgain() {
+    cancionEspecial = true;
+    timeout2('You only know what you lost', 8000)
+    timeout2('When you try and replace it', 10700)
+    timeout2('Tryin\' to find a quick fix', 16500)
+    timeout2('\'Cause you can\'t take the pain in', 18500)
+    timeout2('And every time I close my eyes, I kiss him', 24200)
+    timeout2('Every time I feel his hands on my skin', 28500)
+    timeout2('I, I wish it was you', 32400)
+
+    timeout2('Being with somebody helps', 39600)
+    timeout2('But if I\'m honest with myself', 43400)
+
+    timeout2('I\'ll break my heart again', 48500)
+    timeout2('Until you miss the end', 56600)
+    timeout2('If you change your mind', 63700)
+    timeout2('And take me back', 65700)
+    timeout2('For just one day, oh, all we had', 67800)
+    timeout2('I\'ll break my heart again', 72700)
+
+    timeout2('He shows me how he feels', 81000)
+    timeout2('But I just can\'t feel the same', 82800)
+    timeout2('\'Cause all he\'s ever been is a body to fill the spaces', 89300)
+    timeout2('Can\'t tell him he\'s the wrong man at the right time', 96990)
+    timeout2('Better that I keep my feelings inside', 101300)
+    timeout2('I, I wish it was you', 105700)
+
+    timeout2('Being with somebody helps', 112700)
+    timeout2('But if I\'m honest with myself', 116700)
+
+    timeout2('I\'ll break my heart again', 121700)
+    timeout2('Until you miss the end', 129700)
+    timeout2('If you change your mind', 136800)
+    timeout2('And take me back', 139000)
+    timeout2('For just one day, oh, all we had', 140900)
+    timeout2('I\ll break my heart again', 145990)
+
+    timeout2('💔🩹💔🩹💔🩹💔', 153000)
+
+    timeout2('Being with somebody helps', 169800)
+    timeout2('But if I\'m honest with myself', 173500)
+
+    timeout2('I\'ll break my heart again', 178400)
+    timeout2('Until you miss the end', 186700)
+    timeout2('If you change your mind', 193700)
+    timeout2('And take me back', 196000)
+    timeout2('For just one day, oh, all we had', 198000)
+    timeout2('I\'ll break my heart again', 202900)
 }
 
 function roundRect(ctx, x, y, width, height, radius = 5, fill, stroke = true, sinBordesArriba = false) {
