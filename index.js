@@ -82,7 +82,7 @@ client.on('ready', () => {
     cambiarEstadoConMensaje()
 })
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    if (oldMessage.id != '848537769378578453') return
+    if (oldMessage.id != '849734239305334834') return
     if (newMessage != oldMessage) {
         cambiarEstadoConMensaje()
     }
