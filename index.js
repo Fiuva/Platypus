@@ -1798,7 +1798,7 @@ function shuffle(array) {
     return array;
 }
 async function cambiarEstadoConMensaje() {
-    const message = await client.channels.cache.get('836734022184861706').messages.fetch('848537769378578453')
+    const message = await client.channels.cache.get('849733450671718432').messages.fetch('849734239305334834')
     function msg(c = 0, f = 1, same = false) {
         var content = message.content.replace(/\s+/g, ' ').trim();
         if (same) {
