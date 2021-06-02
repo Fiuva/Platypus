@@ -1392,6 +1392,8 @@ function play(guild, song) {
                 colegas();
             } else if (song.title.match(/I'll Break My Heart Again/i) && song.title.match(/Mimi Webb/i)) {
                 illBreakMyHeartAgain();
+            } else if (song.title.match(/champion/i) && song.title.match(/elina/i)) {
+                champion();
             }
         })
         .on("finish", () => {
@@ -1705,6 +1707,54 @@ function illBreakMyHeartAgain() {
     timeout2('And take me back', 196000)
     timeout2('For just one day, oh, all we had', 198000)
     timeout2('I\'ll break my heart again', 202900)
+}
+function champion() {
+    cancionEspecial = true;
+    timeout2('Late nights on your pillow', 800)
+    timeout2('Love as fast as light', 4800)
+    timeout2('Faded into echoes', 8500)
+    timeout2('In my ventricles', 12500)
+    timeout2('I carry this cargo', 16400)
+    timeout2('Sinking deeper down', 20500)
+    timeout2('And though your love was shallow', 24300)
+    timeout2('I managed to drown', 28600)
+
+    timeout2('Is this how you\'re gonna make me look now', 32300)
+    timeout2('Is this how you\'re gonna walk right out', 36300)
+    timeout2('Then you\'d better do it like a champion', 40300)
+    timeout2('And break my heart once and for all', 44300)
+    timeout2('Do you feel good knowing that you\'ve won now', 48300)
+    timeout2('Do you get high when I hit my lows', 52300)
+    timeout2('Yeah I hope you feel like you\'re a champion', 56300)
+    timeout2('When you break my heart once and for all', 60500)
+
+    timeout2('I keep bending barrels', 64500)
+    timeout2('You take aim and shoot', 68500)
+    timeout2('I\'m on pins and needles', 72500)
+    timeout2('Your skin\'s bulletproof', 76500)
+    timeout2('Don\'t try to be noble', 80500)
+    timeout2('Leaving me for dead', 84400)
+    timeout2('And though your love is hollow', 88200)
+    timeout2('I could use your hand', 92300)
+
+    timeout2('Is this how you\'re gonna make me look now', 96200)
+    timeout2('Is this how you\'re gonna walk right out', 100300)
+    timeout2('Then you\'d better do it like a champion', 104300)
+    timeout2('And break my heart once and for all', 108200)
+    timeout2('Do you feel good knowing that you\'ve won now', 112100)
+    timeout2('Do you get high when I hit my lows', 116300)
+    timeout2('Yeah I hope you feel like you\'re a champion', 120200)
+    timeout2('When you break my heart once and for all', 124200)
+
+    timeout2('💔', 128200)
+
+    timeout2('Just break my heart once and for all', 140300)
+    timeout2('Do you feel good knowing that you\'ve won now', 144300)
+    timeout2('Do you get high when I hit my lows', 148300)
+    timeout2('Yeah I hope you feel like you\'re a champion', 152300)
+    timeout2('When you break my heart once and for all', 156300)
+    timeout2('Yeah I hope you feel like you\'re a champion', 160300)
+    timeout2('When you break my heart once and for all', 164300)
 }
 
 function roundRect(ctx, x, y, width, height, radius = 5, fill, stroke = true, sinBordesArriba = false) {
