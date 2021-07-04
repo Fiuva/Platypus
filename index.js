@@ -1,5 +1,7 @@
 ﻿const Discord = require('discord.js');
 const client = new Discord.Client({ partials: ["REACTION", "MESSAGE", "USER"] });
+require('discord-buttons')(client);
+const disbut = require('discord-buttons');
 
 client.login(process.env.token);
 
@@ -446,30 +448,20 @@ client.on('message', message => {
             ; (async () => {
                 var user = await Usuario.find({ idDiscord: message.author.id }).exec();
                 var toUser = await Usuario.find({ idDiscord: message.mentions.users.first().id }).exec();
-                if (message.author.id == message.mentions.users.first().id) {
-                    message.channel.send(`${message.author} no puedes casarte con extraterrestres`);
-                    return;
-                } else if (user[0].parejaId == '0' && toUser[0].parejaId == '0' && user[0].anillo >= 2) {
-                    message.channel.send(`${message.author.username} se quiere casar con ${message.mentions.users.first().username}, aceptas?`).then(message2 => {
-                        message2.react('✅');
-                        message2.react('❌');
-                        message2.awaitReactions((reaction, user) => user.id == message.mentions.users.first().id && (reaction.emoji.name == '❌' || reaction.emoji.name == '✅'),
-                            { max: 1, time: 30000 }).then(collected => {
-                                if (collected.first().emoji.name == '❌') {
-                                    message.channel.send(`${message.mentions.users.first().username} te ha rechazado ${message.author.username}`);
-                                    message2.delete();
-                                }
-                                else {
-                                    date = new Date();
-                                    var dia = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
-                                    message.channel.send(`${message.author} se ha casado con ${message.mentions.users.first()}!!!`);
-                                    Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { parejaId: message.mentions.users.first().id, anillo: user[0].anillo - 1, fechaPareja: dia }, { new: true }).then();
-                                    Usuario.findOneAndUpdate({ idDiscord: message.mentions.users.first().id }, { parejaId: message.author.id, anillo: toUser[0].anillo + 1, fechaPareja: dia }, { new: true }).then(message2.delete());
-                                }
-                            }).catch(() => {
-                                message2.delete();
-                            });
-                    })
+                if (user[0].parejaId == '0' && toUser[0].parejaId == '0' && user[0].anillo >= 2) {
+                    const casar = new disbut.MessageButton()
+                        .setLabel('Casarse')
+                        .setID(`casar_button_${message.mentions.users.first().id}_${message.author.id}`)
+                        .setStyle('green')
+                        .setEmoji('✅')
+                    const rechazar = new disbut.MessageButton()
+                        .setLabel('Rechazar')
+                        .setID(`rechazar_button_${message.mentions.users.first().id}_${message.author.id}`)
+                        .setStyle('red')
+                        .setEmoji('❌')
+                    const casarRow = new disbut.MessageActionRow()
+                        .addComponents(casar, rechazar)
+                    message.channel.send(`${message.author.username} se quiere casar con ${message.mentions.users.first().username}, aceptas?`, casarRow)
                 } else if (user[0].parejaId != '0') {
                     message.channel.send(`${message.author} ya tienes a ${message.guild.members.cache.get(user[0].parejaId)} como pareja, para poder casarte con otra persona, divorciate antes`);
                 } else if (toUser[0].parejaId != '0') {
@@ -1290,6 +1282,31 @@ async function execute(message, serverQueue) {
         return message.channel.send(mensCancion);
     }
 }
+
+client.on('clickButton', async (button) => {
+    if (button.id.startsWith('casar_button')) {
+        if (button.clicker.id == button.id.split('_')[2]) {
+            var user = await Usuario.find({ idDiscord: button.id.split('_')[3] }).exec();
+            var toUser = await Usuario.find({ idDiscord: button.id.split('_')[2] }).exec();
+            button.channel.send(`${button.guild.members.cache.get(button.id.split('_')[3])} se ha casado con ${button.clicker.user.username}!!!`)
+            button.message.delete();
+            date = new Date();
+            var dia = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+            Usuario.findOneAndUpdate({ idDiscord: button.id.split('_')[3] }, { parejaId: button.id.split('_')[2], anillo: user[0].anillo - 1, fechaPareja: dia }, { new: true }).then();
+            Usuario.findOneAndUpdate({ idDiscord: button.id.split('_')[2] }, { parejaId: button.id.split('_')[3], anillo: toUser[0].anillo + 1, fechaPareja: dia }, { new: true }).then();
+        } else {
+            button.reply.defer();
+        }
+    } else if (button.id.startsWith('rechazar_button')) {
+        if (button.clicker.id == button.id.split('_')[2]) {
+            button.channel.send(`${button.guild.members.cache.get(button.id.split('_')[3])} ha sido rechezad@ por ${button.clicker.user.username}`)
+            button.message.delete();
+        } else {
+            button.reply.defer();
+        }
+    }
+});
+
 async function execute2(message, url, serverQueue) {
     const voiceChannel = message.member.guild.channels.cache.get('838776417768046622');
     if (message.member.voice.channel.id != '838776417768046622') {
