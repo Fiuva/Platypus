@@ -353,6 +353,7 @@ client.on('message', message => {
     if (message.channel.id != 836721843955040339 && message.channel.id != 836879630815985674) return;
 
     if (message.channel.id == 836721843955040339) {
+        console.log(talkedRecently);
         if (msg() && !(talkedRecently.has(message.author.id))) {
             talkedRecently.add(message.author.id);
             setTimeout(() => {
