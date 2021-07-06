@@ -49,6 +49,7 @@ const idVDuo = '836991033208078428';
 const idVTrio = '836991104754253836';
 const idVCuarteto = '836991178717134877';
 const idVQuinteto = '836991212124241941';
+const talkedRecently = new Set();
 
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
@@ -352,7 +353,11 @@ client.on('message', message => {
     if (message.channel.id != 836721843955040339 && message.channel.id != 836879630815985674) return;
 
     if (message.channel.id == 836721843955040339) {
-        if (msg()) {
+        if (msg() && !(talkedRecently.has(message.author.id))) {
+            talkedRecently.add(message.author.id);
+            setTimeout(() => {
+                talkedRecently.delete(message.author.id);
+            }, 60000);
             ; (async () => {
                 var user = await Usuario.find({ idDiscord: message.author.id }).exec();
                 var nivel = 0;
