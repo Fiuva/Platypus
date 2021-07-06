@@ -36,6 +36,8 @@ const Canvas = require('canvas');
 Canvas.registerFont("./Fonts/Impacted.ttf", { family: "Impacted" });
 const { findOneAndUpdate, count } = require('./models/usuario');
 
+const antiSpam = require('./antiSpam');
+
 const nombreMonedas = 'PlatyCoins';
 const idMillonario = '836992600979669057';
 const idMod = '836950934806069299';
@@ -230,6 +232,7 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 client.on('message', message => {
     if (message.author.bot) return;
+    antiSpam.message(message);
     if (message.guild === null) {
         client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || '+message.attachments.array()[0].url : ''}`);
     }
@@ -353,7 +356,6 @@ client.on('message', message => {
     if (message.channel.id != 836721843955040339 && message.channel.id != 836879630815985674) return;
 
     if (message.channel.id == 836721843955040339) {
-        console.log(talkedRecently);
         if (msg() && !(talkedRecently.has(message.author.id))) {
             talkedRecently.add(message.author.id);
             setTimeout(() => {
