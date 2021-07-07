@@ -1573,12 +1573,12 @@ client.on('clickButton', async (button) => {
                 .addComponents(b10, b11, b12)
             const cRow = new disbut.MessageActionRow()
                 .addComponents(b20, b21, b22)
-            //button.reply.defer();
+            button.reply.defer();
             await button.message.edit({
                 components: [aRow, bRow, cRow]
             })
         } else {
-            //button.reply.defer();
+            button.reply.defer();
         }
     }
 
