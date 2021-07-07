@@ -55,6 +55,7 @@ var cambiarTurno = function(button, b00, b01, b02, b10, b11, b12, b20, b21, b22,
         t++;
         return (t === 2) ? idCambio : match
     }))
+    return content;
 }
 var comprobarSiWin = function(button, content) {
     var b00 = button.message.components[0].components[0]
@@ -131,6 +132,7 @@ var comprobarSiWin = function(button, content) {
         content = `La partida estuvo intensa, pero resultó en un empate`;
         editButtons3enRaya('3', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
     }
+    return content;
 }
 function editButtons3enRaya(id1, button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo) {
     var label, style;
@@ -217,8 +219,8 @@ var tresEnRaya = function (button) {
         var content;
         if (id[5] == '0' && id[4] == button.clicker.id) {
             editButtons3enRaya(id[1], button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo)
-            cambiarTurno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22, content);
-            comprobarSiWin(button, content);
+            content = cambiarTurno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22, content);
+            content = comprobarSiWin(button, content);
             const aRow = new disbut.MessageActionRow()
                 .addComponents(b00, b01, b02)
             const bRow = new disbut.MessageActionRow()
