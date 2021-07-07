@@ -511,57 +511,7 @@ client.on('message', message => {
             })().catch(e => message.channel.send(`${message.author} error`));
         }
         if (msg() == '!3' || msg() == '3enraya') {
-            ; (async () => {
-                if (message.mentions.users.first() == undefined || message.mentions.users.first() == message.author || message.mentions.users.first().bot) return message.channel.send(`${message.author} mensciona con quien quieres jugar`);
-                const a = Math.random() * 2 << 0
-                const turno3enRayaID = [message.author.id, message.mentions.users.first().id][a]
-                var b00 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_00_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var b01 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_01_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var b02 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_02_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var b10 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_10_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var b11 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_11_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var b12 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_12_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var b20 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_20_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var b21 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_21_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var b22 = new disbut.MessageButton()
-                    .setLabel(' ')
-                    .setID(`3enRaya_22_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
-                    .setStyle('gray')
-                var aRow = new disbut.MessageActionRow()
-                    .addComponents(b00, b01, b02)
-                var bRow = new disbut.MessageActionRow()
-                    .addComponents(b10, b11, b12)
-                var cRow = new disbut.MessageActionRow()
-                    .addComponents(b20, b21, b22)
-                message.channel.send(`Empieza ${message.guild.members.cache.get(turno3enRayaID)}`, {
-                    components: [aRow, bRow, cRow]
-                })
-
-            })()
+            tresEnRaya.tres(message);
         }
     } else {
         if (msg() === '!rank') {
@@ -919,6 +869,7 @@ const queue = new Map();
 var bucle = false;
 var cancionEspecial = false;
 const Playlist = require('./models/playlist');
+const tresEnRaya = require('./3enRaya')
 
 client.on('message', async message => {
     if (message.author.bot || message.channel.id != 838801241341558825) return;
@@ -1551,36 +1502,7 @@ function cambiarTruno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22) {
 }
 
 client.on('clickButton', async (button) => {
-    if (button.id.startsWith('3enRaya')) {
-        var b00 = button.message.components[0].components[0];
-        var b01 = button.message.components[0].components[1];
-        var b02 = button.message.components[0].components[2];
-        var b10 = button.message.components[1].components[0];
-        var b11 = button.message.components[1].components[1];
-        var b12 = button.message.components[1].components[2];
-        var b20 = button.message.components[2].components[0];
-        var b21 = button.message.components[2].components[1];
-        var b22 = button.message.components[2].components[2];
-        var id = button.id.split('_');
-        var tipo = button.clicker.id == id[2] ? 1 : 2;
-        if (id[5] == '0' && id[4] == button.clicker.id) {
-            editButtons3enRaya(id[1], button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo)
-            await cambiarTruno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22);
-            comprobarSiWin(button);
-            const aRow = new disbut.MessageActionRow()
-                .addComponents(b00, b01, b02)
-            const bRow = new disbut.MessageActionRow()
-                .addComponents(b10, b11, b12)
-            const cRow = new disbut.MessageActionRow()
-                .addComponents(b20, b21, b22)
-            button.reply.defer();
-            await button.message.edit({
-                components: [aRow, bRow, cRow]
-            })
-        } else {
-            button.reply.defer();
-        }
-    }
+    tresEnRaya.tresEnRaya(button);
 
     if (button.id.startsWith('casar_button')) {
         if (button.clicker.id == button.id.split('_')[2]) {
