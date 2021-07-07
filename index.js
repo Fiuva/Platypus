@@ -512,43 +512,44 @@ client.on('message', message => {
         }
         if (msg() == '!3' || msg() == '3enraya') {
             ; (async () => {
-                if (turno3enRayaID != 0) return message.channel.send(`${message.author} espera a que acabe la partida actual`)
-                if (message.mentions.users.first() == undefined) return message.channel.send(`${message.author} mensciona con quien quieres jugar`);
+                if (message.mentions.users.first() == undefined || message.mentions.users.first() == message.author || message.mentions.users.first().bot) return message.channel.send(`${message.author} mensciona con quien quieres jugar`);
+                const a = Math.random() * 2 << 0
+                const turno3enRayaID = [message.author.id, message.mentions.users.first().id][a]
                 var b00 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_00_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_00_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var b01 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_01_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_01_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var b02 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_02_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_02_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var b10 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_10_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_10_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var b11 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_11_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_11_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var b12 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_12_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_12_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var b20 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_20_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_20_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var b21 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_21_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_21_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var b22 = new disbut.MessageButton()
                     .setLabel(' ')
-                    .setID(`3enRaya_22_${message.author.id}_${message.mentions.users.first().id}_0`)
+                    .setID(`3enRaya_22_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
                     .setStyle('gray')
                 var aRow = new disbut.MessageActionRow()
                     .addComponents(b00, b01, b02)
@@ -556,15 +557,10 @@ client.on('message', message => {
                     .addComponents(b10, b11, b12)
                 var cRow = new disbut.MessageActionRow()
                     .addComponents(b20, b21, b22)
-                var a = Math.random() * 2 << 0
-                turno3enRayaID = [message.author.id, message.mentions.users.first().id][a]
                 message.channel.send(`Empieza ${message.guild.members.cache.get(turno3enRayaID)}`, {
                     components: [aRow, bRow, cRow]
-                }).then(async message2 => {
-                    await timeout(60000);
-                    turno3enRayaID = 0;
-                    message2.edit('Tiempo acabado del 3 en raya acabado (1 minuto)', { components: [] })
                 })
+
             })()
         }
     } else {
@@ -1348,7 +1344,6 @@ async function execute(message, serverQueue) {
     }
 }
 
-var turno3enRayaID = 0;
 function editButtons3enRaya(id1, button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo) {
     var label, style;
     if (tipo == 1) {
@@ -1440,19 +1435,16 @@ function comprobarSiWin(button) {
     if (p00 != '0') {
         if (p00 == p01 && p01 == p02) {
             button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            turno3enRayaID = 0;
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('01', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
         } else if (p00 == p10 && p10 == p20) {
             button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            turno3enRayaID = 0;
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('10', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
         } else if (p00 == p11 && p11 == p22) {
             button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            turno3enRayaID = 0;
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
@@ -1461,13 +1453,11 @@ function comprobarSiWin(button) {
     if (p11 != '0') {
         if (p11 == p10 && p10 == p12) {
             button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            turno3enRayaID = 0;
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('10', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('12', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
         } else if (p11 == p01 && p01 == p21) {
             button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            turno3enRayaID = 0;
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('01', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('21', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
@@ -1476,13 +1466,11 @@ function comprobarSiWin(button) {
     if (p20 != '0') {
         if (p20 == p21 && p21 == p22) {
             button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            turno3enRayaID = 0;
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('21', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
         } else if (p20 == p11 && p11 == p02) {
             button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            turno3enRayaID = 0;
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
@@ -1491,7 +1479,6 @@ function comprobarSiWin(button) {
     if (p22 != '0') {
         if (p22 == p12 && p12 == p02) {
             button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            turno3enRayaID = 0;
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('12', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
@@ -1499,8 +1486,68 @@ function comprobarSiWin(button) {
     }
     if (p01 != '0' && p02 != '0' && p10 != '0' && p12 != '0' && p21 != '0' && p22 != '0' && p20 != '0' && p00 != '0' && p11 != '0') {
         button.message.edit({ content: `La partida estuvo intensa, pero resultó en un empate` })
-        turno3enRayaID = 0;
     }
+}
+function cambiarTruno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22) {
+    var id = button.id.split('_');
+    var idCambio;
+    if (id[4] == id[2]) {
+        idCambio = id[3];
+        button.message.edit({
+            content: `Turno de ${button.message.guild.members.cache.get(id[3])}`
+        })
+    } else {
+        idCambio = id[2];
+        button.message.edit({
+            content: `Turno de ${button.message.guild.members.cache.get(id[2])}`
+        })
+    }
+    var reg = new RegExp(id[4], 'g')
+    var t = 0;
+    b00 = b00.setID(b00.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
+    t = 0;
+    b01 = b01.setID(b01.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
+    t = 0;
+    b02 = b02.setID(b02.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
+    t = 0;
+    b10 = b10.setID(b10.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
+    t = 0;
+    b11 = b11.setID(b11.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
+    t = 0;
+    b12 = b12.setID(b12.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
+    t = 0;
+    b20 = b20.setID(b20.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
+    t = 0;
+    b21 = b21.setID(b21.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
+    t = 0;
+    b22 = b22.setID(b22.custom_id.replace(reg, function (match) {
+        t++;
+        return (t === 2) ? idCambio : match
+    }))
 }
 
 client.on('clickButton', async (button) => {
@@ -1516,19 +1563,9 @@ client.on('clickButton', async (button) => {
         var b22 = button.message.components[2].components[2];
         var id = button.id.split('_');
         var tipo = button.clicker.id == id[2] ? 1 : 2;
-        if (id[4] == '0' && turno3enRayaID == button.clicker.id) {
-            editButtons3enRaya(id[1], button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo)//.button.message.components[id[1][0]].components[id[1][1]]
-            if (turno3enRayaID == id[2]) {
-                turno3enRayaID = id[3];
-                button.message.edit({
-                    content: `Turno de ${button.message.guild.members.cache.get(id[3])}`
-                })
-            } else {
-                turno3enRayaID = id[2];
-                button.message.edit({
-                    content: `Turno de ${button.message.guild.members.cache.get(id[2])}`
-                })
-            }
+        if (id[5] == '0' && id[4] == button.clicker.id) {
+            editButtons3enRaya(id[1], button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo)
+            await cambiarTruno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22);
             comprobarSiWin(button);
             const aRow = new disbut.MessageActionRow()
                 .addComponents(b00, b01, b02)
@@ -1536,12 +1573,12 @@ client.on('clickButton', async (button) => {
                 .addComponents(b10, b11, b12)
             const cRow = new disbut.MessageActionRow()
                 .addComponents(b20, b21, b22)
-            button.reply.defer();
-            button.message.edit({
+            //button.reply.defer();
+            await button.message.edit({
                 components: [aRow, bRow, cRow]
             })
         } else {
-            button.reply.defer();
+            //button.reply.defer();
         }
     }
 
