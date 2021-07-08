@@ -360,7 +360,7 @@ client.on('message', message => {
             talkedRecently.add(message.author.id);
             setTimeout(() => {
                 talkedRecently.delete(message.author.id);
-            }, 60000);
+            }, 20000);
             ; (async () => {
                 var user = await Usuario.find({ idDiscord: message.author.id }).exec();
                 var nivel = 0;
