@@ -57,7 +57,7 @@ var cambiarTurno = function(button, b00, b01, b02, b10, b11, b12, b20, b21, b22,
     }))
     return content;
 }
-var comprobarSiWin = function(button, content) {
+var comprobarSiWin = function(button) {
     var b00 = button.message.components[0].components[0]
     var b01 = button.message.components[0].components[1]
     var b02 = button.message.components[0].components[2]
@@ -78,61 +78,60 @@ var comprobarSiWin = function(button, content) {
     var p22 = b22.custom_id.slice(-1);
     if (p00 != '0') {
         if (p00 == p01 && p01 == p02) {
-            content = `${button.clicker.user} ha ganado!!`;
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('01', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+            return `${button.clicker.user} ha ganado!!`;
         } else if (p00 == p10 && p10 == p20) {
-            content = `${button.clicker.user} ha ganado!!`;
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('10', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+            return `${button.clicker.user} ha ganado!!`;
         } else if (p00 == p11 && p11 == p22) {
-            content = `${button.clicker.user} ha ganado!!`;
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+            return `${button.clicker.user} ha ganado!!`;
         }
     }
     if (p11 != '0') {
         if (p11 == p10 && p10 == p12) {
-            content = `${button.clicker.user} ha ganado!!`;
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('10', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('12', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+            return `${button.clicker.user} ha ganado!!`;
         } else if (p11 == p01 && p01 == p21) {
-            content = `${button.clicker.user} ha ganado!!`;
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('01', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('21', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+            return `${button.clicker.user} ha ganado!!`;
         }
     }
     if (p20 != '0') {
         if (p20 == p21 && p21 == p22) {
-            content = `${button.clicker.user} ha ganado!!`;
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('21', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+            return `${button.clicker.user} ha ganado!!`;
         } else if (p20 == p11 && p11 == p02) {
-            content = `${button.clicker.user} ha ganado!!`;
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+            return `${button.clicker.user} ha ganado!!`;
         }
     }
     if (p22 != '0') {
         if (p22 == p12 && p12 == p02) {
-            content = `${button.clicker.user} ha ganado!!`;
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('12', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+            return `${button.clicker.user} ha ganado!!`;
         }
     }
     if (p01 != '0' && p02 != '0' && p10 != '0' && p12 != '0' && p21 != '0' && p22 != '0' && p20 != '0' && p00 != '0' && p11 != '0') {
-        content = `La partida estuvo intensa, pero resultó en un empate`;
         editButtons3enRaya('3', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
+        return `Tremendo empate`;
     }
-    return content;
 }
 function editButtons3enRaya(id1, button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo) {
     var label, style;
@@ -220,7 +219,7 @@ var tresEnRaya = function (button) {
         if (id[5] == '0' && id[4] == button.clicker.id) {
             editButtons3enRaya(id[1], button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo)
             content = cambiarTurno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22, content);
-            content = comprobarSiWin(button, content);
+            content = comprobarSiWin(button);
             const aRow = new disbut.MessageActionRow()
                 .addComponents(b00, b01, b02)
             const bRow = new disbut.MessageActionRow()

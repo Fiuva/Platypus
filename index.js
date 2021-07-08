@@ -20,7 +20,7 @@ mongoose.connect(uri,
 
 const express = require('express');
 const Usuario = require('./models/usuario');
-
+module.exports = { Usuario };
 
 const router = express.Router();
 
