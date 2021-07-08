@@ -8,7 +8,8 @@ const usuarioSchema = new Schema({
     fechaPareja: { type: String, default: '0' },
     monedas: { type: Number, default: 0 },
     anillo: { type: Number, default: 0 },
-    color: { type: String, default: '#7289da' }
+    color: { type: String, default: '#7289da' },
+    record2048: { type: Number, default: 0}
 })
 
 // crear modelo
