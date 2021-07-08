@@ -512,6 +512,8 @@ client.on('message', message => {
         }
         if (msg() == '!3' || msg() == '3enraya') {
             tresEnRaya.tres(message);
+        } else if (msg() == '!2048') {
+            juego2048.iniciar2048(message);
         }
     } else {
         if (msg() === '!rank') {
@@ -839,12 +841,17 @@ client.on('message', message => {
                     { name: '!tienda', value: `Compra cosas en la tienda con ${nombreMonedas}` },
                     { name: '!vender', value: `Vende anillos :>` },
                     { name: '!inventario', value: `Consulta tu inventario`, inline: true },
+                    { name: '!rank2048', value: `Mira el ranking del !2048` },
                     { name: '#〔💬〕general', value: `- - - - - - - - - - - -` },
                     { name: '!casar', value: `Cásate con alguien`, inline: true },
                     { name: '!divorciar', value: `Divórciate`, inline: true },
+                    { name: '!3', value: `Juega con alguien al 3 en raya` },
+                    { name: '!2048', value: `Juega al 2048`, inline: true },
                     { name: 'Nivel', value: `Gana **experiencia** siendo activo en el chat para conseguir ${nombreMonedas} \n y consigue **roles** en función de tu nivel` },
                 );
             message.channel.send(mensajeAyuda);
+        } else if (msg() == '!rank2048' || msg() == '!2048rank' || msg() == '!ranking2048' || msg() == '!2048ranking') {
+            juego2048.rank2048(message);
         }
     }
     function msg(c = 0, f = 1, same = false) {
@@ -870,6 +877,34 @@ var bucle = false;
 var cancionEspecial = false;
 const Playlist = require('./models/playlist');
 const tresEnRaya = require('./3enRaya')
+const juego2048 = require('./2048')
+
+client.on('clickButton', async (button) => {
+    tresEnRaya.tresEnRaya(button);
+    juego2048.onClick2048(button);
+
+    if (button.id.startsWith('casar_button')) {
+        if (button.clicker.id == button.id.split('_')[2]) {
+            var user = await Usuario.find({ idDiscord: button.id.split('_')[3] }).exec();
+            var toUser = await Usuario.find({ idDiscord: button.id.split('_')[2] }).exec();
+            button.channel.send(`${button.guild.members.cache.get(button.id.split('_')[3])} se ha casado con ${button.clicker.user.username}!!!`)
+            button.message.delete();
+            date = new Date();
+            var dia = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+            Usuario.findOneAndUpdate({ idDiscord: button.id.split('_')[3] }, { parejaId: button.id.split('_')[2], anillo: user[0].anillo - 1, fechaPareja: dia }, { new: true }).then();
+            Usuario.findOneAndUpdate({ idDiscord: button.id.split('_')[2] }, { parejaId: button.id.split('_')[3], anillo: toUser[0].anillo + 1, fechaPareja: dia }, { new: true }).then();
+        } else {
+            button.reply.defer();
+        }
+    } else if (button.id.startsWith('rechazar_button')) {
+        if (button.clicker.id == button.id.split('_')[2]) {
+            button.channel.send(`${button.guild.members.cache.get(button.id.split('_')[3])} ha sido rechezad@ por ${button.clicker.user.username}`)
+            button.message.delete();
+        } else {
+            button.reply.defer();
+        }
+    }
+});
 
 client.on('message', async message => {
     if (message.author.bot || message.channel.id != 838801241341558825) return;
@@ -1223,6 +1258,7 @@ client.on('message', async message => {
         }
     }
 })
+
 async function execute(message, serverQueue) {
     function msg(c = 0, f = 1, same = false) {
         var content = message.content.replace(/\s+/g, ' ').trim();
@@ -1294,239 +1330,6 @@ async function execute(message, serverQueue) {
         return message.channel.send(mensCancion);
     }
 }
-
-function editButtons3enRaya(id1, button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo) {
-    var label, style;
-    if (tipo == 1) {
-        label = 'O';
-        style = 'green';
-    } else if (tipo == 2) {
-        label = 'X';
-        style = 'red';
-    } else if (tipo == 3) {
-        label = 'win';
-        style = 'blurple';
-        b00.setDisabled(true);
-        b01.setDisabled(true);
-        b02.setDisabled(true);
-        b10.setDisabled(true);
-        b11.setDisabled(true);
-        b12.setDisabled(true);
-        b20.setDisabled(true);
-        b21.setDisabled(true);
-        b22.setDisabled(true);
-    }
-    switch (id1) {
-        case '00':
-            if (label != 'win') b00 = b00.setLabel(label);
-            b00 = b00.setStyle(style);
-            b00 = b00.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-        case '01':
-            if (label != 'win') b01 = b01.setLabel(label);
-            b01 = b01.setStyle(style);
-            b01 = b01.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-        case '02':
-            if (label != 'win') b02 = b02.setLabel(label);
-            b02 = b02.setStyle(style);
-            b02 = b02.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-        case '10':
-            if (label != 'win') b10 = b10.setLabel(label);
-            b10 = b10.setStyle(style);
-            b10 = b10.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-        case '11':
-            if (label != 'win') b11 = b11.setLabel(label);
-            b11 = b11.setStyle(style);
-            b11 = b11.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-        case '12':
-            if (label != 'win') b12 = b12.setLabel(label);
-            b12 = b12.setStyle(style);
-            b12 = b12.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-        case '20':
-            if (label != 'win') b20 = b20.setLabel(label);
-            b20 = b20.setStyle(style);
-            b20 = b20.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-        case '21':
-            if (label != 'win') b21 = b21.setLabel(label);
-            b21 = b21.setStyle(style);
-            b21 = b21.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-        case '22':
-            if (label != 'win') b22 = b22.setLabel(label);
-            b22 = b22.setStyle(style);
-            b22 = b22.setID(`${button.id.slice(0, -2)}_${tipo}`)
-            break;
-    }
-}
-function comprobarSiWin(button) {
-    var b00 = button.message.components[0].components[0]
-    var b01 = button.message.components[0].components[1]
-    var b02 = button.message.components[0].components[2]
-    var b10 = button.message.components[1].components[0]
-    var b11 = button.message.components[1].components[1]
-    var b12 = button.message.components[1].components[2]
-    var b20 = button.message.components[2].components[0]
-    var b21 = button.message.components[2].components[1]
-    var b22 = button.message.components[2].components[2]
-    var p00 = b00.custom_id.slice(-1);
-    var p01 = b01.custom_id.slice(-1);
-    var p02 = b02.custom_id.slice(-1);
-    var p10 = b10.custom_id.slice(-1);
-    var p11 = b11.custom_id.slice(-1);
-    var p12 = b12.custom_id.slice(-1);
-    var p20 = b20.custom_id.slice(-1);
-    var p21 = b21.custom_id.slice(-1);
-    var p22 = b22.custom_id.slice(-1);
-    if (p00 != '0') {
-        if (p00 == p01 && p01 == p02) {
-            button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('01', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        } else if (p00 == p10 && p10 == p20) {
-            button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('10', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        } else if (p00 == p11 && p11 == p22) {
-            button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        }
-    }
-    if (p11 != '0') {
-        if (p11 == p10 && p10 == p12) {
-            button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('10', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('12', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        } else if (p11 == p01 && p01 == p21) {
-            button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('01', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('21', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        }
-    }
-    if (p20 != '0') {
-        if (p20 == p21 && p21 == p22) {
-            button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('21', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        } else if (p20 == p11 && p11 == p02) {
-            button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        }
-    }
-    if (p22 != '0') {
-        if (p22 == p12 && p12 == p02) {
-            button.message.edit({ content: `${button.clicker.user} ha ganado!!` })
-            editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('12', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        }
-    }
-    if (p01 != '0' && p02 != '0' && p10 != '0' && p12 != '0' && p21 != '0' && p22 != '0' && p20 != '0' && p00 != '0' && p11 != '0') {
-        button.message.edit({ content: `La partida estuvo intensa, pero resultó en un empate` })
-    }
-}
-function cambiarTruno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22) {
-    var id = button.id.split('_');
-    var idCambio;
-    if (id[4] == id[2]) {
-        idCambio = id[3];
-        button.message.edit({
-            content: `Turno de ${button.message.guild.members.cache.get(id[3])}`
-        })
-    } else {
-        idCambio = id[2];
-        button.message.edit({
-            content: `Turno de ${button.message.guild.members.cache.get(id[2])}`
-        })
-    }
-    var reg = new RegExp(id[4], 'g')
-    var t = 0;
-    b00 = b00.setID(b00.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-    t = 0;
-    b01 = b01.setID(b01.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-    t = 0;
-    b02 = b02.setID(b02.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-    t = 0;
-    b10 = b10.setID(b10.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-    t = 0;
-    b11 = b11.setID(b11.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-    t = 0;
-    b12 = b12.setID(b12.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-    t = 0;
-    b20 = b20.setID(b20.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-    t = 0;
-    b21 = b21.setID(b21.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-    t = 0;
-    b22 = b22.setID(b22.custom_id.replace(reg, function (match) {
-        t++;
-        return (t === 2) ? idCambio : match
-    }))
-}
-
-client.on('clickButton', async (button) => {
-    tresEnRaya.tresEnRaya(button);
-
-    if (button.id.startsWith('casar_button')) {
-        if (button.clicker.id == button.id.split('_')[2]) {
-            var user = await Usuario.find({ idDiscord: button.id.split('_')[3] }).exec();
-            var toUser = await Usuario.find({ idDiscord: button.id.split('_')[2] }).exec();
-            button.channel.send(`${button.guild.members.cache.get(button.id.split('_')[3])} se ha casado con ${button.clicker.user.username}!!!`)
-            button.message.delete();
-            date = new Date();
-            var dia = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
-            Usuario.findOneAndUpdate({ idDiscord: button.id.split('_')[3] }, { parejaId: button.id.split('_')[2], anillo: user[0].anillo - 1, fechaPareja: dia }, { new: true }).then();
-            Usuario.findOneAndUpdate({ idDiscord: button.id.split('_')[2] }, { parejaId: button.id.split('_')[3], anillo: toUser[0].anillo + 1, fechaPareja: dia }, { new: true }).then();
-        } else {
-            button.reply.defer();
-        }
-    } else if (button.id.startsWith('rechazar_button')) {
-        if (button.clicker.id == button.id.split('_')[2]) {
-            button.channel.send(`${button.guild.members.cache.get(button.id.split('_')[3])} ha sido rechezad@ por ${button.clicker.user.username}`)
-            button.message.delete();
-        } else {
-            button.reply.defer();
-        }
-    }
-});
-
 async function execute2(message, url, serverQueue) {
     const voiceChannel = message.member.guild.channels.cache.get('838776417768046622');
     if (message.member.voice.channel.id != '838776417768046622') {
