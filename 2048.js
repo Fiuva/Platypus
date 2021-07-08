@@ -608,7 +608,7 @@ var iniciar2048 = async function (message) {
     
 }
 var rank2048 = async function (message) {
-    index.Usuario.find({}).sort({ rank2048: -1 }).exec(function (err, docs) {
+    index.Usuario.find({}).sort({ record2048: -1 }).exec(function (err, docs) {
         var j = 0;
         var top = new Discord.MessageEmbed()
             .setTitle(message.guild.name)
