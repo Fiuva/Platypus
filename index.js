@@ -880,6 +880,7 @@ const tresEnRaya = require('./3enRaya')
 const juego2048 = require('./2048')
 
 client.on('clickButton', async (button) => {
+    if (button.channel.id == '836734022184861706') return
     tresEnRaya.tresEnRaya(button);
     juego2048.onClick2048(button);
 
