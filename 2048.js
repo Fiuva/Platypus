@@ -23,12 +23,14 @@ function nuevoNumeroAzar2048(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b
     if (Math.random() < 0.1) num = 4;
     setNumber2048(arr[Math.random() * arr.length << 0], num)
 }
-function setNumber2048(button, number, nuevo = false) {
+function setNumber2048(button, number, sumado = false) {
     var idNueva = button.custom_id.split('_')[0] + '_' + button.custom_id.split('_')[1] + '_' + button.custom_id.split('_')[2] + '_' + number.toString();
     button.setID(idNueva)
     if (number != 0) {
         button.setLabel(number)
-        if (parseInt(number) >= 128) {
+        if (sumado) {
+            button.setStyle('blurple')
+        } else if (parseInt(number) >= 128) {
             button.setStyle('red')
         } else {
             button.setStyle('green')
@@ -48,9 +50,9 @@ function deMover02del2048(b02, b03) {
             setNumber2048(b02, 0);
             setNumber2048(b03, v02);
             return [true, 0];
-        } else if (v02 == v03) {
+        } else if (v02 == v03 && b03.style != 1) {
             setNumber2048(b02, 0);
-            setNumber2048(b03, v02 + v03);
+            setNumber2048(b03, v02 + v03, true);
             return [true, (v02 + v03)];
         }
     }
@@ -66,9 +68,9 @@ function deMover01del2048(b01, b02, b03) {
             setNumber2048(b02, v01);
             suma = deMover02del2048(b02, b03)[1] + suma;
             return [true, suma];
-        } else if (v01 == v02) {
+        } else if (v01 == v02 && b02.style != 1) {
             setNumber2048(b01, 0);
-            setNumber2048(b02, v01 + v02);
+            setNumber2048(b02, v01 + v02, true);
             return [true, (v01 + v02)];
         }
     }
@@ -85,9 +87,9 @@ function deMover00del2048(b00, b01, b02, b03) {
             suma = deMover01del2048(b01, b02, b03)[1] + suma;
             suma = deMover02del2048(b01, b02)[1] + suma;
             return [true, suma];
-        } else if (v00 == v01) {
+        } else if (v00 == v01 && b01.style != 1) {
             setNumber2048(b00, 0);
-            setNumber2048(b01, v00 + v01);
+            setNumber2048(b01, v00 + v01, true);
             return [true, (v00 + v01)];
         }
     }
@@ -101,9 +103,9 @@ function abMover20del2048(b20, b30) {
             setNumber2048(b20, 0);
             setNumber2048(b30, v20);
             return [true, 0];
-        } else if (v20 == v30) {
+        } else if (v20 == v30 && b30.style != 1) {
             setNumber2048(b20, 0);
-            setNumber2048(b30, v20 + v30);
+            setNumber2048(b30, v20 + v30, true);
             return [true, (v20 + v30)];
         }
     }
@@ -119,9 +121,9 @@ function abMover10del2048(b10, b20, b30) {
             setNumber2048(b20, v10);
             suma = abMover20del2048(b20, b30)[1] + suma;
             return [true, suma];
-        } else if (v10 == v20) {
+        } else if (v10 == v20 && b20.style != 1) {
             setNumber2048(b10, 0);
-            setNumber2048(b20, v10 + v20);
+            setNumber2048(b20, v10 + v20, true);
             return [true, (v20 + v20)];
         }
     }
@@ -138,9 +140,9 @@ function abMover00del2048(b00, b10, b20, b30) {
             suma = abMover10del2048(b10, b20, b30)[1] + suma;
             suma = abMover20del2048(b10, b20)[1] + suma;
             return [true, suma];
-        } else if (v00 == v10) {
+        } else if (v00 == v10 && b10.style != 1) {
             setNumber2048(b00, 0);
-            setNumber2048(b10, v00 + v10);
+            setNumber2048(b10, v00 + v10, true);
             return [true, (v00 + v10)];
         }
     }
@@ -154,9 +156,9 @@ function izMover01del2048(b01, b00) {
             setNumber2048(b01, 0);
             setNumber2048(b00, v01);
             return [true, 0];
-        } else if (v01 == v00) {
+        } else if (v01 == v00 && b00.style != 1) {
             setNumber2048(b01, 0);
-            setNumber2048(b00, v01 + v00);
+            setNumber2048(b00, v01 + v00, true);
             return [true, (v01 + v00)];
         }
     }
@@ -172,9 +174,9 @@ function izMover02del2048(b02, b01, b00) {
             setNumber2048(b01, v02);
             suma = izMover01del2048(b01, b00)[1] + suma;
             return [true, suma];
-        } else if (v02 == v01) {
+        } else if (v02 == v01 && b01.style != 1) {
             setNumber2048(b02, 0);
-            setNumber2048(b01, v02 + v01);
+            setNumber2048(b01, v02 + v01, true);
             return [true, (v02 + v01)];
         }
     }
@@ -191,9 +193,9 @@ function izMover03del2048(b03, b02, b01, b00) {
             suma = izMover02del2048(b02, b01, b00)[1] + suma;
             suma = izMover01del2048(b01, b00)[1] + suma;
             return [true, suma];
-        } else if (v03 == v02) {
+        } else if (v03 == v02 && b02.style != 1) {
             setNumber2048(b03, 0);
-            setNumber2048(b02, v03 + v02);
+            setNumber2048(b02, v03 + v02, true);
             return [true, (v03 + v02)];
         }
     }
@@ -207,9 +209,9 @@ function arMover10del2048(b10, b00) {
             setNumber2048(b10, 0);
             setNumber2048(b00, v10);
             return [true, 0];
-        } else if (v10 == v00) {
+        } else if (v10 == v00 && b00.style != 1) {
             setNumber2048(b10, 0);
-            setNumber2048(b00, v10 + v00);
+            setNumber2048(b00, v10 + v00, true);
             return [true, (v10 + v00)];
         }
     }
@@ -225,9 +227,9 @@ function arMover20del2048(b20, b10, b00) {
             setNumber2048(b10, v20);
             suma = arMover10del2048(b10, b00)[1] + suma;
             return [true, suma];
-        } else if (v20 == v10) {
+        } else if (v20 == v10 && b10.style != 1) {
             setNumber2048(b20, 0);
-            setNumber2048(b10, v20 + v10);
+            setNumber2048(b10, v20 + v10, true);
             return [true, (v20 + v10)];
         }
     }
@@ -244,13 +246,32 @@ function arMover30del2048(b30, b20, b10, b00) {
             suma = arMover20del2048(b20, b10, b00)[1] + suma;
             suma = arMover10del2048(b10, b00)[1] + suma;
             return [true, suma];
-        } else if (v30 == v20) {
+        } else if (v30 == v20 && b20.style != 1) {
             setNumber2048(b30, 0);
-            setNumber2048(b20, v30 + v20);
+            setNumber2048(b20, v30 + v20, true);
             return [true, (v30 + v20)];
         }
     }
     return [false, 0];
+}
+
+function quitarAzules(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33) {
+    if (b00.style == 1) setNumber2048(b00, b00.label)
+    if (b01.style == 1) setNumber2048(b01, b01.label)
+    if (b02.style == 1) setNumber2048(b02, b02.label)
+    if (b03.style == 1) setNumber2048(b03, b03.label)
+    if (b10.style == 1) setNumber2048(b10, b10.label)
+    if (b11.style == 1) setNumber2048(b11, b11.label)
+    if (b12.style == 1) setNumber2048(b12, b12.label)
+    if (b13.style == 1) setNumber2048(b13, b13.label)
+    if (b20.style == 1) setNumber2048(b20, b20.label)
+    if (b21.style == 1) setNumber2048(b21, b21.label)
+    if (b22.style == 1) setNumber2048(b22, b22.label)
+    if (b23.style == 1) setNumber2048(b23, b23.label)
+    if (b30.style == 1) setNumber2048(b30, b30.label)
+    if (b31.style == 1) setNumber2048(b31, b31.label)
+    if (b32.style == 1) setNumber2048(b32, b32.label)
+    if (b33.style == 1) setNumber2048(b33, b33.label)
 }
 
 async function comprobarFinJuego(button, b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33, message2) {
@@ -300,6 +321,7 @@ var onClick2048 = function(button){
             var bAr = button.message.components[4].components[1]
             var bAb = button.message.components[4].components[2]
             var bDe = button.message.components[4].components[3]
+            quitarAzules(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33);
             const a = deMover02del2048(b02, b03);
             const b = deMover02del2048(b12, b13)
             const c = deMover02del2048(b22, b23)
@@ -354,6 +376,7 @@ var onClick2048 = function(button){
             var bAr = button.message.components[4].components[1]
             var bAb = button.message.components[4].components[2]
             var bDe = button.message.components[4].components[3]
+            quitarAzules(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33);
             const a = izMover01del2048(b01, b00);
             const b = izMover01del2048(b11, b10)
             const c = izMover01del2048(b21, b20)
@@ -408,6 +431,7 @@ var onClick2048 = function(button){
             var bAr = button.message.components[4].components[1]
             var bAb = button.message.components[4].components[2]
             var bDe = button.message.components[4].components[3]
+            quitarAzules(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33);
             const a = abMover20del2048(b20, b30);
             const b = abMover20del2048(b21, b31)
             const c = abMover20del2048(b22, b32)
@@ -462,6 +486,7 @@ var onClick2048 = function(button){
             var bAr = button.message.components[4].components[1]
             var bAb = button.message.components[4].components[2]
             var bDe = button.message.components[4].components[3]
+            quitarAzules(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33);
             const a = arMover10del2048(b10, b00);
             const b = arMover10del2048(b11, b01)
             const c = arMover10del2048(b12, b02)
@@ -610,6 +635,7 @@ var iniciar2048 = async function (message) {
 var rank2048 = async function (message) {
     index.Usuario.find({}).sort({ record2048: -1 }).exec(function (err, docs) {
         var j = 0;
+        console.log(docs)
         var top = new Discord.MessageEmbed()
             .setTitle(message.guild.name)
             .setThumbnail(message.guild.iconURL())
