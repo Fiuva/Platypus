@@ -57,7 +57,7 @@ var cambiarTurno = function(button, b00, b01, b02, b10, b11, b12, b20, b21, b22,
     }))
     return content;
 }
-var comprobarSiWin = function(button) {
+var comprobarSiWin = function(button, content) {
     var b00 = button.message.components[0].components[0]
     var b01 = button.message.components[0].components[1]
     var b02 = button.message.components[0].components[2]
@@ -132,6 +132,7 @@ var comprobarSiWin = function(button) {
         editButtons3enRaya('3', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
         return `Tremendo empate`;
     }
+    return content
 }
 function editButtons3enRaya(id1, button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo) {
     var label, style;
@@ -219,7 +220,7 @@ var tresEnRaya = function (button) {
         if (id[5] == '0' && id[4] == button.clicker.id) {
             editButtons3enRaya(id[1], button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo)
             content = cambiarTurno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22, content);
-            content = comprobarSiWin(button);
+            content = comprobarSiWin(button, content);
             const aRow = new disbut.MessageActionRow()
                 .addComponents(b00, b01, b02)
             const bRow = new disbut.MessageActionRow()
