@@ -156,7 +156,7 @@ function izMover01del2048(b01, b00) {
             setNumber2048(b01, 0);
             setNumber2048(b00, v01);
             return [true, 0];
-        } else if (v01 == v00 && b01.style != 1) {
+        } else if (v01 == v00 && b01.style != 1 && b00.style != 1) {
             setNumber2048(b01, 0);
             setNumber2048(b00, v01 + v00, true);
             return [true, (v01 + v00)];
