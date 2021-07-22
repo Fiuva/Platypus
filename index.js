@@ -55,41 +55,19 @@ const talkedRecently = new Set();
 
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
-
-    /*
-    const fecha = new Date('2021-05-21T14:35:00');
-    var func = function () {
-        return function () {
-            var diferencia = new Date(fecha.getTime() - new Date().getTime())
-            if (diferencia.getTime() < 0) {
-                client.user.setPresence({
-                    activity: {
-                        name: '1 año lol',
-                        type: 'WATCHING',
-                    }
-                })
-                return
-            }
-            var mensaje = ((diferencia.getDate() - 1) > 0 ? diferencia.getDate() - 1 + ', ' : '') + (diferencia.getHours()) + ':' + (diferencia.getMinutes()) + ':' + ((diferencia.getSeconds()) < 10 ? '0' : '') + (diferencia.getSeconds());
-            setTimeout(func(), 5000);
-            client.user.setPresence({
-                activity: {
-                    name: mensaje,
-                    type: 'WATCHING',
-                }
-            })
-        }
-    }
-    setTimeout(func(), 5000);
-    */
-
     client.channels.cache.get('836734022184861706').send('Bot reiniciado');
     cambiarEstadoConMensaje()
+    cambiarMiActividadConMensaje()
 })
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    if (oldMessage.id != '849734239305334834') return
-    if (newMessage != oldMessage) {
-        cambiarEstadoConMensaje()
+    if (oldMessage.id == '849734239305334834') {
+        if (newMessage != oldMessage) {
+            cambiarEstadoConMensaje()
+        }
+    } else if (oldMessage.id == '867846271028559923') {
+        if (newMessage != oldMessage) {
+            cambiarMiActividadConMensaje();
+        }
     }
 })
 
@@ -1918,4 +1896,104 @@ function cargar(message) {
         setTimeout(func(1), 100);
     })
 
+}
+
+
+const RPC = require('discord-rpc');
+const client2 = new RPC.Client({ transport: "ipc" })
+
+client2.login({ clientId: "836972868055203850" })
+
+async function cambiarMiActividadConMensaje() {
+    const message = await client.channels.cache.get('849733450671718432').messages.fetch('867846271028559923')
+    var activity = {
+        details: "Holaaa",
+        state: "Que tal?",
+        party: {
+            size: [1, 69]
+        },
+        assets: {
+            large_image: "ornitorrincopantano",
+            large_text: "Si estás leyendo esto es que te quiero <3",
+            small_image: "platycoins",
+            small_text: "en serio"
+        },
+        buttons: [
+            {
+                "label": "Tremendo botón!",
+                "url": "https://google.com"
+            },
+            {
+                "label": "Tremendo botón!",
+                "url": "https://google.com"
+            }
+        ],
+        timestamps: {
+            start: Date.now(),
+            end: Date.UTC(2021, 7, 23)
+        },
+        instance: true
+    }
+    const m = message.content.split(',')
+    if (m[0].split('\"')[1] != undefined) {
+        activity.details = m[0].split('\"')[1]
+    } else {
+        delete activity.details
+    }
+    if (m[1].split('\"')[1] != undefined) {
+        activity.state = m[1].split('\"')[1]
+    } else {
+        delete activity.state
+    }
+    if (m[2].split('\"')[1] != undefined && m[3].split('\"')[1] != undefined && parseInt(m[2].split('\"')[1]) >= 1) {
+        activity.party.size = [parseInt(m[2].split('\"')[1]), parseInt(m[3].split('\"')[1])];
+    } else {
+        delete activity.party
+    }
+    if (m[4].split('\"')[1] != undefined) {
+        activity.assets.large_image = m[4].split('\"')[1]
+    } else {
+        delete activity.assets.large_image
+    }
+    if (m[5].split('\"')[1] != undefined) {
+        activity.assets.large_text = m[5].split('\"')[1]
+    } else {
+        delete activity.assets.large_text
+    }
+    if (m[6].split('\"')[1] != undefined) {
+        activity.assets.small_image = m[6].split('\"')[1]
+    } else {
+        delete activity.assets.small_image
+    }
+    if (m[7].split('\"')[1] != undefined) {
+        activity.assets.small_text = m[7].split('\"')[1]
+    } else {
+        delete activity.assets.small_text
+    }
+    if (m[8].split('\"')[1] != undefined && m[9].split('\"')[1] != undefined) {
+        activity.buttons[0].label = m[8].split('\"')[1]
+        activity.buttons[0].url = m[9].split('\"')[1]
+        if (m[10].split('\"')[1] != undefined && m[11].split('\"')[1] != undefined) {
+            activity.buttons[1].label = m[10].split('\"')[1]
+            activity.buttons[1].url = m[11].split('\"')[1]
+        } else {
+            activity.buttons = [activity.buttons[0]]
+        }
+    } else {
+        delete activity.buttons
+    }
+    if (m[12].split('\"')[1] == undefined) {
+        delete activity.timestamps
+    }
+    if (m[13].split('\"')[1] != undefined) {
+        const time = new Date(m[13].split('\"')[1])
+        if (time) {
+            activity.timestamps.end = time.getTime();
+        } else {
+            delete activity.timestamps.end
+        }
+    } else {
+        delete activity.timestamps.end
+    }
+    client2.request("SET_ACTIVITY", { pid: process.pid, activity: activity })
 }
