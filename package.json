@@ -9,24 +9,23 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@discordjs/opus": "^0.5.0",
-    "@types/node-fetch": "^2.5.8",
-    "canvas": "^2.6.1",
-    "discord-anti-spam": "^2.5.1",
-    "discord-buttons": "^4.0.0",
-    "discord-rpc": "^4.0.1",
-    "discord.js": "^12.5.1",
-    "express": "^4.17.1",
-    "ffmpeg-static": "^4.3.0",
-    "genius-lyrics": "^4.2.7",
-    "mongoose": "^5.11.13",
-    "node-cache": "^5.1.2",
-    "node-fetch": "^2.6.1",
-    "translate": "^1.2.3",
-    "ytdl-core": "^4.8.3",
-    "ytsr": "^3.5.0"
-  },
+    "dependencies": {
+        "@discordjs/opus": "^0.5.0",
+        "@types/node-fetch": "^2.5.8",
+        "canvas": "^2.6.1",
+        "discord-anti-spam": "^2.5.1",
+        "discord-buttons": "^4.0.0",
+        "discord.js": "^12.5.1",
+        "express": "^4.17.1",
+        "ffmpeg-static": "^4.3.0",
+        "genius-lyrics": "^4.2.7",
+        "mongoose": "^5.11.13",
+        "node-cache": "^5.1.2",
+        "node-fetch": "^2.6.1",
+        "translate": "^1.2.3",
+        "ytdl-core": "^4.8.3",
+        "ytsr": "^3.5.0"
+    },
   "devDependencies": {
     "nodemon": "^2.0.7"
   }
