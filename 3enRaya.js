@@ -159,47 +159,47 @@ function editButtons3enRaya(id1, button, b00, b01, b02, b10, b11, b12, b20, b21,
         case '00':
             if (label != 'win') b00 = b00.setLabel(label);
             b00 = b00.setStyle(style);
-            b00 = b00.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b00 = b00.setID(`3enRaya_00_${button.id.slice(11, -2)}_${tipo}`)
             break;
         case '01':
             if (label != 'win') b01 = b01.setLabel(label);
             b01 = b01.setStyle(style);
-            b01 = b01.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b01 = b01.setID(`3enRaya_01_${button.id.slice(11, -2)}_${tipo}`)
             break;
         case '02':
             if (label != 'win') b02 = b02.setLabel(label);
             b02 = b02.setStyle(style);
-            b02 = b02.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b02 = b02.setID(`3enRaya_02_${button.id.slice(11, -2)}_${tipo}`)
             break;
         case '10':
             if (label != 'win') b10 = b10.setLabel(label);
             b10 = b10.setStyle(style);
-            b10 = b10.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b10 = b10.setID(`3enRaya_10_${button.id.slice(11, -2)}_${tipo}`)
             break;
         case '11':
             if (label != 'win') b11 = b11.setLabel(label);
             b11 = b11.setStyle(style);
-            b11 = b11.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b11 = b11.setID(`3enRaya_11_${button.id.slice(11, -2)}_${tipo}`)
             break;
         case '12':
             if (label != 'win') b12 = b12.setLabel(label);
             b12 = b12.setStyle(style);
-            b12 = b12.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b12 = b12.setID(`3enRaya_12_${button.id.slice(11, -2)}_${tipo}`)
             break;
         case '20':
             if (label != 'win') b20 = b20.setLabel(label);
             b20 = b20.setStyle(style);
-            b20 = b20.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b20 = b20.setID(`3enRaya_20_${button.id.slice(11, -2)}_${tipo}`)
             break;
         case '21':
             if (label != 'win') b21 = b21.setLabel(label);
             b21 = b21.setStyle(style);
-            b21 = b21.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b21 = b21.setID(`3enRaya_21_${button.id.slice(11, -2)}_${tipo}`)
             break;
         case '22':
             if (label != 'win') b22 = b22.setLabel(label);
             b22 = b22.setStyle(style);
-            b22 = b22.setID(`${button.id.slice(0, -2)}_${tipo}`)
+            b22 = b22.setID(`3enRaya_22_${button.id.slice(11, -2)}_${tipo}`)
             break;
     }
 }
@@ -232,6 +232,7 @@ var tresEnRaya = function (button) {
                 content: content,
                 components: [aRow, bRow, cRow]
             })
+            
         } else {
             button.reply.defer().catch(e => null);
         }
