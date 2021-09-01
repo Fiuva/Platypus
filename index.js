@@ -230,6 +230,8 @@ client.on('messageReactionRemove', (reaction, user) => {
     }
 })
 
+var ultimoQueHabla;
+
 client.on('message', message => {
     if (message.author.bot) return;
     antiSpam.message(message);
@@ -356,7 +358,8 @@ client.on('message', message => {
     if (message.channel.id != 836721843955040339 && message.channel.id != 836879630815985674) return;
 
     if (message.channel.id == 836721843955040339) {
-        if (msg() && !(talkedRecently.has(message.author.id))) {
+        if (msg() && !(talkedRecently.has(message.author.id)) && message.author.id != ultimoQueHabla) {
+            ultimoQueHabla = message.author.id;
             talkedRecently.add(message.author.id);
             setTimeout(() => {
                 talkedRecently.delete(message.author.id);
