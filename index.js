@@ -879,6 +879,7 @@ const queue = new Map();
 var bucle = false;
 var cancionEspecial = false;
 const Playlist = require('./models/playlist');
+var estaCargandoCanciones = false;
 const tresEnRaya = require('./3enRaya')
 const juego2048 = require('./2048')
 
@@ -1028,6 +1029,7 @@ client.on('message', async message => {
         var playlistUser = playlist[0].songs;
         const keys = Object.keys(playlistUser)
         if (msg(1, 2) == 'play') {
+            if (estaCargandoCanciones) return message.channel.send(`${message.author} espera a que se termine de cargar otra playlist para cargar la tuya :'>`)
             if (!msg(2, 3)) return message.channel.send(`${message.author} introduzca el nombre de la playlist "!playlist play <nombre>"`)
             var nombre = new RegExp(msg(2, 100).replace(' <@!' + username.id + '>', ''), 'i');
             var nombreExacto = keys[keys.findIndex(element => element.match(nombre))];
@@ -1037,14 +1039,21 @@ client.on('message', async message => {
             var serverQueue2 = serverQueue;
             var arr = playlistUser[nombreExacto];
             shuffle(arr);
+            var cargando;
+            await message.channel.send(`Cargando canciones`).then(mens => cargando = mens);
+            estaCargandoCanciones = true;
             for (i = 0; i < arr.length; i++) {
                 if (i == 0 && !serverQueue) {
+                    cargando.edit(`Cargando canciones (${i}/${arr.length}) ${i / arr.length * 100}%`);
                     serverQueue2 = await execute2(message, arr[0], serverQueue)
                 } else {
+                    cargando.edit(`Cargando canciones (${i}/${arr.length}) ${(i / arr.length * 100).toFixed(2)}%`);
                     execute3(arr[i], serverQueue2)
                 }
                 if (i < 20) mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + arr[i] + ' \n';
             }
+            cargando.edit(`Playlist cargada :> (${nombreExacto})`);
+            estaCargandoCanciones = false;
             const mensajePlaylist = new Discord.MessageEmbed().setTitle(`Canciones de **${nombreExacto.toUpperCase()}**`).setColor(usermm[0].color).setDescription(mensajeCanciones).setAuthor(username.username).setFooter(arr.length + ' canciones')
             message.channel.send(mensajePlaylist);
         } else if (!msg(1, 2) || (!msg(2, 3) && message.mentions.users.first())) {
