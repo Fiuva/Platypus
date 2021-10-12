@@ -236,6 +236,10 @@ client.on('message', message => {
     if (message.author.bot) return;
     antiSpam.message(message);
     if (message.guild === null) {
+        if (message.author.id == 431071887372845061) {
+            //cosas
+            return;
+        }
         client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || '+message.attachments.array()[0].url : ''}`);
     }
     if (message.channel.id == 840558534495174676) {
