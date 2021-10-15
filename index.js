@@ -31,6 +31,7 @@ const aumentaMonedas = 25;
 const precioAnillo = 30;
 const precioMillonario = 2000;
 
+module.exports = { client };
 
 const Canvas = require('canvas');
 Canvas.registerFont("./Fonts/Impacted.ttf", { family: "Impacted" });
@@ -232,13 +233,19 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 var ultimoQueHabla;
 
+const cumple = require("./cumpleNat.js");
+const Info = require('./models/infoCumple');
+module.exports = { Info };
+
 client.on('message', message => {
+    if (message.guild === null && message.author.bot && message.channel.id == 431071887372845061) client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
     if (message.author.bot) return;
     antiSpam.message(message);
     if (message.guild === null) {
         if (message.author.id == 431071887372845061) {
-            //cosas
-            return;
+            ; (async () => {
+                await cumple.saludo(message);
+            })()
         }
         client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || '+message.attachments.array()[0].url : ''}`);
     }
