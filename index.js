@@ -238,11 +238,11 @@ const Info = require('./models/infoCumple');
 module.exports = { Info };
 
 client.on('message', message => {
-    if (message.guild === null && message.author.bot && message.channel.id == 431071887372845061) client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
+    if (message.guild === null && message.author.bot) client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
     if (message.author.bot) return;
     antiSpam.message(message);
     if (message.guild === null) {
-        if (message.author.id == 431071887372845061) {
+        if (message.author.id == 722457124508270622) {
             ; (async () => {
                 await cumple.saludo(message);
             })()

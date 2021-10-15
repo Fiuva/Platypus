@@ -7,7 +7,7 @@ const client = require('./index.js').client;
 const Info = require('./models/infoCumple');
 module.exports = { Info };
 
-const urlAvatar = 'https://cdn.discordapp.com/attachments/817486409157836850/897469358564057128/PicsArt_10-12-03.02.42.jpg'; //DESCOMENTAR COSAS!!!! Y COMPROBAR QUE PASA SI EMPIEZAS CON ALGO QUE NO SEA HOLA
+const urlAvatar = 'https://cdn.discordapp.com/attachments/817486409157836850/897469358564057128/PicsArt_10-12-03.02.42.jpg'; //DESCOMENTAR COSAS!!!
 const urlAvatarFbi = 'https://cdn.discordapp.com/attachments/817486409157836850/897972168145637416/ebb1dcff1e89b1fdec0b1defb040f1f6.png'
 
 var saludo = async function (message) {
@@ -51,7 +51,7 @@ var saludo = async function (message) {
                         if (cont.match(/y tu?/ig)) {
                             yoQueTal = true;
                             await escribir(message, `Bueno, pues como un ornitorrinco normal, asi de fiesta 🥳`)
-                            //client.user.setAvatar(urlAvatar);
+                            client.user.setAvatar(urlAvatar);
                             await escribir(message, `Sudando leche y lo que suelen hacer los mamiferos huevosos`)
                             return intro(message)
                         }
@@ -60,7 +60,7 @@ var saludo = async function (message) {
                             yoQueTal = true;
                             await escribir(message, `Pues como no me hablas, te digo como estoy yo :>`)
                             await escribir(message, `Bueno, pues yo estoy como un ornitorrinco normal, asi de fiesta 🥳`)
-                            //client.user.setAvatar(urlAvatar);
+                            client.user.setAvatar(urlAvatar);
                             await escribir(message, `Sudando leche y lo que suelen hacer los mamiferos huevosos`)
                             return intro(message)
                         }
@@ -71,7 +71,7 @@ var saludo = async function (message) {
                             await escribir(message, `Nutriaaaa, no me contestas :<`)
                             await escribir(message, `Pues como no me hablas, te digo como estoy yo :>`)
                             await escribir(message, `Bueno, pues yo estoy como un ornitorrinco normal, asi de fiesta 🥳`)
-                            //client.user.setAvatar(urlAvatar);
+                            client.user.setAvatar(urlAvatar);
                             await escribir(message, `Sudando leche y lo que suelen hacer los mamiferos huevosos`)
                             return intro(message)
                         }
@@ -85,7 +85,7 @@ var saludo = async function (message) {
         if (!queTal) {
             yoQueTal = true;
             await escribir(message, `Bueno, pues yo estoy como un ornitorrinco normal, asi de fiesta 🥳`)
-            //client.user.setAvatar(urlAvatar);
+            client.user.setAvatar(urlAvatar);
             return escribir(message, `Sudando leche y lo que suelen hacer los mamiferos huevosos. Y tú?`).then(message2 => {
                 message2.channel.awaitMessages(m => m, { max: 1, time: 60000, errors: ['time'] })
                     .then(async collected => {
@@ -114,7 +114,7 @@ var saludo = async function (message) {
         if (!yoQueTal) {
             yoQueTal = true;
             await escribir(message, `Bueno, pues yo estoy como un ornitorrinco normal, asi de fiesta 🥳`)
-            //client.user.setAvatar(urlAvatar);
+            client.user.setAvatar(urlAvatar);
             await escribir(message, `Sudando leche y lo que suelen hacer los mamiferos huevosos`)
             return intro(message)
         }
@@ -615,8 +615,8 @@ async function siguienteNivel(nivel, message) {
             break;
         case 5:
             await escribir(message, `Has pasado el nivel 5 :0`)
-            //client.user.setAvatar(urlAvatar);
-            //client.user.setUsername('Platypus')
+            client.user.setAvatar(urlAvatar);
+            client.user.setUsername('Platypus')
             fase6(message, 5);
             break;
     }
@@ -694,8 +694,8 @@ client.on('clickButton', async (button) => {
         await escribir(button.message, `Uy`)
         await escribir(button.message, `Un momento que llaman a la puerta, vengo en nada esperame <3`)
         await timeout(2)
-        //client.user.setAvatar(urlAvatarFbi);
-        //client.user.setUsername('FBI').catch(() => { client.user.setUsername('FBI🕵️') })
+        client.user.setAvatar(urlAvatarFbi);
+        client.user.setUsername('FBI').catch(() => { client.user.setUsername('FBI🕵️') })
         return fase5(button.message, fase)
     }
     if (button.id.startsWith('regaloNatCarcel_15_')) {
