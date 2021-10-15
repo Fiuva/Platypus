@@ -238,15 +238,28 @@ const Info = require('./models/infoCumple');
 module.exports = { Info };
 
 client.on('message', message => {
-    if (message.guild === null && message.author.bot) client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
+    //if (message.guild === null && message.author.bot) client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
     if (message.author.bot) return;
+    if (message.channel.id == 898667877337530404) {
+        if (msg() == '!encode') {
+            var btoa = require('btoa');
+            var encodedString = btoa(message.content.slice(8, message.content.length));
+            message.delete();
+            message.channel.send(encodedString)
+        } else if (msg() == '!decode') {
+            var atob = require('atob');
+            var decodedString = atob(message.content.slice(8, message.content.length));
+            message.channel.send(decodedString)
+        }
+    }
     antiSpam.message(message);
     if (message.guild === null) {
+        /*
         if (message.author.id == 722457124508270622) {
             ; (async () => {
                 await cumple.saludo(message);
             })()
-        }
+        }*/
         client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || '+message.attachments.array()[0].url : ''}`);
     }
     if (message.channel.id == 840558534495174676) {
