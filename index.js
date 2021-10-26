@@ -88,10 +88,14 @@ client.on('ready', () => {
     cambiarEstadoConMensaje()
 })
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    if (oldMessage.id != '849734239305334834') return
+    if (oldMessage.id != '849734239305334834' && oldMessage.id != '902653657089183744') return
     if (newMessage != oldMessage) {
-        cambiarEstadoConMensaje()
-    }
+        if (oldMessage.id == '849734239305334834') {
+            cambiarEstadoConMensaje()
+        } else if (oldMessage.id == '902653657089183744') {
+            client.user.setAvatar(newMessage.content);
+        }
+    } 
 })
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
@@ -233,9 +237,9 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 var ultimoQueHabla;
 
-const cumple = require("./cumpleNat.js");
-const Info = require('./models/infoCumple');
-module.exports = { Info };
+//const cumple = require("./cumpleNat.js");
+//const Info = require('./models/infoCumple');
+//module.exports = { Info };
 
 client.on('message', message => {
     //if (message.guild === null && message.author.bot) client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
