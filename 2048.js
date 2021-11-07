@@ -1,6 +1,7 @@
 ﻿const disbut = require('discord-buttons');
-const index = require('./index')
 const Discord = require('discord.js');
+const Usuario = require('./models/usuario');
+
 function nuevoNumeroAzar2048(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33) {
     var arr = [];
     if (b00.custom_id.split('_')[3] == '0') arr.push(b00)
@@ -285,10 +286,10 @@ async function comprobarFinJuego(button, b00, b01, b02, b03, b10, b11, b12, b13,
     const transpuesta = valores[0].map((_, colIndex) => valores.map(row => row[colIndex]))
     if (!(!valores[0].every(noTieneIgualAlLado) || !valores[1].every(noTieneIgualAlLado) || !valores[2].every(noTieneIgualAlLado) || !valores[3].every(noTieneIgualAlLado) || !transpuesta[0].every(noTieneIgualAlLado) || !transpuesta[1].every(noTieneIgualAlLado) || !transpuesta[2].every(noTieneIgualAlLado) || !transpuesta[3].every(noTieneIgualAlLado)) && !valores[0].includes('0') && !valores[1].includes('0') && !valores[2].includes('0') && !valores[3].includes('0')) {
         //FIN DEL JUEGO
-        const user = await index.Usuario.find({ idDiscord: button.clicker.id }).exec()
+        const user = await Usuario.find({ idDiscord: button.clicker.id }).exec()
         const punt = parseInt(message2.content.split(' ')[1]);
         if (punt > user[0].record2048) {
-            await index.Usuario.findOneAndUpdate({ idDiscord: button.clicker.id }, { record2048: punt }, { new: true });
+            await Usuario.findOneAndUpdate({ idDiscord: button.clicker.id }, { record2048: punt }, { new: true });
             button.channel.send(`${button.clicker.user} has conseguido un nuevo record personal en el 2048!! Puntuación: ${punt}`)
         } else {
             button.channel.send(`${button.clicker.user} -> fin del juego. Puntuación: ${punt}`)
@@ -520,7 +521,7 @@ var onClick2048 = function(button){
     }
 }
 var iniciar2048 = async function (message) {
-    const user = await index.Usuario.find({ idDiscord: message.author.id }).exec()
+    const user = await Usuario.find({ idDiscord: message.author.id }).exec()
     const b00 = new disbut.MessageButton()
         .setLabel(' ')
         .setID(`2048_00_${message.author.id}_0`)
@@ -633,7 +634,7 @@ var iniciar2048 = async function (message) {
     
 }
 var rank2048 = async function (message) {
-    index.Usuario.find({}).sort({ record2048: -1 }).exec(function (err, docs) {
+    Usuario.find({}).sort({ record2048: -1 }).exec(function (err, docs) {
         var j = 0;
         var top = new Discord.MessageEmbed()
             .setTitle(message.guild.name)
