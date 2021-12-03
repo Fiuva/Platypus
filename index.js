@@ -395,7 +395,7 @@ client.on('message', message => {
                 var user = await Usuario.find({ idDiscord: message.author.id }).exec();
                 var lim = user[0].expTotal;
                 const calcularNivelConst = calcularNivel(lim - 1);
-                var nivel = calcularNivelConst[0];
+                var nivel = calcularNivelConst[0]+1;
                 var calcularExp = calcularNivelConst[1];
 
                 let doc = await Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { expTotal: user[0].expTotal + nExp }, { new: true });
@@ -561,7 +561,7 @@ client.on('message', message => {
                 const calcularNivelConst = calcularNivel(expActual);
                 var nivel = calcularNivelConst[0];
                 var calcularExp = calcularNivelConst[1];
-                var calcularExpAnterior = calcularExp - nivel * aumentaNivel;
+                var calcularExpAnterior = calcularNivelConst[2];
 
                 const canvas = Canvas.createCanvas(1920, 480);
                 const ctx = canvas.getContext('2d');
@@ -1493,15 +1493,17 @@ function calcularNivel(experienciaTotal) {
     var expActual = experienciaTotal;
     var nivel = 0;
     var calcularExp = 0;
+    var calcularExpAnterior;
     for (nivel; calcularExp < expActual + 1; nivel++) {
         if (nivel <= 17) {
             calcularExp = calcularExp + (nivel + 1) * aumentaNivel;
         } else {
             calcularExp = calcularExp + (nivel + 17) + aumentaNivel * 17;
         }
+        if (calcularExp < expActual + 1) calcularExpAnterior = calcularExp;
     }
     nivel--;
-    return [nivel, calcularExp];
+    return [nivel, calcularExp, calcularExpAnterior];
 }
 
 function timeout(ms) {
