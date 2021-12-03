@@ -25,7 +25,7 @@ const router = express.Router();
 
 var date = new Date();
 const nExp = 1;
-const aumentaNivel = 10;
+const aumentaNivel = 7;
 const aumentaMonedas = 25;
 const precioAnillo = 30;
 const precioMillonario = 2000;
@@ -390,15 +390,14 @@ client.on('message', message => {
             talkedRecently.add(message.author.id);
             setTimeout(() => {
                 talkedRecently.delete(message.author.id);
-            }, 10000);
+            }, 5000);
             ; (async () => {
                 var user = await Usuario.find({ idDiscord: message.author.id }).exec();
-                var nivel = 0;
-                var calcularExp = 0;
                 var lim = user[0].expTotal;
-                for (nivel; calcularExp < lim; nivel++) {
-                    calcularExp = calcularExp + (nivel + 1) * aumentaNivel;
-                }
+                const calcularNivelConst = calcularNivel(lim - 1);
+                var nivel = calcularNivelConst[0];
+                var calcularExp = calcularNivelConst[1];
+
                 let doc = await Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { expTotal: user[0].expTotal + nExp }, { new: true });
                 doc.save();
                 if (user[0].expTotal + 1 == calcularExp) {
@@ -559,13 +558,10 @@ client.on('message', message => {
                     username = message.author;
                 }
                 var expActual = user[0].expTotal;
-                var nivel = 0;
-                var calcularExp = 0;
-                for (nivel; calcularExp < expActual + 1; nivel++) {
-                    calcularExp = calcularExp + (nivel + 1) * aumentaNivel;
-                }
+                const calcularNivelConst = calcularNivel(expActual);
+                var nivel = calcularNivelConst[0];
+                var calcularExp = calcularNivelConst[1];
                 var calcularExpAnterior = calcularExp - nivel * aumentaNivel;
-                nivel--;
 
                 const canvas = Canvas.createCanvas(1920, 480);
                 const ctx = canvas.getContext('2d');
@@ -1498,7 +1494,11 @@ function calcularNivel(experienciaTotal) {
     var nivel = 0;
     var calcularExp = 0;
     for (nivel; calcularExp < expActual + 1; nivel++) {
-        calcularExp = calcularExp + (nivel + 1) * aumentaNivel;
+        if (nivel <= 17) {
+            calcularExp = calcularExp + (nivel + 1) * aumentaNivel;
+        } else {
+            calcularExp = calcularExp + (nivel + 17) + aumentaNivel * 17;
+        }
     }
     nivel--;
     return [nivel, calcularExp];
