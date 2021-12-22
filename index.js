@@ -20,6 +20,7 @@ mongoose.connect(uri,
 
 const express = require('express');
 const Usuario = require('./models/usuario');
+const RecapData = require('./models/recapData');
 
 const router = express.Router();
 
@@ -55,7 +56,18 @@ const talkedRecently = new Set();
 
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
-
+    client.users.fetch('431071887372845061').then(async member => {
+        const recDat = await RecapData.find({ idDiscord: member.id })
+        if (member.presence.status == 'online' && recDat[0].fechaOnline == null) {
+            date = new Date();
+            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date }, { new: true });
+        } else if (member.presence.status != 'online' && recDat[0].fechaOnline != null) {
+            date = new Date();
+            const recDat = await RecapData.find({ idDiscord: member.id })
+            var fechaOnline = new Date(recDat[0].fechaOnline)
+            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+        }
+    })
     /*
     const fecha = new Date('2021-05-21T14:35:00');
     var func = function () {
@@ -220,6 +232,19 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
         } else {
             client.users.cache.get('431071887372845061').send(`Se ha cambiado de estado: |${newPresence.activities[0] != undefined? newPresence.activities[0].state:''}| ${ newPresence.activities[1] != undefined ? 'Escuchando: ' + newPresence.activities[1].details + ' (' + newPresence.activities[1].state + ')' : '' }`)
         }
+    }
+    if (member.id == "431071887372845061") {
+        if (oldPresence.status != newPresence.status) {
+            if (newPresence.status == 'online') {
+                date = new Date();
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date }, { new: true });
+            } else {
+                date = new Date();
+                const recDat = await RecapData.find({ idDiscord: member.id })
+                var fechaOnline = new Date(recDat[0].fechaOnline)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+            }
+        } 
     }
 })
 client.on('messageReactionRemove', (reaction, user) => {
