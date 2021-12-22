@@ -242,7 +242,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
                 date = new Date();
                 const recDat = await RecapData.find({ idDiscord: member.id })
                 var fechaOnline = new Date(recDat[0].fechaOnline)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline) }, { new: true });
             }
         } 
     }
