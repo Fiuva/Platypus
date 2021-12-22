@@ -223,7 +223,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         }
     }
 })
-client.on('presenceUpdate', (oldPresence, newPresence) => {
+client.on('presenceUpdate', async (oldPresence, newPresence) => {
     let member = newPresence.member;
     if (member.id == "807763566849163264") {
         if (oldPresence == null || newPresence == null) return client.users.cache.get('431071887372845061').send(`Error xd`);
