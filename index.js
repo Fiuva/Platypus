@@ -234,15 +234,16 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
         }
     }
     if (member.id == "431071887372845061") {
+        if (oldPresence == null || newPresence == null) return; //Tendria que hacer un fetch de todos los null para ver quien ya no lo deberia de ser
         if (oldPresence.status != newPresence.status) {
+            const recDat = await RecapData.find({ idDiscord: member.id })
             if (newPresence.status == 'online') {
                 date = new Date();
                 await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date }, { new: true });
-            } else {
+            } else if (recDat[0].fechaOnline != null) {
                 date = new Date();
-                const recDat = await RecapData.find({ idDiscord: member.id })
                 var fechaOnline = new Date(recDat[0].fechaOnline)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline) }, { new: true });
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
             }
         } 
     }
