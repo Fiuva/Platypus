@@ -56,6 +56,7 @@ const talkedRecently = new Set();
 
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
+    /*
     client.users.fetch('431071887372845061').then(async member => {
         const recDat = await RecapData.find({ idDiscord: member.id })
         if (member.presence.status == 'online' && recDat[0].fechaOnline == null) {
@@ -67,7 +68,7 @@ client.on('ready', () => {
             var fechaOnline = new Date(recDat[0].fechaOnline)
             await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
         }
-    })
+    })*/
     /*
     const fecha = new Date('2021-05-21T14:35:00');
     var func = function () {
@@ -233,6 +234,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
             client.users.cache.get('431071887372845061').send(`Se ha cambiado de estado: |${newPresence.activities[0] != undefined? newPresence.activities[0].state:''}| ${ newPresence.activities[1] != undefined ? 'Escuchando: ' + newPresence.activities[1].details + ' (' + newPresence.activities[1].state + ')' : '' }`)
         }
     }
+    /*
     if (member.id == "431071887372845061") {
         if (oldPresence == null || newPresence == null) return; //Tendria que hacer un fetch de todos los null para ver quien ya no lo deberia de ser
         if (oldPresence.status != newPresence.status) {
@@ -246,7 +248,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
                 await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
             }
         } 
-    }
+    }*/
 })
 client.on('messageReactionRemove', (reaction, user) => {
     let emoji = reaction.emoji;
