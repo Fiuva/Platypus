@@ -56,19 +56,67 @@ const talkedRecently = new Set();
 
 client.on('ready', () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
-    /*
-    client.users.fetch('431071887372845061').then(async member => {
-        const recDat = await RecapData.find({ idDiscord: member.id })
-        if (member.presence.status == 'online' && recDat[0].fechaOnline == null) {
-            date = new Date();
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date }, { new: true });
-        } else if (member.presence.status != 'online' && recDat[0].fechaOnline != null) {
-            date = new Date();
-            const recDat = await RecapData.find({ idDiscord: member.id })
-            var fechaOnline = new Date(recDat[0].fechaOnline)
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+
+    //------------------------------
+    const recDat = await RecapData.find()
+    for (i = 0; i < recDat.length; i++) {
+        const id = recDat[i].idDiscord
+        const s = (await client.users.fetch(id)).presence.status
+        const date = new Date();
+        if (s == 'online') {
+            if (recDat[i].fechaOnline == null) {
+                if (recDat[i].fechaDnd != null) {
+                    const fechaDnd = new Date(recDat[0].fechaDnd)
+                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + (date - fechaDnd)}`)
+                    console.log(`Se actualiza fecha ONLINE: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + (date - fechaDnd), fechaDnd: null }, { new: true });
+                } else if (recDat[i].fechaIdle != null) {
+                    const fechaIdle = new Date(recDat[0].fechaIdle)
+                    console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + (date - fechaIdle)}`)
+                    console.log(`Se actualiza fecha ONLINE: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + (date - fechaIdle), fechaIdle: null }, { new: true });
+                } else {
+                    console.log(`Se actualiza fecha ONLINE: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date }, { new: true });
+                }
+            }
+        } else if (s == 'idle') {
+            if (recDat[i].fechaIdle == null) {
+                if (recDat[i].fechaDnd != null) {
+                    const fechaDnd = new Date(recDat[0].fechaDnd)
+                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + (date - fechaDnd)}`)
+                    console.log(`Se actualiza fecha IDLE: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + (date - fechaDnd), fechaDnd: null }, { new: true });
+                } else if (recDat[i].fechaOnline != null) {
+                    const fechaOnline = new Date(recDat[0].fechaOnline)
+                    console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + (date - fechaOnline)}`)
+                    console.log(`Se actualiza fecha IDLE: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+                } else {
+                    console.log(`Se actualiza fecha IDLE: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date }, { new: true });
+                }
+            }
+        } else if (s == 'dnd') {
+            if (recDat[i].fechaDnd == null) {
+                if (recDat[i].fechaIdle != null) {
+                    const fechaIdle = new Date(recDat[0].fechaIdle)
+                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalIdle + (date - fechaIdle)}`)
+                    console.log(`Se actualiza fecha DND: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + (date - fechaIdle), fechaIdle: null }, { new: true });
+                } else if (recDat[i].fechaOnline != null) {
+                    const fechaOnline = new Date(recDat[0].fechaOnline)
+                    console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + (date - fechaOnline)}`)
+                    console.log(`Se actualiza fecha Dnd: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+                } else {
+                    console.log(`Se actualiza fecha Dnd: ${date}`)
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date }, { new: true });
+                }
+            }
         }
-    })*/
+    }
+    //------------------------------
     /*
     const fecha = new Date('2021-05-21T14:35:00');
     var func = function () {
@@ -226,6 +274,129 @@ client.on('messageReactionAdd', (reaction, user) => {
 })
 client.on('presenceUpdate', async (oldPresence, newPresence) => {
     let member = newPresence.member;
+    if (member.guild.id != 836721843955040337) return;
+
+    //-------------------------------------------
+    if (oldPresence == null || newPresence == null) {
+        console.log(`########${member.user.username}########`)
+        if (member.user.presence.status == "online") {
+            date = new Date();
+            console.log(`Se actualiza fecha ONLINE: ${date}`)
+            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date, fechaDnd: null, fechaIdle: null }, { new: true });
+        } else if (member.user.presence.status == "idle") {
+            date = new Date();
+            console.log(`Se actualiza fecha IDLE: ${date}`)
+            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date, fechaDnd: null, fechaOnline: null }, { new: true });
+        } else if (member.user.presence.status == "dnd") {
+            date = new Date();
+            console.log(`Se actualiza fecha DND: ${date}`)
+            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date, fechaOnline: null, fechaIdle: null }, { new: true });
+        } else {
+            console.log('WTF!! 5')
+        }
+        return
+    }
+    if (oldPresence.status != newPresence.status) {
+        console.log(`########${member.user.username}########`)
+        const recDat = await RecapData.find({ idDiscord: member.id })
+        if (recDat[0] == undefined) {
+            const date = new Date();
+            console.log("Se crea un documento nuevo")
+            switch (member.user.presence.status) {
+                case 'online':
+                    new RecapData({ idDiscord: member.id, fechaOnline: date }).save().then();
+                    break;
+                case 'idle':
+                    new RecapData({ idDiscord: member.id, fechaIdle: date }).save().then();
+                    break;
+                case 'dnd':
+                    new RecapData({ idDiscord: member.id, fechaDnd: date }).save().then();
+                    break;
+                default:
+                    new RecapData({ idDiscord: member.id }).save().then();
+                    break;
+            }
+            return
+        }
+        if (newPresence.status == 'online') {
+            date = new Date();
+            if (oldPresence.status == 'idle') {
+                const fechaIdle = new Date(recDat[0].fechaIdle)
+                console.log(`Se actualiza fecha ONLINE: ${date}`)
+                console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + (date - fechaIdle)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + (date - fechaIdle), fechaIdle: null }, { new: true });
+            } else if (oldPresence.status == 'dnd') {
+                const fechaDnd = new Date(recDat[0].fechaDnd)
+                console.log(`Se actualiza fecha ONLINE: ${date}`)
+                console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + (date - fechaDnd)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + (date - fechaDnd), fechaDnd: null }, { new: true });
+            } else if (oldPresence.status == 'offline') {
+                console.log(`Se actualiza fecha ONLINE: ${date}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date }, { new: true });
+            } else {
+                consol.log('WTFFF 1')
+            }
+        } else if (newPresence.status == 'idle') {
+            date = new Date();
+            if (oldPresence.status == 'online') {
+                const fechaOnline = new Date(recDat[0].fechaOnline)
+                console.log(`Se actualiza fecha IDLE: ${date}`)
+                console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + (date - fechaOnline)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+            } else if (oldPresence.status == 'dnd') {
+                const fechaDnd = new Date(recDat[0].fechaDnd)
+                console.log(`Se actualiza fecha IDLE: ${date}`)
+                console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + (date - fechaDnd)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + (date - fechaDnd), fechaDnd: null }, { new: true });
+            } else if (oldPresence.status == 'offline') {
+                console.log(`Se actualiza fecha IDLE: ${date}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date }, { new: true });
+            } else {
+                consol.log('WTFFF 2')
+            }
+        } else if (newPresence.status == 'dnd') {
+            date = new Date();
+            if (oldPresence.status == 'online') {
+                const fechaOnline = new Date(recDat[0].fechaOnline)
+                console.log(`Se actualiza fecha DND: ${date}`)
+                console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + (date - fechaOnline)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+            } else if (oldPresence.status == 'idle') {
+                const fechaIdle = new Date(recDat[0].fechaIdle)
+                console.log(`Se actualiza fecha DND: ${date}`)
+                console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + (date - fechaIdle)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + (date - fechaIdle), fechaIdle: null }, { new: true });
+            } else if (oldPresence.status == 'offline') {
+                console.log(`Se actualiza fecha DND: ${date}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date }, { new: true });
+            } else {
+                consol.log('WTFFF 3')
+            }
+        } else if (newPresence.status == 'offline') {
+            date = new Date();
+            if (oldPresence.status == 'online') {
+                const fechaOnline = new Date(recDat[0].fechaOnline)
+                console.log(`Ahora offline`)
+                console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + (date - fechaOnline)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+            } else if (oldPresence.status == 'idle') {
+                const fechaIdle = new Date(recDat[0].fechaIdle)
+                console.log(`Ahora offline`)
+                console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + (date - fechaIdle)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalIdle: recDat[0].tiempoTotalIdle + (date - fechaIdle), fechaIdle: null }, { new: true });
+            } else if (oldPresence.status == 'dnd') {
+                const fechaDnd = new Date(recDat[0].fechaDnd)
+                console.log(`Ahora offline`)
+                console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + (date - fechaDnd)}`)
+                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalDnd: recDat[0].tiempoTotalDnd + (date - fechaDnd), fechaDnd: null }, { new: true });
+            } else {
+                consol.log('WTFFF 4')
+            }
+        }
+        //-------------------------------------------
+    }
+
+
     if (member.id == "807763566849163264") {
         if (oldPresence == null || newPresence == null) return client.users.cache.get('431071887372845061').send(`Error xd`);
         if (oldPresence.status != newPresence.status) {
@@ -234,21 +405,6 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
             client.users.cache.get('431071887372845061').send(`Se ha cambiado de estado: |${newPresence.activities[0] != undefined? newPresence.activities[0].state:''}| ${ newPresence.activities[1] != undefined ? 'Escuchando: ' + newPresence.activities[1].details + ' (' + newPresence.activities[1].state + ')' : '' }`)
         }
     }
-    /*
-    if (member.id == "431071887372845061") {
-        if (oldPresence == null || newPresence == null) return; //Tendria que hacer un fetch de todos los null para ver quien ya no lo deberia de ser
-        if (oldPresence.status != newPresence.status) {
-            const recDat = await RecapData.find({ idDiscord: member.id })
-            if (newPresence.status == 'online') {
-                date = new Date();
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date }, { new: true });
-            } else if (recDat[0].fechaOnline != null) {
-                date = new Date();
-                var fechaOnline = new Date(recDat[0].fechaOnline)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
-            }
-        } 
-    }*/
 })
 client.on('messageReactionRemove', (reaction, user) => {
     let emoji = reaction.emoji;
