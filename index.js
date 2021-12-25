@@ -54,7 +54,7 @@ const idVCuarteto = '836991178717134877';
 const idVQuinteto = '836991212124241941';
 const talkedRecently = new Set();
 
-client.on('ready', () => {
+client.on('ready', async () => {
     console.log(`Bot is ready as: ${client.user.tag}`);
 
     //------------------------------
