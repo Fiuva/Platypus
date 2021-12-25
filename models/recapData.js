@@ -3,8 +3,12 @@ const Schema = mongoose.Schema;
 
 const recapSchema = new Schema({
     idDiscord: { type: String, unique: true },
-    fechaOnline: { type: String, default: '0' },
-    tiempoTotalOnline: { type: Number, default: 0 }
+    fechaOnline: { type: String, default: null },
+    tiempoTotalOnline: { type: Number, default: 0 },
+    fechaIdle: { type: String, default: null },
+    tiempoTotalIdle: { type: Number, default: 0 },
+    fechaDnd: { type: String, default: null },
+    tiempoTotalDnd: { type: Number, default: 0 }
 })
 
 // crear modelo
