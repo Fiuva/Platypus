@@ -55,8 +55,36 @@ const idVQuinteto = '836991212124241941';
 const talkedRecently = new Set();
 
 const schedule = require('node-schedule');
-const job = schedule.scheduleJob('0 0 * * *', function () {
-    client.channels.cache.get('836721843955040339').send('Hoy debería de ser un día nuevo, esto es una prueba, no se asusten :)');
+const job = schedule.scheduleJob('0 0 * * *', async function () {
+    const recDat = await RecapData.find()
+    var i;
+    for (i = 0; i < recDat.length; i++) {
+        const date = new Date();
+        var total;
+        var tiempos;
+        if (recDat[i].mensajes == undefined) {
+            total = 0;
+            tiempos = []
+        } else {
+            total = recDat[i].mensajes.total
+            tiempos = recDat[i].mensajes.tiempos
+        }
+        var mensajesMasFrecuencia = [];
+        if (recDat[i].mensajesMasFrecuencia == undefined) {
+            mensajesMasFrecuencia = [];
+        } else {
+            mensajesMasFrecuencia = recDat[i].mensajesMasFrecuencia;
+        }
+        mensajesMasFrecuencia.push({
+            mensajesDia: total,
+            date: date,
+            tiempoMedio: masFrecuencia(tiempos, 10)
+        })
+        const mensajes = { total: 0, tiempos: [] }
+        await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes })
+    }
+    
+    client.channels.cache.get('836721843955040339').send('Hoy debería de ser un día nuevo, esto es una prueba, no se asusten :)'+` || actualizados ${i} documentos (espero que no haya petado mi base de datos xd)`);
     console.log('Esto se debería de enviar cada día a las 00:00');
 });
 
@@ -433,6 +461,27 @@ var ultimoQueHabla;
 client.on('message', message => {
     //if (message.guild === null && message.author.bot) client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
     if (message.author.bot) return;
+
+    //---------------RECAP------------------
+    ; (async () => {
+        const date = new Date();
+        const recDat = await RecapData.find({ idDiscord: message.author.id })
+        var total;
+        var tiempos;
+        if (recDat[0].mensajes == undefined) {
+            total = 0;
+            tiempos = []
+        } else {
+            total = recDat[0].mensajes.total
+            tiempos = recDat[0].mensajes.tiempos
+        }
+        total++;
+        tiempos.push(date.getHours() * 60 + date.getMinutes());
+        const mensajes = { total: total, tiempos: tiempos }
+        await RecapData.findOneAndUpdate({ idDiscord: message.author.id }, { mensajes: mensajes })
+    })()
+    //------------------------------------
+
     if (message.channel.id == 898667877337530404) {
         if (msg() == '!encode') {
             var btoa = require('btoa');
@@ -446,6 +495,7 @@ client.on('message', message => {
         }
     }
     antiSpam.message(message);
+    
     if (message.guild === null) {
         /*
         if (message.author.id == 722457124508270622) {

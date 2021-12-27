@@ -8,7 +8,9 @@ const recapSchema = new Schema({
     fechaIdle: { type: String, default: null },
     tiempoTotalIdle: { type: Number, default: 0 },
     fechaDnd: { type: String, default: null },
-    tiempoTotalDnd: { type: Number, default: 0 }
+    tiempoTotalDnd: { type: Number, default: 0 },
+    mensajes: { type: Object, default: { total: 0, tiempos: [] } },
+    mensajesMasFrecuencia: { type: Array, default: [] }
 })
 
 // crear modelo
