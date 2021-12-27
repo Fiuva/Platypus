@@ -1310,7 +1310,7 @@ client.on('message', async message => {
                     cargando.edit(`Cargando canciones (${i}/${arr.length}) ${i / arr.length * 100}%`);
                     serverQueue2 = await execute2(message, arr[0], serverQueue)
                 } else {
-                    cargando.edit(`Cargando canciones (${i}/${arr.length}) ${(i / arr.length * 100).toFixed(2)}%`);
+                    if(i%2 == 0) cargando.edit(`Cargando canciones (${i}/${arr.length}) ${(i / arr.length * 100).toFixed(2)}%`);
                     await execute3(arr[i], serverQueue2)
                 }
                 if (i < 20) mensajeCanciones = mensajeCanciones + (i + 1) + '. ' + arr[i] + ' \n';
