@@ -55,7 +55,7 @@ const idVQuinteto = '836991212124241941';
 const talkedRecently = new Set();
 
 const schedule = require('node-schedule');
-const job = schedule.scheduleJob('* 0 * * *', function () {
+const job = schedule.scheduleJob('0 0 * * *', function () {
     client.channels.cache.get('836721843955040339').send('Hoy debería de ser un día nuevo, esto es una prueba, no se asusten :)');
     console.log('Esto se debería de enviar cada día a las 00:00');
 });
