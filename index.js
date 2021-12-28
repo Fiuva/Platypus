@@ -106,8 +106,8 @@ function masFrecuencia(array, maximo) {
 const job = schedule.scheduleJob('0 0 * * *', async function () {
     const recDat = await RecapData.find()
     var i;
+    const date = new Date();
     for (i = 0; i < recDat.length; i++) {
-        const date = new Date();
         var total;
         var tiempos;
         if (recDat[i].mensajes == undefined) {
@@ -129,10 +129,60 @@ const job = schedule.scheduleJob('0 0 * * *', async function () {
             tiempoMedio: masFrecuencia(tiempos, 10)
         })
         const mensajes = { total: 0, tiempos: [] }
-        await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes })
+
+        var tiempoTotalOnline;
+        var tiempoTotalIdle;
+        var tiempoTotalDnd;
+
+        if (recDat[i].fechaOnline != null) {
+            const fechaOnline = new Date(recDat[i].fechaOnline)
+            tiempoTotalOnline = recDat[i].tiempoTotalOnline + (date - fechaOnline)
+            tiempoTotalIdle = recDat[i].tiempoTotalIdle
+            tiempoTotalDnd = recDat[i].tiempoTotalDnd
+        } else if (recDat[i].fechaIdle != null) {
+            const fechaIdle = new Date(recDat[i].fechaIdle)
+            tiempoTotalOnline = recDat[i].tiempoTotalOnline
+            tiempoTotalIdle = recDat[i].tiempoTotalIdle + (date - fechaIdle)
+            tiempoTotalDnd = recDat[i].tiempoTotalDnd
+        } else if (recDat[i].fechaDnd != null) {
+            const fechaDnd = new Date(recDat[i].fechaDnd)
+            tiempoTotalOnline = recDat[i].tiempoTotalOnline
+            tiempoTotalIdle = recDat[i].tiempoTotalIdle
+            tiempoTotalDnd = recDat[i].tiempoTotalDnd + (date - fechaDnd)
+        } else {
+            tiempoTotalOnline = recDat[i].tiempoTotalOnline
+            tiempoTotalIdle = recDat[i].tiempoTotalIdle
+            tiempoTotalDnd = recDat[i].tiempoTotalDnd
+        }
+
+        const tComienzo = {
+            online: tiempoTotalOnline,
+            idle: tiempoTotalIdle,
+            dnd: tiempoTotalDnd
+        }
+        const tPorDia = recDat[i].tiemposPorDia;
+        tPorDia.push({
+            online: tComienzo.online - recDat[i].tiemposEstadoComienzoDia.online,
+            idle: tComienzo.idle - recDat[i].tiemposEstadoComienzoDia.idle,
+            dnd: tComienzo.dnd - recDat[i].tiemposEstadoComienzoDia.dnd
+        })
+        switch ((await client.users.fetch(recDat[i].idDiscord)).presence.status) {
+            case 'online':
+                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaOnline: date, fechaIdle: null, fechaDnd: null })
+                break;
+            case 'idle':
+                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaIdle: date, fechaOnline: null, fechaDnd: null })
+                break;
+            case 'dnd':
+                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaDnd: date, fechaIdle: null, fechaOnline: null })
+                break;
+            default:
+                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaDnd: null, fechaIdle: null, fechaOnline: null })
+                break;
+        }
     }
 
-    client.channels.cache.get('836721843955040339').send('Hoy debería de ser un día nuevo, esto es una prueba, no se asusten :)'+` || actualizados ${i} documentos (espero que no haya petado mi base de datos xd)`);
+    client.channels.cache.get('836734022184861706').send('Hoy debería de ser un día nuevo, esto es una prueba, no se asusten :)'+` || actualizados ${i} documentos (espero que no haya petado mi base de datos xd)`);
     console.log('Esto se debería de enviar cada día a las 00:00');
 });
 
@@ -514,6 +564,27 @@ client.on('message', message => {
     ; (async () => {
         const date = new Date();
         const recDat = await RecapData.find({ idDiscord: message.author.id })
+        if (recDat[0] == undefined) {
+            var tiempos = [];
+            tiempos.push(date.getHours() * 60 + date.getMinutes());
+            const mensajes = { total: 1, tiempos: tiempos }
+            console.log("Se crea un documento nuevo")
+            switch (message.author.presence.status) {
+                case 'online':
+                    new RecapData({ idDiscord: message.author.id, fechaOnline: date, mensajes: mensajes }).save().then();
+                    break;
+                case 'idle':
+                    new RecapData({ idDiscord: message.author.id, fechaIdle: date, mensajes: mensajes }).save().then();
+                    break;
+                case 'dnd':
+                    new RecapData({ idDiscord: message.author.id, fechaDnd: date, mensajes: mensajes }).save().then();
+                    break;
+                default:
+                    new RecapData({ idDiscord: message.author.id, mensajes: mensajes }).save().then();
+                    break;
+            }
+            return
+        }
         var total;
         var tiempos;
         if (recDat[0].mensajes == undefined) {
