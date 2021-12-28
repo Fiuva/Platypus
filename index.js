@@ -196,7 +196,7 @@ client.on('ready', async () => {
         const id = recDat[i].idDiscord
         const s = (await client.users.fetch(id)).presence.status
         const cs = (await client.users.fetch(id)).presence.clientStatus
-        const dispositivos = [];
+        var dispositivos = [];
         if(cs != null && cs != undefined) dispositivos = Object.keys(cs); 
         const date = new Date();
         if (s == 'online') {
