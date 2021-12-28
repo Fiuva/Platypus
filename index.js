@@ -55,7 +55,55 @@ const idVQuinteto = '836991212124241941';
 const talkedRecently = new Set();
 
 const schedule = require('node-schedule');
-const job = schedule.scheduleJob('0 0 * * *', async function () {
+function masFrecuencia(array, maximo) {
+    const dif = [];
+    for (i = 0; i < array.length; i++) {
+        if (i == 0) {
+            dif.push(null);
+        } else {
+            var diferencia = array[i] - array[i - 1];
+            if (diferencia <= maximo) {
+                dif.push(0)
+            } else {
+                dif.push(diferencia)
+            }
+        }
+    }
+    function subsecuenciaCerosMaxima(array) {
+        var indexMax = -1;
+        var indexPosible = 0;
+        var maxLength = 0;
+        var posibleLength = 0;
+        var noHayCeros = true;
+        for (i = 0; i < array.length; i++) {
+            if (array[i] == 0) {
+                if (posibleLength == 0) indexPosible = i;
+                posibleLength++;
+                noHayCeros = false;
+            } else {
+                posibleLength = 0
+            }
+            if (array[i + 1] != 0) {
+                if (maxLength <= posibleLength && !noHayCeros) {
+                    maxLength = posibleLength
+                    indexMax = indexPosible
+                }
+            }
+        }
+        if (noHayCeros) return [null, null]
+        return [indexMax - 1, maxLength + 1]
+    }
+    function media(array) {
+        var sum = 0;
+        for (i = 0; i < array.length; i++) {
+            sum += array[i];
+        }
+        return sum / array.length
+    }
+    const res = subsecuenciaCerosMaxima(dif)
+    return media(array.splice(res[0], res[1]))
+}
+const job = schedule.scheduleJob('15 0 * * *', async function () {
     const recDat = await RecapData.find()
     var i;
     for (i = 0; i < recDat.length; i++) {
@@ -83,7 +131,7 @@ const job = schedule.scheduleJob('0 0 * * *', async function () {
         const mensajes = { total: 0, tiempos: [] }
         await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes })
     }
-    
+
     client.channels.cache.get('836721843955040339').send('Hoy debería de ser un día nuevo, esto es una prueba, no se asusten :)'+` || actualizados ${i} documentos (espero que no haya petado mi base de datos xd)`);
     console.log('Esto se debería de enviar cada día a las 00:00');
 });
