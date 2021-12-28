@@ -48,7 +48,9 @@ const recapSchema = new Schema({
                 idle: 0,
                 dnd: 0
             }
-        ] }
+    ] },
+    fechaMovil: { type: String, default: null },
+    tiempoTotalMovil: { type: Number, default: 0 }
 })
 
 // crear modelo
