@@ -168,16 +168,16 @@ const job = schedule.scheduleJob('0 0 * * *', async function () {
         })
         switch ((await client.users.fetch(recDat[i].idDiscord)).presence.status) {
             case 'online':
-                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaOnline: date, fechaIdle: null, fechaDnd: null })
+                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaOnline: date, fechaIdle: null, fechaDnd: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
                 break;
             case 'idle':
-                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaIdle: date, fechaOnline: null, fechaDnd: null })
+                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaIdle: date, fechaOnline: null, fechaDnd: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
                 break;
             case 'dnd':
-                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaDnd: date, fechaIdle: null, fechaOnline: null })
+                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaDnd: date, fechaIdle: null, fechaOnline: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
                 break;
             default:
-                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaDnd: null, fechaIdle: null, fechaOnline: null })
+                await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaDnd: null, fechaIdle: null, fechaOnline: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
                 break;
         }
     }
