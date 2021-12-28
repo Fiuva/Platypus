@@ -103,7 +103,7 @@ function masFrecuencia(array, maximo) {
     const res = subsecuenciaCerosMaxima(dif)
     return media(array.splice(res[0], res[1]))
 }
-const job = schedule.scheduleJob('15 0 * * *', async function () {
+const job = schedule.scheduleJob('0 0 * * *', async function () {
     const recDat = await RecapData.find()
     var i;
     for (i = 0; i < recDat.length; i++) {
