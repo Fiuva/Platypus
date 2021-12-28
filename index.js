@@ -160,12 +160,13 @@ const job = schedule.scheduleJob('0 0 * * *', async function () {
             idle: tiempoTotalIdle,
             dnd: tiempoTotalDnd
         }
-        const tPorDia = recDat[i].tiemposPorDia;
-        tPorDia.push({
-            online: tComienzo.online - recDat[i].tiemposEstadoComienzoDia.online,
-            idle: tComienzo.idle - recDat[i].tiemposEstadoComienzoDia.idle,
-            dnd: tComienzo.dnd - recDat[i].tiemposEstadoComienzoDia.dnd
-        })
+        var tPorDia = recDat[i].tiemposPorDia;
+        const day = date.getDay();
+        tPorDia[day] = {
+            online: tComienzo.online - recDat[i].tiemposEstadoComienzoDia.online + tPorDia[day].online,
+            idle: tComienzo.idle - recDat[i].tiemposEstadoComienzoDia.idle + tPorDia[day].idle,
+            dnd: tComienzo.dnd - recDat[i].tiemposEstadoComienzoDia.dnd + tPorDia[day].dnd
+        }
         switch ((await client.users.fetch(recDat[i].idDiscord)).presence.status) {
             case 'online':
                 await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaOnline: date, fechaIdle: null, fechaDnd: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
@@ -182,7 +183,7 @@ const job = schedule.scheduleJob('0 0 * * *', async function () {
         }
     }
 
-    client.channels.cache.get('836734022184861706').send('Hoy debería de ser un día nuevo, esto es una prueba, no se asusten :)'+` || actualizados ${i} documentos (espero que no haya petado mi base de datos xd)`);
+    client.channels.cache.get('836734022184861706').send('Hoy debería de ser un día nuevo, esto es una prueba, no se asusten :)' + ` || actualizados ${i} documentos (espero que no haya petado mi base de datos xd)`);
     console.log('Esto se debería de enviar cada día a las 00:00');
 });
 

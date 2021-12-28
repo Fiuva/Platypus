@@ -12,7 +12,43 @@ const recapSchema = new Schema({
     mensajes: { type: Object, default: { total: 1, tiempos: [] } },
     mensajesMasFrecuencia: { type: Array, default: [] },
     tiemposEstadoComienzoDia: { type: Object, default: { online: 0, dnd: 0, idle: 0 } },
-    tiemposPorDia: { type: Array, default: [] }
+    tiemposPorDia: { type: Array, default: [
+            {
+                online: 0,
+                idle: 0,
+                dnd: 0
+            },
+            {
+                online: 0,
+                idle: 0,
+                dnd: 0
+            },
+            {
+                online: 0,
+                idle: 0,
+                dnd: 0
+            },
+            {
+                online: 0,
+                idle: 0,
+                dnd: 0
+            },
+            {
+                online: 0,
+                idle: 0,
+                dnd: 0
+            },
+            {
+                online: 0,
+                idle: 0,
+                dnd: 0
+            },
+            {
+                online: 0,
+                idle: 0,
+                dnd: 0
+            }
+        ] }
 })
 
 // crear modelo
