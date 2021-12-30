@@ -541,8 +541,31 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
 
     if (oldPresence == null || newPresence == null) {
         const dispositivos = Object.keys(member.presence.clientStatus);
-        const recDat = await RecapData.find({ idDiscord: member.id })
+        var recDat = await RecapData.find({ idDiscord: member.id })
         date = new Date();
+        //arreglar
+        if (recDat[0] == undefined) {
+            const date = new Date();
+            console.log("Se crea un documento nuevo (Por movil)")
+            switch (member.user.presence.status) {
+                case 'online':
+                    new RecapData({ idDiscord: member.id, fechaOnline: date }).save().then();
+                    recDat = await RecapData.find({ idDiscord: member.id })
+                    break;
+                case 'idle':
+                    new RecapData({ idDiscord: member.id, fechaIdle: date }).save().then();
+                    recDat = await RecapData.find({ idDiscord: member.id })
+                    break;
+                case 'dnd':
+                    new RecapData({ idDiscord: member.id, fechaDnd: date }).save().then();
+                    recDat = await RecapData.find({ idDiscord: member.id })
+                    break;
+                default:
+                    new RecapData({ idDiscord: member.id }).save().then();
+                    recDat = await RecapData.find({ idDiscord: member.id })
+                    break;
+            }
+        }
         if (dispositivos.includes('mobile') && recDat[0].fechaMovil == null) {
             console.log(`Se actualiza fecha Movil: ${date}`)
             await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: date }, { new: true });
