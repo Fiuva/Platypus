@@ -254,7 +254,7 @@ client.on('ready', async () => {
         if (dispositivos.includes('mobile') && recDat[i].fechaMovil == null) {
             console.log(`Se actualiza fecha Movil: ${date}`)
             await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { fechaMovil: date }, { new: true });
-        } else if (recDat[0].fechaMovil != null) {
+        } else if (recDat[i].fechaMovil != null) {
             const fechaMovil = new Date(recDat[i].fechaMovil)
             console.log(`Tiempo total en MOVIL: ${recDat[i].tiempoTotalMovil + (date - fechaMovil)} ${(await client.users.fetch(recDat[i].idDiscord)).username}`)
             await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { fechaMovil: null, tiempoTotalMovil: recDat[i].tiempoTotalMovil + (date - fechaMovil) }, { new: true });
