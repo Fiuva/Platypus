@@ -256,7 +256,7 @@ client.on('ready', async () => {
             await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { fechaMovil: date }, { new: true });
         } else if (recDat[0].fechaMovil != null) {
             const fechaMovil = new Date(recDat[i].fechaMovil)
-            console.log(`Tiempo total en MOVIL: ${recDat[i].tiempoTotalMovil + (date - fechaMovil)}`)
+            console.log(`Tiempo total en MOVIL: ${recDat[i].tiempoTotalMovil + (date - fechaMovil)} ${(await client.users.fetch(recDat[i].idDiscord)).username}`)
             await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { fechaMovil: null, tiempoTotalMovil: recDat[i].tiempoTotalMovil + (date - fechaMovil) }, { new: true });
         }
     }
@@ -543,7 +543,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
         const dispositivos = Object.keys(member.presence.clientStatus);
         var recDat = await RecapData.find({ idDiscord: member.id })
         date = new Date();
-        //arreglar
+        //arreglado
         if (recDat[0] == undefined) {
             const date = new Date();
             console.log("Se crea un documento nuevo (Por movil)")
