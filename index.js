@@ -400,9 +400,14 @@ client.on('guildMemberAdd', member => {
         member.guild.channels.cache.get("836730119023493140").send(`**Bienvenid@ ${member.user}, que lo pases bien!** 🤤`, attachment);
     })()
 })
-client.on('guildMemberRemove', member => {
+client.on('guildMemberRemove', async member => {
     member.guild.channels.cache.get("837367366227853423").setName('Ornitorrincos: ' + member.guild.memberCount);
     member.guild.channels.cache.get("836730119023493140").send(`${member.user} ha abandonado la familia de ornitorrincos :'<`);
+    var recDat = await RecapData.find({ idDiscord: member.id })
+    if (recDat[0] != undefined) {
+        await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: null, fechaDnd: null, fechaOnline: null, fechaIdle: null }, { new: true });
+        console.log(`Alguien salió, se modifica su documento de ${member.id}`)
+    }
 })
 client.on('messageReactionAdd', (reaction, user) => {
     let emoji = reaction.emoji;
