@@ -451,16 +451,16 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
             console.log("Se crea un documento nuevo")
             switch (member.user.presence.status) {
                 case 'online':
-                    new RecapData({ idDiscord: member.id, fechaOnline: date }).save().then();
+                    await new RecapData({ idDiscord: member.id, fechaOnline: date }).save().then();
                     break;
                 case 'idle':
-                    new RecapData({ idDiscord: member.id, fechaIdle: date }).save().then();
+                    await new RecapData({ idDiscord: member.id, fechaIdle: date }).save().then();
                     break;
                 case 'dnd':
-                    new RecapData({ idDiscord: member.id, fechaDnd: date }).save().then();
+                    await new RecapData({ idDiscord: member.id, fechaDnd: date }).save().then();
                     break;
                 default:
-                    new RecapData({ idDiscord: member.id }).save().then();
+                    await new RecapData({ idDiscord: member.id }).save().then();
                     break;
             }
             return
