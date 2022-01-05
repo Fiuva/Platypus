@@ -574,7 +574,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
         if (dispositivos.includes('mobile') && recDat[0].fechaMovil == null) {
             console.log(`Se actualiza fecha Movil: ${date}`)
             await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: date }, { new: true });
-        } else if (recDat[0].fechaMovil != null && !dispositivos.includes('mobile')) {
+        } else if (recDat[0].fechaMovil != null) {
             const fechaMovil = new Date(recDat[0].fechaMovil)
             console.log(`Tiempo total en MOVIL: ${recDat[0].tiempoTotalMovil + (date - fechaMovil)}`)
             await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: null, tiempoTotalMovil: recDat[0].tiempoTotalMovil + (date - fechaMovil) }, { new: true });
@@ -587,7 +587,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
         if (dispositivos.includes('mobile') && recDat[0].fechaMovil == null) {
             console.log(`Se actualiza fecha Movil: ${date}`)
             await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: date }, { new: true });
-        } else if (recDat[0].fechaMovil != null && !dispositivos.includes('mobile')) {
+        } else if (recDat[0].fechaMovil != null) {
             const fechaMovil = new Date(recDat[0].fechaMovil)
             console.log(`Tiempo total en MOVIL: ${recDat[0].tiempoTotalMovil + (date - fechaMovil)}`)
             await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: null, tiempoTotalMovil: recDat[0].tiempoTotalMovil + (date - fechaMovil) }, { new: true });
