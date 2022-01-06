@@ -778,7 +778,7 @@ client.on('message', message => {
             }
         }
     }
-    if (msg() == '!unban' || msg() == '!untimeout' && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
+    if ((msg() == '!unban' || msg() == '!untimeout') && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
         message.delete();
         var toUser = message.mentions.members.first();
         if (toUser) {
