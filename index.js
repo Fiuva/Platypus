@@ -1388,7 +1388,7 @@ client.on('message', async message => {
                 tituloFix = tituloFix + tituloCompleto[i];
             }
         }
-        const searches = await Client.songs.search(tituloFix.replace(/videoclip/i, '').replace(/|/g, '').replace(/-/g, '').replace(/"/g, '')).catch(e => message.channel.send('Canción no encontrada'));
+        const searches = await Client.songs.search(tituloFix.replace(/videoclip/i, '').replace(/|/g, '').replace(/-/g, '').replace(/"/g, '').replace(/”/g, '')).catch(e => message.channel.send('Canción no encontrada'));
 
         const firstSong = await searches[0];
         if (firstSong) {
