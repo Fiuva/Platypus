@@ -27,6 +27,7 @@
     "mongoose": "^5.11.13",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
+    "node-schedule": "^2.1.0",
     "translate": "^1.2.3",
     "ytdl-core": "^4.10.0",
     "ytsr": "^3.5.0"
