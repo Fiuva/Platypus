@@ -1938,10 +1938,7 @@ function play(guild, song) {
     }
 
     const dispatcher = serverQueue.connection
-        .play(ytdl(song.url), {
-            quality: 'highestaudio',
-            highWaterMark: 1024 * 1024 * 1024
-        })
+        .play(ytdl(song.url))
         .on('start', () => {
             if (song.title.match(/worst of you/i)) {
                 worstOfYou();
