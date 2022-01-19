@@ -203,14 +203,24 @@ client.on('ready', async () => {
             if (recDat[i].fechaOnline == null) {
                 if (recDat[i].fechaDnd != null) {
                     const fechaDnd = new Date(recDat[0].fechaDnd)
-                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + (date - fechaDnd)}`)
+                    var t = (date - fechaDnd);
+                    if (t == date.getTime()) {
+                        t = 0;
+                        console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+                    }
+                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + t}`)
                     console.log(`Se actualiza fecha ONLINE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + (date - fechaDnd), fechaDnd: null }, { new: true });
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + t, fechaDnd: null }, { new: true });
                 } else if (recDat[i].fechaIdle != null) {
                     const fechaIdle = new Date(recDat[0].fechaIdle)
-                    console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + (date - fechaIdle)}`)
+                    var t = (date - fechaIdle);
+                    if (t == date.getTime()) {
+                        t = 0;
+                        console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+                    }
+                    console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + t}`)
                     console.log(`Se actualiza fecha ONLINE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + (date - fechaIdle), fechaIdle: null }, { new: true });
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + t, fechaIdle: null }, { new: true });
                 } else {
                     console.log(`Se actualiza fecha ONLINE: ${date}`)
                     await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date }, { new: true });
@@ -220,14 +230,24 @@ client.on('ready', async () => {
             if (recDat[i].fechaIdle == null) {
                 if (recDat[i].fechaDnd != null) {
                     const fechaDnd = new Date(recDat[0].fechaDnd)
-                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + (date - fechaDnd)}`)
+                    var t = (date - fechaDnd);
+                    if (t == date.getTime()) {
+                        t = 0;
+                        console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+                    }
+                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + t}`)
                     console.log(`Se actualiza fecha IDLE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + (date - fechaDnd), fechaDnd: null }, { new: true });
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + t, fechaDnd: null }, { new: true });
                 } else if (recDat[i].fechaOnline != null) {
                     const fechaOnline = new Date(recDat[0].fechaOnline)
-                    console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + (date - fechaOnline)}`)
+                    var t = (date - fechaOnline);
+                    if (t == date.getTime()) {
+                        t = 0;
+                        console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+                    }
+                    console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + t}`)
                     console.log(`Se actualiza fecha IDLE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + t, fechaOnline: null }, { new: true });
                 } else {
                     console.log(`Se actualiza fecha IDLE: ${date}`)
                     await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date }, { new: true });
@@ -237,14 +257,24 @@ client.on('ready', async () => {
             if (recDat[i].fechaDnd == null) {
                 if (recDat[i].fechaIdle != null) {
                     const fechaIdle = new Date(recDat[0].fechaIdle)
-                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalIdle + (date - fechaIdle)}`)
+                    var t = (date - fechaIdle);
+                    if (t == date.getTime()) {
+                        t = 0;
+                        console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+                    }
+                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalIdle + t}`)
                     console.log(`Se actualiza fecha DND: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + (date - fechaIdle), fechaIdle: null }, { new: true });
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + t, fechaIdle: null }, { new: true });
                 } else if (recDat[i].fechaOnline != null) {
                     const fechaOnline = new Date(recDat[0].fechaOnline)
-                    console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + (date - fechaOnline)}`)
+                    var t = (date - fechaOnline);
+                    if (t == date.getTime()) {
+                        t = 0;
+                        console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+                    }
+                    console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + t}`)
                     console.log(`Se actualiza fecha Dnd: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + (date - fechaOnline), fechaOnline: null }, { new: true });
+                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + t, fechaOnline: null }, { new: true });
                 } else {
                     console.log(`Se actualiza fecha Dnd: ${date}`)
                     await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date }, { new: true });
