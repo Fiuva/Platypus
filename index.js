@@ -1470,7 +1470,7 @@ client.on('message', async message => {
                     await firstSong.lyrics().then(lyrics => {
                         if (lyrics.length > 2048) {
                             const letras1 = new Discord.MessageEmbed()
-                                .setTitle(firstSong.raw.full_tittle)
+                                .setTitle(firstSong.raw.full_title)
                                 .setDescription(lyrics.substr(-lyrics.length, 2048))
                                 .setURL(queue.get(message.guild.id).songs[0].url)
                             message.channel.send(letras1);
