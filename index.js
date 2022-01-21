@@ -1459,21 +1459,8 @@ client.on('message', async message => {
         stop(message, serverQueue);
         return;
     } else if (msg() == '!lyrics' || msg() == '!letra') {
-        var tituloCompleto = queue.get(message.guild.id).songs[0].title;
-        var tituloFix = '';
-        var parentesis = false;
-        for (i = 0; i < tituloCompleto.length; i++) {
-            if (tituloCompleto[i] == '(' || tituloCompleto[i] == '[') {
-                parentesis = true;
-                break;
-            } else if (tituloCompleto[i] == ')' || tituloCompleto[i] == ']') {
-                parentesis = false;
-            }
-            if (!parentesis) {
-                tituloFix = tituloFix + tituloCompleto[i];
-            }
-        }
-        const searches = await Client.songs.search(tituloFix.replace(/videoclip/i, '').replace(/|/g, '').replace(/-/g, '').replace(/"/g, '').replace(/”/g, '')).catch(e => message.channel.send('Canción no encontrada'));
+        const searches = await Client.songs.search(arreglarTitulo(queue.get(message.guild.id).songs[0].title))
+            .catch(e => message.channel.send('Canción no encontrada'));
 
         const firstSong = await searches[0];
         if (firstSong) {
@@ -2472,4 +2459,29 @@ function cargar(message) {
         setTimeout(func(1), 100);
     })
 
+}
+
+function arreglarTitulo(titulo) {
+    var tituloCompleto = titulo;
+    var tituloFix = '';
+    var parentesis = false;
+    for (iletra = 0; iletra < tituloCompleto.length; iletra++) {
+        if (tituloCompleto[iletra] == '(' || tituloCompleto[iletra] == '[') {
+            parentesis = true;
+            break;
+        } else if (tituloCompleto[iletra] == ')' || tituloCompleto[iletra] == ']') {
+            parentesis = false;
+        }
+        if (!parentesis) {
+            tituloFix = tituloFix + tituloCompleto[iletra];
+        }
+    }
+    tituloFix
+        .replace(/videoclip/i, '')
+        .replace(/|/g, '')
+        .replace(/-/g, '')
+        .replace(/"/g, '')
+        .replace(/M\/V/g, '')
+
+    return tituloFix
 }
