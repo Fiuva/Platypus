@@ -1461,7 +1461,7 @@ client.on('message', async message => {
     } else if (msg() == '!lyrics' || msg() == '!letra') {
         const searches = await Client.songs.search(arreglarTitulo(queue.get(message.guild.id).songs[0].title))
             .catch(e => message.channel.send('Canción no encontrada'));
-
+        if (!searches) return;
         const firstSong = await searches[0];
         if (firstSong) {
             message.channel.send(`Buscando letra`).then(message2 => {
@@ -1470,7 +1470,7 @@ client.on('message', async message => {
                     await firstSong.lyrics().then(lyrics => {
                         if (lyrics.length > 2048) {
                             const letras1 = new Discord.MessageEmbed()
-                                .setTitle(tituloCompleto)
+                                .setTitle(firstSong.raw.full_tittle)
                                 .setDescription(lyrics.substr(-lyrics.length, 2048))
                                 .setURL(queue.get(message.guild.id).songs[0].url)
                             message.channel.send(letras1);
@@ -2476,12 +2476,13 @@ function arreglarTitulo(titulo) {
             tituloFix = tituloFix + tituloCompleto[iletra];
         }
     }
-    tituloFix
+    tituloFix = tituloFix
         .replace(/videoclip/i, '')
         .replace(/|/g, '')
         .replace(/-/g, '')
         .replace(/"/g, '')
-        .replace(/M\/V/g, '')
-
+        .replace(/M\/V/gi, '')
+        .replace(/Lyrics/gi, '')
+        .replace(/letra/gi, '')
     return tituloFix
 }
