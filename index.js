@@ -786,6 +786,18 @@ client.on('message', message => {
                 message.channel.send('No has respondido a nadie')
             }
         })()
+    }else if (message.channel.id == 937143535843549245) {
+        if (msg().startsWith('<#')) {
+            const id = message.content.split('<')[1].split('>')[0].replace('#', '');
+            client.channels.fetch(id).then(channel => {
+                channel.send(msg(1, 255, true));
+                message.react('✅')
+            }).catch(e => {
+                message.react('❌')
+            })
+        } else {
+            message.channel.send('Para enviar un mensaje a un canal primero pon el canal \"#general hola\"')
+        }
     }
     if (msg() == '!estado' && message.author.id == '431071887372845061') {
         var tipo;
