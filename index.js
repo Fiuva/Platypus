@@ -1471,7 +1471,8 @@ client.on('message', async message => {
         stop(message, serverQueue);
         return;
     } else if (msg() == '!lyrics' || msg() == '!letra') {
-        const searches = await Client.songs.search(arreglarTitulo(queue.get(message.guild.id).songs[0].title))
+        const tituloCompleto = queue.get(message.guild.id).songs[0].title;
+        const searches = await Client.songs.search(arreglarTitulo(tituloCompleto))
             .catch(e => message.channel.send('Canción no encontrada'));
         if (!searches) return;
         const firstSong = await searches[0];
