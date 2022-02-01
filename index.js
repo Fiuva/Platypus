@@ -1476,6 +1476,7 @@ client.on('message', async message => {
             .catch(e => message.channel.send('Canción no encontrada'));
         if (!searches) return;
         const firstSong = await searches[0];
+        console.log(arreglarTitulo(tituloCompleto)+'  '+firstSong)
         if (firstSong) {
             message.channel.send(`Buscando letra`).then(message2 => {
                 letr();
@@ -1968,9 +1969,12 @@ function play(guild, song) {
     }
 
     const dispatcher = serverQueue.connection
-        .play(ytdl(song.url), {
+        .play(ytdl(song.url, {
+            filter: 'audioonly'
+        }), {
             quality: 'highestaudio',
             highWaterMark: 1024
+            
         })
         .on('start', () => {
             if (song.title.match(/worst of you/i)) {
