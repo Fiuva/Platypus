@@ -906,8 +906,7 @@ client.on('message', message => {
         })()
     }
     if (message.mentions.users.first() == client.user) {
-        console.log('Me mencionan')
-        (async () => {
+        ; (async () => {
             message.lineReply(math.evaluate(message.content.replace(/<@!836972868055203850>/g, '')))
         })().catch(e => { })
     }
