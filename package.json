@@ -20,6 +20,7 @@
     "canvas": "^2.6.1",
     "discord-anti-spam": "^2.5.1",
     "discord-buttons": "^4.0.0",
+    "discord-reply": "^0.1.2",
     "discord-rpc": "^4.0.1",
     "discord.js": "^12.5.3",
     "discord.js-commando": "^0.12.3",
