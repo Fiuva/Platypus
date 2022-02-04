@@ -1,5 +1,5 @@
 ﻿const Discord = require('discord.js');
-require(discord-reply)
+require('discord-reply')
 const client = new Discord.Client({ partials: ["REACTION", "MESSAGE", "USER"] });
 require('discord-buttons')(client);
 const disbut = require('discord-buttons');
