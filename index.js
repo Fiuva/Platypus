@@ -37,6 +37,7 @@ const Canvas = require('canvas');
 Canvas.registerFont("./Fonts/Impacted.ttf", { family: "Impacted" });
 const { findOneAndUpdate, count } = require('./models/usuario');
 
+var math = require('mathjs');
 const antiSpam = require('./antiSpam');
 
 const nombreMonedas = 'PlatyCoins';
@@ -886,8 +887,7 @@ client.on('message', message => {
                 message.channel.send(`${toUser} no está en la carcel`);
             }
         }
-    }
-    if (msg() === '!addpc' && message.author.id == 431071887372845061) {
+    } else if (msg() === '!addpc' && message.author.id == 431071887372845061) {
         ; (async () => {
             message.delete();
             if (msg(1, 2).startsWith('<@')) {
@@ -903,7 +903,12 @@ client.on('message', message => {
                 message.channel.send(`${message.author}: añadir ${nombreMonedas} !addpc <@user> <lerdocoins> [razón]`);
             }
         })()
+    } else if (message.mentions.users.first() == client.user) {
+        (async () => {
+            message.lineReply(math.evaluate(message.content.replace(/<@!836972868055203850>/g, '')))
+        })().catch(e => { })
     }
+
     if (message.channel.id != 836721843955040339 && message.channel.id != 836879630815985674) return;
 
     if (message.channel.id == 836721843955040339) {
@@ -1183,8 +1188,7 @@ client.on('message', message => {
                 const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'imagenRank.png');
                 message.channel.send(attachment);
             })()
-        }
-        if (msg() === '!color') {
+        } else if (msg() === '!color') {
             var colorMensaje = msg(1, 2).toLowerCase();
             var colDef;
             if (colorMensaje.startsWith('#') && colorMensaje.length == 7) {
@@ -1214,8 +1218,7 @@ client.on('message', message => {
             }
             Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { color: colDef }, { new: true }).then();
             message.channel.send(`${message.author} se ha modificado su color de !rank correctamente`);
-        }
-        if (msg() === '!tienda') {
+        } else if (msg() === '!tienda') {
             ; (async () => {
                 var userTienda = await Usuario.find({ idDiscord: message.author.id }).exec();
                 const mensajeTienda = new Discord.MessageEmbed()
@@ -1280,8 +1283,7 @@ client.on('message', message => {
                 })
             })()
 
-        }
-        if (msg() === '!vender') {
+        } else if (msg() === '!vender') {
             const mensajeTienda = new Discord.MessageEmbed()
                 .setColor('#AB0101')
                 .setTitle('Vender')
@@ -1320,8 +1322,7 @@ client.on('message', message => {
                         });
                 }
             })
-        }
-        if (msg() === '!inventario') {
+        } else if (msg() === '!inventario') {
             ; (async () => {
                 var username;
                 var user;
@@ -1345,8 +1346,7 @@ client.on('message', message => {
                     )
                 message.channel.send(mensajeInventario)
             })()
-        }    
-        if (msg() == '!top' || msg() == '!lb' || msg() == '!ranking') {
+        } else if (msg() == '!top' || msg() == '!lb' || msg() == '!ranking') {
             Usuario.find({}).sort({ expTotal: -1 }).exec(function (err, docs) {
                 var j = 0;
                 var top = new Discord.MessageEmbed()
@@ -1374,8 +1374,7 @@ client.on('message', message => {
                     }
                 }
             });
-        }
-        if (msg() === '!ayuda' || msg() === '!help' || msg() === '!comandos') {
+        } else if (msg() === '!ayuda' || msg() === '!help' || msg() === '!comandos') {
             const mensajeAyuda = new Discord.MessageEmbed()
                 .setColor('#FEA0FA')
                 .setTitle('COMANDOS')

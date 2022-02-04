@@ -27,6 +27,7 @@
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.3.0",
     "genius-lyrics": "^4.3.5",
+    "mathjs": "^10.1.1",
     "mongoose": "^5.11.13",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
