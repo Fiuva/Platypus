@@ -903,7 +903,9 @@ client.on('message', message => {
                 message.channel.send(`${message.author}: añadir ${nombreMonedas} !addpc <@user> <lerdocoins> [razón]`);
             }
         })()
-    } else if (message.mentions.users.first() == client.user) {
+    }
+    if (message.mentions.users.first() == client.user) {
+        console.log('Me mencionan')
         (async () => {
             message.lineReply(math.evaluate(message.content.replace(/<@!836972868055203850>/g, '')))
         })().catch(e => { })
