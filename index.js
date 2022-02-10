@@ -1973,8 +1973,8 @@ function play(guild, song) {
         .play(ytdl(song.url, {
             filter: 'audioonly'
         }), {
-            quality: 'highestaudio',
-            highWaterMark: 1024
+            //quality: 'highestaudio',
+            //highWaterMark: 1024
             
         })
         .on('start', () => {
