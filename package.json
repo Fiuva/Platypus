@@ -7,6 +7,7 @@
     "node": "14.16.1"
   },
   "dependencies": {
+    "@discordjs/opus": "^0.7.0",
     "canvas": "^2.9.0",
     "discord-anti-spam": "^2.5.1",
     "discord-buttons": "^4.0.0-deprecated",
