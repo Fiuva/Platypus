@@ -1,44 +1,31 @@
 {
   "name": "platypus",
   "version": "1.0.0",
-  "description": "",
+  "description": "Bot de discord de Fiuva",
   "main": "index.js",
   "engines": {
-    "node": "16.x"
+    "node": "14.16.1"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.5.3",
-    "@types/node-fetch": "^2.5.12",
-    "atob": "^2.1.2",
-    "btoa": "^1.2.1",
     "canvas": "^2.9.0",
-    "discord-anti-spam": "^2.7.2",
-    "discord-buttons": "^4.0.0",
+    "discord-anti-spam": "^2.5.1",
+    "discord-buttons": "^4.0.0-deprecated",
     "discord-reply": "^0.1.2",
-    "discord-rpc": "^4.0.1",
     "discord.js": "^12.5.3",
-    "discord.js-commando": "^0.12.3",
     "express": "^4.17.2",
-    "ffmpeg": "^0.0.4",
     "ffmpeg-static": "^4.4.1",
-    "fs": "^0.0.1-security",
     "genius-lyrics": "^4.3.5",
     "mathjs": "^10.1.1",
-    "mongoose": "^5.13.14",
-    "node-cache": "^5.1.2",
-    "node-fetch": "^2.6.7",
+    "mongoose": "^6.2.1",
     "node-schedule": "^2.1.0",
-    "translate": "^1.2.3",
+    "translate": "^1.4.1",
     "ytdl-core": "^4.10.1",
     "ytsr": "^3.6.0"
   },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
-  }
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fiuva",
+  "license": "ISC"
 }

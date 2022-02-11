@@ -14,7 +14,7 @@ const dbname = 'Platypus'
 const uri = `mongodb+srv://${user}:${password}@cluster0.mc7yn.mongodb.net/${dbname}?retryWrites=true&w=majority`;
 
 mongoose.connect(uri,
-    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }
+    { useNewUrlParser: true, useUnifiedTopology: true/*, useCreateIndex: true, useFindAndModify: false */}
 )
     .then(() => console.log('Base de datos conectada'))
     .catch(e => console.log(e));
