@@ -14,6 +14,7 @@
     "discord-reply": "^0.1.2",
     "discord.js": "^12.5.3",
     "express": "^4.17.2",
+    "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.4.1",
     "genius-lyrics": "^4.3.5",
     "mathjs": "^10.1.1",
