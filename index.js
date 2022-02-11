@@ -1577,7 +1577,7 @@ client.on('message', async message => {
             var cargando;
             await message.channel.send(`Cargando canciones`).then(mens => cargando = mens);
             estaCargandoCanciones = true;
-            for (i = 0; i < arr.length; i++) {
+            for (var i = 0; i < arr.length; i++) {
                 if (i == 0 && !serverQueue) {
                     cargando.edit(`Cargando canciones (${i}/${arr.length}) ${i / arr.length * 100}%`);
                     serverQueue2 = await execute2(message, arr[0], serverQueue)
