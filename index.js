@@ -732,7 +732,7 @@ client.on('message', message => {
         }
     }
 
-    if (member.guild.id != guildServerPlaty) return;
+    if (message.guild.id != guildServerPlaty) return;
     //---------------RECAP------------------
     ; (async () => {
         const date = new Date();
