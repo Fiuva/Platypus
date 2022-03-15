@@ -1468,7 +1468,7 @@ client.on('clickButton', async (button) => {
 client.on('message', async message => {
     if (message.author.bot || (message.channel.id != 838801241341558825 && message.channel.id != 950866628973846548)) return;
     var idCanal = idCanalesMusica.otro;
-    if (guildServerPlaty) idCanal = idCanalesMusica.platy;
+    if (message.guild.id == guildServerPlaty) idCanal = idCanalesMusica.platy;
 
     const serverQueue = queue.get(message.guild.id);
 
@@ -1831,7 +1831,7 @@ async function execute(message, serverQueue, idCanal = idCanalesMusica.platy) {
 
     const voiceChannel = message.member.guild.channels.cache.get(idCanal);
     if (message.member.voice.channel.id != idCanal) {
-        return message.channel.send(`${message.author} necesitass estar en el canal de música`);
+        return message.channel.send(`${message.author} necesitas estar en el canal de música`);
     }
     const search = await ytsr(msg(1, 150), { pages: 1 });
     const songInfo = await ytdl.getInfo(search.items[0].url);
