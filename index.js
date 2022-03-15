@@ -49,6 +49,11 @@ const idMaltratador = '837016264421408850';
 const idBrawlStars = '836877776422305822';
 const idSub = '837346304517865532';
 
+const guildServerPlaty = "836721843955040337";
+const idCanalesMusica = {
+    platy: "838776417768046622",
+    otro: "953350044982079561"
+}
 const voiceCId = '836957406599577631';
 const idVDuo = '836991033208078428';
 const idVTrio = '836991104754253836';
@@ -344,18 +349,18 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
         } else if (newUserChannel == undefined) {
             //SALIR (de oldUserChannel)
             eliminarCanalDeVoz(oldUserChannel);
-            if (oldUserChannel.members.size == 1 && oldUserChannel.members.first().id == '836972868055203850' && oldUserChannel.id == 838776417768046622) {
+            if (oldUserChannel.members.size == 1 && oldUserChannel.members.first().id == '836972868055203850' && (oldUserChannel.id == idCanalesMusica.platy || oldUserChannel.id == idCanalesMusica.otro)) {
                 queue.delete(oldUserChannel.guild.id);
-                client.channels.cache.get('838776417768046622').leave();
+                client.channels.cache.get(oldUserChannel.id).leave();
                 return;
             }
         } else {
             //CAMBIAR (de oldUserChannel a newUserChannel)
             crearCanalDeVoz(newUserChannel.id);
             eliminarCanalDeVoz(oldUserChannel);
-            if (oldUserChannel.members.size == 1 && oldUserChannel.members.first().id == '836972868055203850' && oldUserChannel.id == 838776417768046622) {
+            if (oldUserChannel.members.size == 1 && oldUserChannel.members.first().id == '836972868055203850' && (oldUserChannel.id == idCanalesMusica.platy || oldUserChannel.id == idCanalesMusica.otro)) {
                 queue.delete(oldUserChannel.guild.id);
-                client.channels.cache.get('838776417768046622').leave();
+                client.channels.cache.get(oldUserChannel.id).leave();
                 return;
             }
         }
@@ -400,6 +405,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 })
 
 client.on('guildMemberAdd', member => {
+    if (member.guild.id != guildServerPlaty) return;
     ; (async () => {
         member.guild.channels.cache.get("837367366227853423").setName('Ornitorrincos: ' + member.guild.memberCount);
         const canvas = Canvas.createCanvas(1600, 814);
@@ -433,6 +439,7 @@ client.on('guildMemberAdd', member => {
     })()
 })
 client.on('guildMemberRemove', async member => {
+    if (member.guild.id != guildServerPlaty) return;
     member.guild.channels.cache.get("837367366227853423").setName('Ornitorrincos: ' + member.guild.memberCount);
     member.guild.channels.cache.get("836730119023493140").send(`${member.user} ha abandonado la familia de ornitorrincos :'<`);
     var recDat = await RecapData.find({ idDiscord: member.id })
@@ -455,7 +462,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 })
 client.on('presenceUpdate', async (oldPresence, newPresence) => {
     let member = newPresence.member;
-    if (member.guild.id != 836721843955040337) return;
+    if (member.guild.id != guildServerPlaty) return;
 
     //-------------------------------------------
     if (oldPresence == null || newPresence == null) {
@@ -614,7 +621,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
                 console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + t}`)
                 await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalDnd: recDat[0].tiempoTotalDnd + t, fechaDnd: null }, { new: true });
             } else {
-                consol.log('WTFFF 4')
+                console.log('WTFFF 4')
             }
         }
         //-------------------------------------------
@@ -712,7 +719,20 @@ var ultimoQueHabla;
 client.on('message', message => {
     //if (message.guild === null && message.author.bot) client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
     if (message.author.bot) return;
+    if (message.channel.id == 898667877337530404) {
+        if (msg() == '!encode') {
+            var btoa = require('btoa');
+            var encodedString = btoa(message.content.slice(8, message.content.length));
+            message.delete();
+            message.channel.send(encodedString)
+        } else if (msg() == '!decode') {
+            var atob = require('atob');
+            var decodedString = atob(message.content.slice(8, message.content.length));
+            message.channel.send(decodedString)
+        }
+    }
 
+    if (member.guild.id != guildServerPlaty) return;
     //---------------RECAP------------------
     ; (async () => {
         const date = new Date();
@@ -754,18 +774,6 @@ client.on('message', message => {
     })()
     //------------------------------------
 
-    if (message.channel.id == 898667877337530404) {
-        if (msg() == '!encode') {
-            var btoa = require('btoa');
-            var encodedString = btoa(message.content.slice(8, message.content.length));
-            message.delete();
-            message.channel.send(encodedString)
-        } else if (msg() == '!decode') {
-            var atob = require('atob');
-            var decodedString = atob(message.content.slice(8, message.content.length));
-            message.channel.send(decodedString)
-        }
-    }
     antiSpam.message(message);
     
     if (message.guild === null) {
@@ -1458,12 +1466,14 @@ client.on('clickButton', async (button) => {
 });
 
 client.on('message', async message => {
-    if (message.author.bot || message.channel.id != 838801241341558825) return;
+    if (message.author.bot || (message.channel.id != 838801241341558825 && message.channel.id != 950866628973846548)) return;
+    var idCanal = idCanalesMusica.otro;
+    if (guildServerPlaty) idCanal = idCanalesMusica.platy;
 
     const serverQueue = queue.get(message.guild.id);
 
     if (msg() == '!play') {
-        execute(message, serverQueue);
+        execute(message, serverQueue, idCanal);
         return;
     } else if (msg() == '!skip') {
         skip(message, serverQueue);
@@ -1533,7 +1543,8 @@ client.on('message', async message => {
         message.channel.send(mensajeAyuda);
     } else if (msg() == '!reset') {
         queue.delete(message.guild.id)
-        message.member.guild.channels.cache.get('838776417768046622').leave();
+        if (message.guild.id == guildServerPlaty) message.member.guild.channels.cache.get(idCanalesMusica.platy).leave();
+        else message.member.guild.channels.cache.get(idCanalesMusica.otro).leave();
         message.channel.send('Platypus reseteado porque alguien lo solicitó por algún posible bug de la musica :> Perdonen las molestias')
     } else if (msg() == '!save' || msg() == '!guardar') {
         if (queue.get(message.guild.id)) {
@@ -1580,7 +1591,7 @@ client.on('message', async message => {
             for (var i = 0; i < arr.length; i++) {
                 if (i == 0 && !serverQueue) {
                     cargando.edit(`Cargando canciones (${i}/${arr.length}) ${i / arr.length * 100}%`);
-                    serverQueue2 = await execute2(message, arr[0], serverQueue)
+                    serverQueue2 = await execute2(message, arr[0], serverQueue, idCanal)
                 } else {
                     if(i%2 == 0) cargando.edit(`Cargando canciones (${i}/${arr.length}) ${(i / arr.length * 100).toFixed(2)}%`);
                     await execute3(arr[i], serverQueue2)
@@ -1807,7 +1818,7 @@ client.on('message', async message => {
     }
 })
 
-async function execute(message, serverQueue) {
+async function execute(message, serverQueue, idCanal = idCanalesMusica.platy) {
     function msg(c = 0, f = 1, same = false) {
         var content = message.content.replace(/\s+/g, ' ').trim();
         if (same) {
@@ -1818,8 +1829,8 @@ async function execute(message, serverQueue) {
         }
     }
 
-    const voiceChannel = message.member.guild.channels.cache.get('838776417768046622');
-    if (message.member.voice.channel.id != '838776417768046622') {
+    const voiceChannel = message.member.guild.channels.cache.get(idCanal);
+    if (message.member.voice.channel.id != idCanal) {
         return message.channel.send(`${message.author} necesitass estar en el canal de música`);
     }
     const search = await ytsr(msg(1, 150), { pages: 1 });
@@ -1878,9 +1889,9 @@ async function execute(message, serverQueue) {
         return message.channel.send(mensCancion);
     }
 }
-async function execute2(message, url, serverQueue) {
-    const voiceChannel = message.member.guild.channels.cache.get('838776417768046622');
-    if (message.member.voice.channel.id != '838776417768046622') {
+async function execute2(message, url, serverQueue, idCanal = idCanalesMusica.platy) {
+    const voiceChannel = message.member.guild.channels.cache.get(idCanal);
+    if (message.member.voice.channel.id != idCanal) {
         return message.channel.send(`${message.author} necesitass estar en el canal de música`);
     }
     const search = await ytsr(url, { pages: 1 });
