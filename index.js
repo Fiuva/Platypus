@@ -732,6 +732,17 @@ client.on('message', message => {
         }
     }
 
+    if (message.guild === null) {
+        /*
+        if (message.author.id == 722457124508270622) {
+            ; (async () => {
+                await cumple.saludo(message);
+            })()
+        }*/
+        client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
+        return;
+    }
+
     if (message.guild.id != guildServerPlaty) return;
     //---------------RECAP------------------
     ; (async () => {
@@ -775,16 +786,7 @@ client.on('message', message => {
     //------------------------------------
 
     antiSpam.message(message);
-    
-    if (message.guild === null) {
-        /*
-        if (message.author.id == 722457124508270622) {
-            ; (async () => {
-                await cumple.saludo(message);
-            })()
-        }*/
-        client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || '+message.attachments.array()[0].url : ''}`);
-    }
+
     if (message.channel.id == 840558534495174676) {
         ; (async () => {
             if (message.reference) {
