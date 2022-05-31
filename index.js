@@ -329,6 +329,7 @@ client.on('ready', async () => {
     cambiarEstadoConMensaje()
 })
 client.on('messageUpdate', (oldMessage, newMessage) => {
+    return;
     if (oldMessage.id != '849734239305334834' && oldMessage.id != '902653657089183744') return
     if (newMessage != oldMessage) {
         if (oldMessage.id == '849734239305334834') {
@@ -340,6 +341,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 })
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
+    return;
     let newUserChannel = newMember.channel;
     let oldUserChannel = oldMember.channel;
     if (oldUserChannel != newUserChannel) {
