@@ -1067,8 +1067,8 @@ client.on('message', message => {
                                     }
                                     else {
                                         message.channel.send(`${message.author} a decidido dejar la relación con ${message.guild.members.cache.get(user[0].parejaId)}`);
-                                        Usuario.findOneAndUpdate({ idDiscord: user[0].parejaId }, { solicitudId: '0', parejaId: '0', fechaPareja: '0' }, { new: true }).then();
-                                        Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { solicitudId: '0', parejaId: '0', monedas: user[0].monedas - 100, fechaPareja: '0' }, { new: true }).then(message2.delete());
+                                        Usuario.findOneAndUpdate({ idDiscord: user[0].parejaId }, { parejaId: '0', fechaPareja: '0' }, { new: true }).then();
+                                        Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { parejaId: '0', monedas: user[0].monedas - 100, fechaPareja: '0' }, { new: true }).then(message2.delete());
                                     }
                                 }).catch(() => {
                                     message2.delete();
@@ -1077,6 +1077,9 @@ client.on('message', message => {
                     }
                 }
             })().catch(e => message.channel.send(`${message.author} error`));
+        }
+        if (msg() == '!prueba1934828342') {
+            message.channel.send("hola :>");
         }
         if (msg() == '!3' || msg() == '3enraya') {
             tresEnRaya.tres(message);
