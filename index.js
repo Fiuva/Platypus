@@ -451,6 +451,7 @@ client.on('guildMemberRemove', async member => {
     }
 })
 client.on('messageReactionAdd', (reaction, user) => {
+    return;
     let emoji = reaction.emoji;
     if (reaction.message.id == '837347810705539173') {
         if (emoji.name == '⭐') {
@@ -701,6 +702,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
     }
 })
 client.on('messageReactionRemove', (reaction, user) => {
+    return;
     let emoji = reaction.emoji;
     if (reaction.message.id == '837347810705539173') {
         if (emoji.name == '⭐') {
