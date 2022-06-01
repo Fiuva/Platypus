@@ -802,7 +802,8 @@ client.on('message', message => {
                     message.channel.send('No has respondido a nadie')
                 }
         })()
-    }else if (message.channel.id == 937143535843549245) {
+    } else if (message.channel.id == 937143535843549245) {
+        return;
         if (msg().startsWith('<#')) {
             const id = message.content.split('<')[1].split('>')[0].replace('#', '');
             client.channels.fetch(id).then(channel => {
