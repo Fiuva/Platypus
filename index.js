@@ -906,6 +906,7 @@ client.on('message', message => {
             }
         }
     } else if (msg() === '!addpc' && message.author.id == 431071887372845061) {
+        return;
         ; (async () => {
             message.delete();
             if (msg(1, 2).startsWith('<@')) {
