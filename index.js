@@ -741,6 +741,7 @@ client.on('message', message => {
                 await cumple.saludo(message);
             })()
         }*/
+        return;
         client.channels.cache.get('840558534495174676').send(`${message.author}| ${message.content} ${message.attachments.array()[0] != undefined ? ' || ' + message.attachments.array()[0].url : ''}`);
         return;
     }
