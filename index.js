@@ -857,6 +857,7 @@ client.on('message', message => {
         }).then(message.channel.send(`Estado actualizado`))
     }
     if (msg() == '!timeout' && (message.member.roles.cache.has(idMod) || message.member.roles.cache.has(idAdmin))) {
+        return;
         message.delete();
         var toUser = message.mentions.members.first();
         if (toUser) {
