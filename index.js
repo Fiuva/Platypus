@@ -791,15 +791,16 @@ client.on('message', message => {
     antiSpam.message(message);
 
     if (message.channel.id == 840558534495174676) {
+        return;
         ; (async () => {
-            if (message.reference) {
-                const mens = await message.channel.messages.fetch(message.reference.messageID)
-                const to = mens.mentions.members.first();
-                if (!to) return message.channel.send('Error al enviar MD');
-                to.send(message.content).then(message.react('✅'));
-            } else if (message.reference == null) {
-                message.channel.send('No has respondido a nadie')
-            }
+                if (message.reference) {
+                    const mens = await message.channel.messages.fetch(message.reference.messageID)
+                    const to = mens.mentions.members.first();
+                    if (!to) return message.channel.send('Error al enviar MD');
+                    to.send(message.content).then(message.react('✅'));
+                } else if (message.reference == null) {
+                    message.channel.send('No has respondido a nadie')
+                }
         })()
     }else if (message.channel.id == 937143535843549245) {
         if (msg().startsWith('<#')) {
