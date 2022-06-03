@@ -88,7 +88,7 @@ module.exports = (client, Discord) => {
         queue.autoplay = true;
     });
 
-    client.distube.on("addList", async (queue, playlist) => {
+    client.distube.on("addList", (queue, playlist) => {
         const mensPlaylist = new MessageEmbed()
             .setTitle(playlist.name)
             .setColor('#E758A1')
@@ -100,6 +100,8 @@ module.exports = (client, Discord) => {
             .setFooter({ text: `Duración:  ${playlist.formattedDuration}` })
 
         queue.textChannel.send({ embeds: [mensPlaylist] });
-        (await client.channels.cache.get(CANAL_TEXTO.MUSICA).messages.fetch(playlist.metadata.messageId)).delete();
+        client.channels.cache.get(CANAL_TEXTO.MUSICA)
+            .messages.cache.get(playlist.metadata.messageId)
+            .delete();
     });
 };

@@ -1,6 +1,6 @@
 {
-  "name": "exp_platypus2",
-  "version": "2.0.0",
+  "name": "platypus",
+  "version": "2.1.0",
   "description": "Bot para mi server de discord :)",
   "main": "index.js",
   "engines": {

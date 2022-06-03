@@ -7,7 +7,11 @@ module.exports = {
     canales: [CANAL_TEXTO.MUSICA],
     run: async (client, message, args) => {
         if (!args.length) return message.reply("Pero pon el nombre de la canción... cara alfombra!");
-        if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return message.reply("Tienes que meterte al canal de musica... cara alcachofa!");
+        if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) {
+            message.channel.send(`${message.author} tienes que meterte al canal de musica... cara alcachofa!`);
+            message.delete();
+            return;
+        }
 
         try {
             await client.distube.play(message.member.voice?.channel, args.join(' '), {
