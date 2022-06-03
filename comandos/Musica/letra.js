@@ -17,7 +17,7 @@ module.exports = {
 
             buscarCancion(arreglarTitulo(queue.songs[0].name));
         }
-        
+
 
         function arreglarTitulo(titulo) {
             var tituloCompleto = titulo;
@@ -52,32 +52,53 @@ module.exports = {
                 if (firstSong) {
                     var lyrics = await firstSong.lyrics();
                     var embeds = [];
-                    for (var i = 0; i < lyrics.length; i += 2048) {
+
+                    var n = 2048;
+                    for (var i = 0; i < lyrics.length; i += n) {
+                        var trimmedString = lyrics.substring(i, i + 2048);
+                        n = Math.max(Math.min(trimmedString.length, trimmedString.lastIndexOf("\n")), 1000);
                         if (i == 0) {
                             embeds.push(
                                 new MessageEmbed()
                                     .setTitle(firstSong.title)
                                     .setAuthor({ name: firstSong.artist.name, iconURL: firstSong.artist.thumbnail })
                                     .setThumbnail(firstSong.thumbnail)
-                                    .setDescription(lyrics.substr(-lyrics.length, 2048))
+                                    .setDescription(lyrics.substring(i, i + n))
                                     .setURL(firstSong.url)
                             );
                         } else {
                             embeds.push(
                                 new MessageEmbed()
-                                    .setDescription(lyrics.substr(-lyrics.length + i, 2048))
+                                    .setDescription(lyrics.substring(i, i + n))
                             );
                         }
                     }
-                    embeds[embeds.length - 1].setTimestamp(new Date(`${firstSong._raw.release_date_for_display}`)).setFooter({ text: `Fecha de lanzamiento` })
-                    message.channel.send({ embeds: embeds });
+                    embeds[embeds.length - 1].setTimestamp(new Date(`${firstSong._raw.release_date_for_display}`)).setFooter({ text: `Fecha de lanzamiento` });
+
+                    var i = 0;
+                    var j = 0;
+                    var len = 0;
+                    while (i < embeds.length) {
+                        if (len + embeds[i].length <= 6000) {
+                            len += embeds[i].length;
+                            i++;
+                            if (i < embeds.length) continue;
+                            else {
+                                message.channel.send({ embeds: embeds.slice(j, i) });
+                                break;
+                            }
+                        }
+                        len = 0;
+                        message.channel.send({ embeds: embeds.slice(j, i) });
+                        j = i;
+                    }
                 } else {
                     message.channel.send('Canción no encontrada');
                 }
             } catch {
                 message.channel.send('Canción no encontrada');
             }
-            
+
         }
     }
 }
