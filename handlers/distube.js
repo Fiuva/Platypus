@@ -88,7 +88,7 @@ module.exports = (client, Discord) => {
         queue.autoplay = true;
     });
 
-    client.distube.on("addList", (queue, playlist) => {
+    client.distube.on("addList", async (queue, playlist) => {
         const mensPlaylist = new MessageEmbed()
             .setTitle(playlist.name)
             .setColor('#E758A1')
