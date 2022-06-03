@@ -38,6 +38,7 @@ module.exports = (client, Discord) => {
     });
 
     client.distube.on("playSong", (queue, song) => {
+        client.distube.setVolume(queue, 100);
         var mensajeBucle;
         switch (queue.repeatMode) {
             case 1:
