@@ -2,7 +2,7 @@
 const { SpotifyPlugin } = require('@distube/spotify');
 const { SoundCloudPlugin } = require('@distube/soundcloud');
 const { MessageEmbed } = require('discord.js');
-const { PRIVATE_CONFIG } = require('../config/constantes');
+const { PRIVATE_CONFIG, CANAL_TEXTO } = require('../config/constantes');
 
 module.exports = (client, Discord) => {
     console.log("Módulo de música cargado!");
