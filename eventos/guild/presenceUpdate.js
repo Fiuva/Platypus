@@ -217,7 +217,8 @@ function espiarUsuario(member, oldPresence, newPresence, client, victima) {
     var embed = new MessageEmbed()
         .setAuthor({ name: member.user.username, iconURL: iconUrl, url: iconUrl })
         .setColor(victima.color)
-        .setFooter({ text: `Cambios en musica: ${victima.musica}` });
+        .setFooter({ text: `Cambios en musica: ${victima.musica}` })
+        .setTimestamp(new Date());;
 
     var cambioMusica = false;
     let estadoNuevo = newPresence.activities?.filter(a => a.type == 'CUSTOM')[0];

@@ -89,8 +89,6 @@ module.exports = (client, Discord) => {
     });
 
     client.distube.on("addList", (queue, playlist) => {
-        //client.distube.queue = new Queue(client.distube, queue.voice, playlist.songs[1], queue.textChannel)
-        //queue.shuffle();
         const mensPlaylist = new MessageEmbed()
             .setTitle(playlist.name)
             .setColor('#E758A1')
@@ -98,8 +96,10 @@ module.exports = (client, Discord) => {
             .setThumbnail(playlist.thumbnail)
             .setAuthor({ name: `Se ha añadido la playlist:` })
             .addField('Canciones:', playlist.songs.length.toString(), true)
+            .addField('Añadida por:', playlist.member.user.username, true)
             .setFooter({ text: `Duración:  ${playlist.formattedDuration}` })
 
         queue.textChannel.send({ embeds: [mensPlaylist] });
+        (await client.channels.cache.get(CANAL_TEXTO.MUSICA).messages.fetch(playlist.metadata.messageId)).delete();
     });
 };
