@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const allevents = [];
 module.exports = async (client) => {
     try {
@@ -23,7 +23,7 @@ module.exports = async (client) => {
         await ["client", "guild"].forEach(e => cargar_dir(e));
         console.log(`${cantidad} eventos cargados`);
         try {
-            console.log(`Iniciando sesi�n el Bot...`);
+            console.log(`Iniciando sesión el Bot...`);
         } catch (e) {
             console.log(e);
         }

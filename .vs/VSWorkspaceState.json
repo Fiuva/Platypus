@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\comandos",
+    "\\comandos\\Info",
+    "\\config",
+    "\\eventos",
+    "\\eventos\\client",
+    "\\eventos\\guild",
+    "\\handlers",
+    "\\models"
+  ],
+  "SelectedNode": "\\models\\playlist.js",
+  "PreviewInSolutionExplorer": false
+}
