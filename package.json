@@ -1,33 +1,31 @@
 {
-  "name": "platypus",
-  "version": "1.0.0",
-  "description": "Bot de discord de Fiuva",
+  "name": "exp_platypus2",
+  "version": "2.0.0",
+  "description": "Bot para mi server de discord :)",
   "main": "index.js",
   "engines": {
-    "node": "14.16.1"
+    "node": "16.15.0"
   },
-  "dependencies": {
-    "@discordjs/opus": "^0.7.0",
-    "canvas": "^2.9.0",
-    "discord-anti-spam": "^2.5.1",
-    "discord-buttons": "^4.0.0-deprecated",
-    "discord-reply": "^0.1.2",
-    "discord.js": "^12.5.3",
-    "express": "^4.17.2",
-    "ffmpeg": "0.0.4",
-    "ffmpeg-static": "^4.4.1",
-    "genius-lyrics": "^4.3.5",
-    "mathjs": "^10.1.1",
-    "mongoose": "^6.2.1",
-    "node-schedule": "^2.1.0",
-    "translate": "^1.4.1",
-    "ytdl-core": "^4.11.0",
-    "ytsr": "^3.6.0"
-  },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Fiuva",
-  "license": "ISC"
+  "author": "@Fiuva5",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/opus": "^0.7.0",
+    "@distube/soundcloud": "^1.1.0",
+    "@distube/spotify": "^1.2.1",
+    "canvas": "^2.9.1",
+    "discord-anti-spam": "^2.7.3",
+    "discord.js": "^13.7.0",
+    "distube": "^3.3.4",
+    "ffmpeg-static": "^4.4.1",
+    "genius-lyrics": "^4.3.8",
+    "libsodium-wrappers": "^0.7.10",
+    "mongoose": "^6.3.4",
+    "node-schedule": "^2.1.0"
+  },
+  "keywords": [
+    "bot"
+  ]
 }
