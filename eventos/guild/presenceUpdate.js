@@ -88,7 +88,7 @@ async function actualizarTiemposStatus(member, oldPresence, newPresence) {
                 console.log(`Se actualiza fecha ONLINE: ${date}`)
                 await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date }, { new: true });
             } else {
-                consol.log('WTFFF 1')
+                console.log('WTFFF 1')
             }
         } else if (newPresence.status == 'idle') {
             date = new Date();
@@ -106,7 +106,7 @@ async function actualizarTiemposStatus(member, oldPresence, newPresence) {
                 console.log(`Se actualiza fecha IDLE: ${date}`)
                 await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date }, { new: true });
             } else {
-                consol.log('WTFFF 2')
+                console.log('WTFFF 2')
             }
         } else if (newPresence.status == 'dnd') {
             date = new Date();
@@ -124,7 +124,7 @@ async function actualizarTiemposStatus(member, oldPresence, newPresence) {
                 console.log(`Se actualiza fecha DND: ${date}`)
                 await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date }, { new: true });
             } else {
-                consol.log('WTFFF 3')
+                console.log('WTFFF 3')
             }
         } else if (newPresence.status == 'offline') {
             date = new Date();
