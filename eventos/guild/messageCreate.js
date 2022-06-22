@@ -84,7 +84,8 @@ async function actualizarMensajesRecap(message) {
         tiempos.push(date.getHours() * 60 + date.getMinutes());
         const mensajes = { total: 1, tiempos: tiempos }
         console.log("Se crea un documento nuevo")
-        switch (message.member.presence.status) {
+        if (!message.member.presence) return await new RecapData({ idDiscord: message.author.id, mensajes: mensajes }).save();
+        switch (message.member.presence.status) { 
             case 'online':
                 await new RecapData({ idDiscord: message.author.id, fechaOnline: date, mensajes: mensajes }).save();
                 break;
