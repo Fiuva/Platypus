@@ -6,7 +6,7 @@ const { MascotasData } = require("../../models/mascotas");
 module.exports = {
     name: "intercambiar",
     aliases: ["intercambio"],
-    canales: [CANAL_TEXTO.COMANDOS],
+    canales: [CANAL_TEXTO.COMANDOS, CANAL_TEXTO.GENERAL],
     descripcion: "Intercambaia mascotas con alguien",
     run: async (client, message, args) => {
         const to = message.mentions.members.first();
