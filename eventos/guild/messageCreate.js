@@ -1,8 +1,7 @@
 ﻿const antiSpam = require("../../config/antiSpam");
 const { CANAL_TEXTO, GUILD } = require("../../config/constantes");
-const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument } = require("../../handlers/funciones");
+const { subirExperiencia, reenviarMensajeTo } = require("../../handlers/funciones");
 const { subirExpMascota, subirExperienciaMascotaPareja } = require("../../handlers/juegos/funcionesMascotas");
-const MonitorizarTwitch = require("../../models/monitorizarTwitch");
 const RecapData = require("../../models/recapData");
 const config = require(`${process.cwd()}/config/config.json`);
 const talkedRecently = new Set();
