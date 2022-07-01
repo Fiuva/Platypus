@@ -11,7 +11,6 @@ module.exports = {
     descripcion: "Equipa una mascota de las que tienes",
     run: async (client, message, args) => {
         const userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
-        console.log(message.member.presence);
         if(message.member.presence?.status == "offline") return message.reply(`No puedes equipar mascotas estando offline`)
         try {
             const mejorMascota = buscarMejorMascota(userMascotas, args.join(' '));
