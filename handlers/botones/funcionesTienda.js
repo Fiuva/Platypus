@@ -139,7 +139,7 @@ var onClickEquiparAhora = async function (button) {
             button.reply({ content: `No tienes esa mascota`, ephemeral: true });
         }
     } else {
-        button.reply({ content: `Botón caducado :'> equípatela con !equipar`, ephemeral: true }); ç
+        button.reply({ content: `Botón caducado :'> equípatela con !equipar`, ephemeral: true });
     }
 }
 
