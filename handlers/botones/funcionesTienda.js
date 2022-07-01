@@ -115,8 +115,10 @@ async function abrir(huevo, monedas, message, collected, components) {
             .setCustomId(`equiparAhora_${mascotaQueSale.refUltimoRol}_${userMascotas.idDiscord}`)
             .setStyle('SUCCESS')
         await message.channel.send({ content: `${user} has comprado un huevo :>`, embeds: [embed], components: [new MessageActionRow().addComponents(botonEquipar)] });
-        await collected.deferUpdate();
-        collected.editReply({ embeds: collected.message.embeds, components: components })
+        try {
+            await collected.deferUpdate();
+            collected.editReply({ embeds: collected.message.embeds, components: components })
+        } catch { }
     });
 }
 
