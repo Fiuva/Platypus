@@ -1,4 +1,6 @@
 ﻿const { GUILD, CANAL_TEXTO } = require("../../config/constantes");
+const { desequipar } = require("../../handlers/juegos/funcionesMascotas");
+const { MascotasData } = require("../../models/mascotas");
 
 module.exports = async (client, member) => {
     if (member.guild.id != GUILD.SERVER_PLATY) return;
@@ -8,6 +10,14 @@ module.exports = async (client, member) => {
 
     member.guild.channels.cache.get(CANAL_TEXTO.BIENVENIDA)
         .channel.send(`${member.user} ha abandonado la familia de ornitorrincos :'<`);
+
+    let userMacotas = (await MascotasData.find({ idDiscord: member.id }))[0];
+    if (userMacotas) {
+        desequipar(member.guild, userMacotas);
+        if (userMacotas.mascotas.length == 0) {
+            await MascotasData.deleteOne({ idDiscord: userMacotas.id });
+        }
+    }
 
     try { //mmm no lo he probado
         const mensajes = { total: 0, tiempos: [] }

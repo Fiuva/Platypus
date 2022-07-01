@@ -1,6 +1,8 @@
 ﻿const { MessageEmbed } = require("discord.js");
 const { GUILD, varOnUpdateMessageEspia } = require("../../config/constantes");
 const { calcularTiempoToAdd } = require("../../handlers/funciones");
+const { desequipar, reEquipar } = require("../../handlers/juegos/funcionesMascotas");
+const { MascotasData } = require("../../models/mascotas");
 const RecapData = require("../../models/recapData");
 
 function Victima(nombre, id, color, musica) {
@@ -19,6 +21,7 @@ module.exports = async (client, oldPresence, newPresence) => {
     await actualizarTiemposStatus(member, oldPresence, newPresence);
     await actualizarTiemposMovil(member, oldPresence, newPresence);
     //--------------------------------------------
+    actualizarRolesMascotas(member, oldPresence, newPresence);
 
     if (varOnUpdateMessageEspia.update != 'Off') {
         arrayVictimas = parseMensajeEspia(varOnUpdateMessageEspia.update);
@@ -267,4 +270,16 @@ function parseMensajeEspia(mensajeEspia) {
             arrayVictimas.push(new Victima(atributos[0], atributos[1], atributos[2], atributos[3] == 'true'));
         });
     return arrayVictimas;
+}
+
+async function actualizarRolesMascotas(member, oldPresence, newPresence) {
+    if ((oldPresence == null || newPresence == null) || (oldPresence.status != newPresence.status)) {
+        var userMascotas = (await MascotasData.find({ idDiscord: member.id }))[0];
+        if (!userMascotas) return;
+        if (member.presence.status == "offline") {
+            desequipar(member.guild, userMascotas);
+        } else if (oldPresence == null || oldPresence.status == "offline") {
+            reEquipar(userMascotas, member);
+        }
+    }
 }

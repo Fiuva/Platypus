@@ -1,4 +1,5 @@
 const { PRECIO } = require("../../config/constantes");
+const { MascotasData } = require("../../models/mascotas");
 const Usuario = require("../../models/usuario");
 
 var onClickPareja = async function (button) {
@@ -32,17 +33,22 @@ var onClickPareja = async function (button) {
             break;
         case 'divorciar-si':
             if (button.user.id == id[2]) {
-                var user = await Usuario.find({ idDiscord: button.user.id }).exec();
-                button.channel.send(`${button.user} a decidido dejar la relación con ${await button.guild.members.fetch(user[0].parejaId)}`);
-                await Usuario.findOneAndUpdate({ idDiscord: user[0].parejaId }, { parejaId: '0', fechaPareja: '0' }, { new: true });
-                Usuario.findOneAndUpdate({ idDiscord: button.user.id }, { parejaId: '0', monedas: user[0].monedas - PRECIO.DIVORCIO, fechaPareja: '0' }, { new: true }).then(button.message.delete());
+                var user = (await Usuario.find({ idDiscord: button.user.id }))[0];
+                button.channel.send(`${button.user} ha decidido dejar la relación con ${await button.guild.members.fetch(user.parejaId)}`);
+                try { //Quitar mascotas
+                    let userMascotas = (await MascotasData.find({ idDiscord: user.idDiscord }))[0];
+                    try { await button.guild.members.fetch(user.idDiscord).roles.remove(userMascotas.refRolMascotaP) } catch { };
+                    await button.guild.members.fetch(user.parejaId).roles.remove(userMascotas.refRolMascota);
+                } catch { }
+                await Usuario.findOneAndUpdate({ idDiscord: user.parejaId }, { parejaId: '0', fechaPareja: '0' }, { new: true });
+                Usuario.findOneAndUpdate({ idDiscord: button.user.id }, { parejaId: '0', monedas: user.monedas - PRECIO.DIVORCIO, fechaPareja: '0' }, { new: true }).then(button.message.delete());
             } else {
                 button.deferUpdate();
             }
             break;
         case 'divorciar-no':
             if (button.user.id == id[2]) {
-                button.channel.send(`${button.user} a cancelado el divorcio`);
+                button.channel.send(`${button.user} ha cancelado el divorcio`);
                 button.message.delete();
             } else {
                 button.deferUpdate();

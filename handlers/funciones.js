@@ -2,7 +2,24 @@ const { AUMENTA_NIVEL, CONFIG, AUMENTAR_MONEDAS_NIVEL } = require("../config/con
 const Usuario = require("../models/usuario");
 
 module.exports = {
-    msg, calcularNivel, roundRect, cambiarEstadoConMensaje, subirExperiencia, reenviarMensajeTo, calcularTiempoToAdd, calcularPrecioVenta
+    msg,
+    calcularNivel,
+    roundRect,
+    cambiarEstadoConMensaje,
+    subirExperiencia,
+    reenviarMensajeTo,
+    calcularTiempoToAdd,
+    calcularPrecioVenta,
+    findOrCreateDocument,
+    random,
+    modificarMonedas,
+    sleep
+}
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+function random(array) {
+    return array[Math.random() * array.length << 0];
 }
 
 function msg(message, c = 0, f = 1, same = false) {
@@ -99,6 +116,11 @@ async function cambiarEstadoConMensaje(client) {
     client.user.setPresence({ status: status, activities: [{ name: mensaje, type: tipo }] });
 }
 
+async function findOrCreateDocument(id, Modelo) {
+    let user = (await Modelo.find({ idDiscord: id }))[0];
+    if (!user) user = await new Modelo({ idDiscord: id }).save();
+    return user;
+}
 
 async function subirExperiencia(message) {
     try {
@@ -188,7 +210,7 @@ async function subirExperiencia(message) {
     } catch {
         await new Usuario({ idDiscord: message.author.id, expTotal: 0 }).save();
     }
-    
+
 }
 
 async function modificarMonedas(id, sumar) {

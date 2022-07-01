@@ -1,9 +1,12 @@
 ﻿const antiSpam = require("../../config/antiSpam");
 const { CANAL_TEXTO, GUILD } = require("../../config/constantes");
-const { subirExperiencia, reenviarMensajeTo } = require("../../handlers/funciones");
+const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument } = require("../../handlers/funciones");
+const { subirExpMascota, subirExperienciaMascotaPareja } = require("../../handlers/juegos/funcionesMascotas");
+const MonitorizarTwitch = require("../../models/monitorizarTwitch");
 const RecapData = require("../../models/recapData");
 const config = require(`${process.cwd()}/config/config.json`);
 const talkedRecently = new Set();
+var ultimoIdQueHabla = 0;
 
 module.exports = async (client, message) => {
     if (message.author.bot) return;
@@ -51,12 +54,17 @@ module.exports = async (client, message) => {
 
     if (!message.content.startsWith(config.prefix)) { //MENSAJES SIN PREFIJO
         //SUBIR EXP -------------------- 
-        if (!talkedRecently.has(message.author.id)) {
+        if (!talkedRecently.has(message.author.id) && message.author.id != ultimoIdQueHabla) {
+            ultimoIdQueHabla = message.author.id;
             talkedRecently.add(message.author.id);
             setTimeout(() => {
                 talkedRecently.delete(message.author.id);
             }, 5000);
             subirExperiencia(message);
+            // -----------
+            subirExpMascota(message);
+            subirExperienciaMascotaPareja(message);
+            //------------
         }
         // -----------------------------
     } else {

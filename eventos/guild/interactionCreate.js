@@ -1,9 +1,10 @@
 const { onClick2048 } = require("../../handlers/juegos/funciones2048");
 const { tresEnRaya } = require("../../handlers/juegos/funciones3enRaya");
-const { onClickTienda } = require("../../handlers/botones/funcionesTienda");
+const { onClickTienda, onClickEquiparAhora } = require("../../handlers/botones/funcionesTienda");
 const { onClickMusica } = require("../../handlers/botones/funcionesMusica");
 const { onClickPareja } = require("../../handlers/botones/funcionesPareja");
 const { onClickVender } = require("../../handlers/botones/funcionesVender");
+const { onClickIntercambio } = require("../../handlers/botones/funcionesIntercambiar");
 
 module.exports = async (client, button) => {
     if (button.customId.startsWith('3enRaya_'))
@@ -18,4 +19,8 @@ module.exports = async (client, button) => {
         onClickPareja(button);
     else if (button.customId.startsWith('vender_'))
         onClickVender(button);
+    else if (button.customId.startsWith('intercambio_'))
+        onClickIntercambio(button);
+    else if (button.customId.startsWith('equiparAhora_'))
+        onClickEquiparAhora(button);
 }
