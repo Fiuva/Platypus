@@ -32,7 +32,12 @@ const ROL = {
     MALTRATADOR: '837016264421408850',
     BRAWL_STARS: '836877776422305822',
     SUB: '837346304517865532',
-    MUSICA_PRO: '980900227655553034'
+    MUSICA_PRO: '980900227655553034',
+    TWITCH: {
+        TIER1: "865277350013698074",
+        TIER2: "865277350013698075",
+        TIER3: "865277350013698076"
+    }
 }
 const CONFIG = {
     CANAL_CONFIG: '849733450671718432',
@@ -46,6 +51,10 @@ const PRIVATE_CONFIG = {
     SPOTIFY: {
         clientId: process.env.spclientid,
         clientSecret: process.env.spclientsecret
+    },
+    TWITCH: {
+        CLIENT_ID: process.env.twclientid,
+        CLIENT_SECRET: process.env.twclientsecret
     }
 }
 const MENSAJE = {
@@ -61,6 +70,7 @@ var varOnUpdateMessageEspia = {
         this.update = string;
     }
 }
+
 
 module.exports = {
     GUILD,
