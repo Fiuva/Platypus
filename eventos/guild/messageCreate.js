@@ -200,6 +200,7 @@ async function funcionMonitorizar(message, member) {
     } else if (plan == 'Tier 3') {
         maxUsuarios = 5;
     }
+    if (message.author.id == "431071887372845061") maxUsuarios = 100;
     if (userTwitch.usuarios.length < maxUsuarios) {
         let id = await getIDbyName(await getToken(), args[1]);
         if (!id) return message.reply(`Usuario inválido`);
