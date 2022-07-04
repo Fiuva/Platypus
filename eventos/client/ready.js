@@ -3,6 +3,7 @@ const { varOnUpdateMessageEspia, CONFIG, GUILD, PRIVATE_CONFIG } = require('../.
 const { cambiarEstadoConMensaje, calcularTiempoToAdd } = require('../../handlers/funciones');
 const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
+const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
 
 
 module.exports = async client => {
@@ -12,6 +13,7 @@ module.exports = async client => {
     }).then(() => {
         console.log(`Conectado a la base de datos`);
         schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(client.guilds.cache.get(GUILD.SERVER_PLATY)));
+        iniciarMonitorizacionesTwitch(client);
     }).catch((err) => {
         console.log("Error al conectar a la base de datos: " + err);
         client.channels.cache.get('836734022184861706').send('ERROR AL CONECTAR LA BASE DE DATOSSS!!!');
@@ -237,4 +239,16 @@ function masFrecuencia(array, maximo) {
     }
     const res = subsecuenciaCerosMaxima(dif)
     return media(array.splice(res[0], res[1]))
+}
+
+async function iniciarMonitorizacionesTwitch(client) {
+    let monitorizacion = await MonitorizarTwitch.find({ active: true });
+    monitorizacion.forEach(async user => {
+        try {
+            let member = (await client.guilds.cache.get(GUILD.SERVER_PLATY).members.fetch(user.idDiscord));
+            await funcionStart(member, true);
+        } catch {
+            await MonitorizarTwitch.updateOne({ idDiscord: user.idDiscord }, { active: false });
+        }
+    })
 }
