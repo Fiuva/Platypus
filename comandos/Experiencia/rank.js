@@ -1,6 +1,7 @@
 const Canvas = require('canvas');
 const { MessageAttachment } = require('discord.js');
 const { CANAL_TEXTO } = require('../../config/constantes');
+const { findOrCreateDocument } = require('../../handlers/funciones');
 const { msg, calcularNivel, roundRect } = require(`${process.cwd()}/handlers/funciones.js`);
 const Usuario = require(`${process.cwd()}/models/usuario`);
 Canvas.registerFont('./config/Fonts/Impacted.ttf', { family: "Impacted" });
@@ -15,14 +16,15 @@ module.exports = {
         var username;
         var user;
         if (msg(message, 1, 2)) {
-            user = await Usuario.find({ idDiscord: message.mentions.users.first().id }).exec();
+            if (message.mentions.users.first().id == "836972868055203850") return message.reply(`Yo no tengo perfil :'<`);
+            user = await findOrCreateDocument(message.mentions.users.first().id, Usuario);
             username = message.mentions.users.first();
         }
         else {
-            user = await Usuario.find({ idDiscord: message.author.id }).exec();
+            user = await findOrCreateDocument(message.author.id, Usuario);
             username = message.author;
         }
-        var expActual = user[0].expTotal;
+        var expActual = user.expTotal;
         const calcularNivelConst = calcularNivel(expActual);
         var nivel = calcularNivelConst[0];
         var calcularExp = calcularNivelConst[1];
@@ -30,7 +32,7 @@ module.exports = {
 
         const canvas = Canvas.createCanvas(1920, 480);
         const ctx = canvas.getContext('2d');
-        const color = user[0].color;
+        const color = user.color;
 
 
         ctx.fillStyle = '#99aab5';
@@ -64,21 +66,21 @@ module.exports = {
         ctx.fillText(`${username.username}`, 450, 150);
         var mensajePareja;
         var y;
-        if (user[0].parejaId == '0') {
+        if (user.parejaId == '0') {
             mensajePareja = '*solter@*';
             y = 350;
             ctx.fillStyle = '#ffffff88';
         } else {
             ctx.font = '55px Arial';
             try {
-                let member = await message.guild.members.fetch(user[0].parejaId);
+                let member = await message.guild.members.fetch(user.parejaId);
                 mensajePareja = member.user.username;
             } catch {
                 mensajePareja = 'PERDIDA'
             }
             y = 250;
             date = new Date();
-            let fecha1 = new Date(user[0].fechaPareja);
+            let fecha1 = new Date(user.fechaPareja);
             let restaFechas = date.getTime() - fecha1.getTime();
             var diasCasados = Math.round(restaFechas / (1000 * 60 * 60 * 24));
             ctx.fillStyle = '#00000033';
@@ -86,7 +88,7 @@ module.exports = {
             ctx.fillStyle = '#ffffffaa';
             ctx.fillText(`D\u00edas: ${diasCasados}`, 450, 350);
 
-            if (message.guild.members.cache.get(user[0].parejaId) == undefined) {
+            if (message.guild.members.cache.get(user.parejaId) == undefined) {
                 ctx.fillStyle = '#000000';
             } else if (diasCasados >= 150) {
                 ctx.fillStyle = '#37FF19'; //esmeralda
