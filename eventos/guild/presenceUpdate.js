@@ -278,7 +278,7 @@ async function actualizarRolesMascotas(member, oldPresence, newPresence) {
         if (!userMascotas) return;
         if (member.presence.status == "offline") {
             desequipar(member.guild, userMascotas);
-        } else if (oldPresence == null || oldPresence.status == "offline") {
+        } else if (oldPresence?.status == "offline") {
             reEquipar(userMascotas, member);
         }
     }
