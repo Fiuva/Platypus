@@ -44,6 +44,8 @@ module.exports = {
                     mentionable: false,
                     reason: `${message.author.username} equipa una mascota`
                 }).then(async role => {
+                    userMascotas = await findOrCreateDocument(userMascotas.idDiscord, MascotasData);
+                    if (await message.member.roles.resolveId(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
                     await MascotasData.findOneAndUpdate({ idDiscord: userMascotas.idDiscord, "mascotas.refUltimoRol": userMascotas.mascotas.find(filtro).refUltimoRol }, { refRolMascota: role.id, "mascotas.$.refUltimoRol": role.id });
                     message.member.roles.add(role)
                         .then(() => {
