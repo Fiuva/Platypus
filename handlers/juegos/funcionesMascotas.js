@@ -175,7 +175,7 @@ async function reEquipar(userMascotas, member) {
                 })
             try {
                 let memberPareja = await member.guild.members.fetch((await Usuario.find({ idDiscord: userMascotas.idDiscord }))[0].parejaId);
-                await findOrCreateDocument(memberPareja.id, MascotasData);
+                let parejaMascotas = await findOrCreateDocument(memberPareja.id, MascotasData);
                 await MascotasData.findOneAndUpdate({ idDiscord: memberPareja.id }, { refRolMascotaP: role.id });
                 if (memberPareja.presence == null || memberPareja.presence.status == "offline") return;
                 memberPareja.roles.add(role);
