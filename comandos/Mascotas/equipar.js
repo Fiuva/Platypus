@@ -10,7 +10,7 @@ module.exports = {
     canales: [CANAL_TEXTO.COMANDOS],
     descripcion: "Equipa una mascota de las que tienes",
     run: async (client, message, args) => {
-        const userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
+        var userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
         if(message.member.presence?.status == "offline") return message.reply(`No puedes equipar mascotas estando offline`)
         try {
             const mejorMascota = buscarMejorMascota(userMascotas, args.join(' '));
@@ -45,7 +45,7 @@ module.exports = {
                     reason: `${message.author.username} equipa una mascota`
                 }).then(async role => {
                     userMascotas = await findOrCreateDocument(userMascotas.idDiscord, MascotasData);
-                    if (await message.member.roles.resolveId(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
+                    if (message.member.roles.cache.has(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
                     await MascotasData.findOneAndUpdate({ idDiscord: userMascotas.idDiscord, "mascotas.refUltimoRol": userMascotas.mascotas.find(filtro).refUltimoRol }, { refRolMascota: role.id, "mascotas.$.refUltimoRol": role.id });
                     message.member.roles.add(role)
                         .then(() => {

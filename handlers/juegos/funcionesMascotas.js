@@ -164,7 +164,7 @@ async function reEquipar(userMascotas, member) {
             reason: `${userMascotas.idDiscord} equipa una mascota`
         }).then(async role => {
             userMascotas = await findOrCreateDocument(userMascotas.idDiscord, MascotasData);
-            if (await member.roles.resolveId(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
+            if (member.roles.cache.has(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
             await MascotasData.findOneAndUpdate({ idDiscord: userMascotas.idDiscord, "mascotas.refUltimoRol": userMascotas.refRolMascota }, { refRolMascota: role.id, "mascotas.$.refUltimoRol": role.id });
             member.roles.add(role)
                 .then(() => {
@@ -326,7 +326,7 @@ async function equiparMascota(mascotaElegida, userMascotas, member) {
         reason: `${member.user.username} equipa una mascota`
     }).then(async role => {
         userMascotas = await findOrCreateDocument(userMascotas.idDiscord, MascotasData);
-        if (await member.roles.resolveId(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
+        if (member.roles.cache.has(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
         await MascotasData.findOneAndUpdate({ idDiscord: userMascotas.idDiscord, "mascotas.refUltimoRol": userMascotas.mascotas.find(filtro).refUltimoRol }, { refRolMascota: role.id, "mascotas.$.refUltimoRol": role.id });
         member.roles.add(role)
             .catch(() => {
