@@ -179,6 +179,15 @@ async function reEquipar(userMascotas, member) {
                 await MascotasData.findOneAndUpdate({ idDiscord: memberPareja.id }, { refRolMascotaP: role.id });
                 if (memberPareja.presence == null || memberPareja.presence.status == "offline") return;
                 memberPareja.roles.add(role);
+                try { //_probar_
+                    let mascotaEquipadaPareja = mascotaEquipada(parejaMascotas);
+                    if (mascotaEquipadaPareja) {
+                        member.roles.add(await member.guild.roles.fetch(mascotaEquipadaPareja.refRolMascota));
+                    }
+                } catch (e) {
+                    console.log(e);
+                    console.log(`No se ha podido equipar la mascota de la pareja`);
+                }
             } catch (e) {
                 console.log(`No se ha podido equipar la mascota a la pareja ${e.message}`);
             }
