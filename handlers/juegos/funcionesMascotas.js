@@ -182,7 +182,9 @@ async function reEquipar(userMascotas, member) {
                 try { //_probar_
                     let mascotaEquipadaPareja = mascotaEquipada(parejaMascotas);
                     if (mascotaEquipadaPareja) {
-                        member.roles.add(await member.guild.roles.fetch(mascotaEquipadaPareja.refRolMascota));
+                        let rolPareja = await member.guild.roles.fetch(mascotaEquipadaPareja.refRolMascota);
+                        if (rolPareja)
+                            member.roles.add(rolPareja);
                     }
                 } catch (e) {
                     console.log(e);
