@@ -75,7 +75,7 @@ module.exports = async (client, message) => {
                 }, 1000);
             }
         }
-        //reenviarMensajeTo(message, client.channels.cache.get(CANAL_TEXTO.PRIVATE_MDS), true); _cambiar_
+        reenviarMensajeTo(message, client.channels.cache.get(CANAL_TEXTO.PRIVATE_MDS), true);
         return;
     }
 
