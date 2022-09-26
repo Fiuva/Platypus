@@ -224,18 +224,18 @@ function espiarUsuario(member, oldPresence, newPresence, client, victima) {
         .setTimestamp(new Date());
 
     var cambioMusica = false;
-    let estadoNuevo = newPresence.activities?.filter(a => a.type == 'CUSTOM')[0];
-    if (estadoNuevo?.state) embed.setDescription(estadoNuevo.state);
+    let estadoNuevo = newPresence.activities?.filter(a => a.type == 4)[0];
+    if (estadoNuevo?.state) embed.setDescription(`${estadoNuevo.emoji?.name ? estadoNuevo.emoji.name + ' ' : ''}` + estadoNuevo.state);
 
 
     //Musica
-    let actividadNueva = newPresence?.activities?.filter(a => a.type == 'LISTENING')[0];
-    let actividadVieja = oldPresence?.activities?.filter(a => a.type == 'LISTENING')[0];
-    cambioMusica = actividadNueva?.syncId != actividadVieja?.syncId;
-    if (actividadNueva) {
-        embed.addFields({ name: 'Escuchando: ', value: `${actividadNueva.details} (${actividadNueva.state})`, inline: true })
+    let spotifyNuevo = newPresence?.activities?.filter(a => a.type == 2)[0];
+    let spotifyViejo = oldPresence?.activities?.filter(a => a.type == 2)[0];
+    cambioMusica = spotifyNuevo?.syncId != spotifyViejo?.syncId;
+    if (spotifyNuevo) {
+        embed.addFields({ name: 'Escuchando: ', value: `${spotifyNuevo.details} (${spotifyNuevo.state})`, inline: true })
     } else if (cambioMusica) {
-        if (actividadVieja && newPresence.status != 'offline') {
+        if (spotifyViejo && newPresence.status != 'offline') {
             embed.addFields({ name: 'Deja el Spotify', value: '❌', inline: true })
         }
     }
@@ -260,7 +260,6 @@ function espiarUsuario(member, oldPresence, newPresence, client, victima) {
             detective.send({ embeds: [embed] })
         }
     }
-
 }
 function parseMensajeEspia(mensajeEspia) {
     var arrayVictimas = [];

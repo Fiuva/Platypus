@@ -15,7 +15,7 @@ myIntents.add(
 );
 
 const client = new Client({
-	partials: [Partials.Reaction, Partials.Message, Partials.User, Partials.Channel],
+	partials: [Partials.Reaction, Partials.Message, Partials.User, Partials.Channel, Partials.GuildMember, Partials.GuildScheduledEvent, Partials.ThreadMember],
 	intents: myIntents
 })
 
