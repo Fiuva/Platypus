@@ -1,4 +1,5 @@
 const { CANAL_VOZ, CATEGORIA } = require("../../config/constantes");
+const { ChannelType } = require("../../node_modules/discord-api-types/v10");
 
 module.exports = async (client, oldMember, newMember) => {
     let newUserChannel = newMember.channel;
@@ -39,8 +40,9 @@ module.exports = async (client, oldMember, newMember) => {
                 limiteUsuarios = 5;
                 break;
         }
-        newMember.guild.channels.create(nombreNuevoCanal, {
-            type: 'GUILD_VOICE'
+        newMember.guild.channels.create({
+            name: nombreNuevoCanal,
+            type: ChannelType.GuildVoice
         }).then((channel) => {
             channel.setParent(CATEGORIA.GAMING_VOZ);
             channel.setUserLimit(limiteUsuarios);

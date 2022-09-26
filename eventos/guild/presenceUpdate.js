@@ -1,6 +1,6 @@
 ﻿const { EmbedBuilder } = require("discord.js");
 const { GUILD, varOnUpdateMessageEspia } = require("../../config/constantes");
-const { calcularTiempoToAdd } = require("../../handlers/funciones");
+const { calcularTiempoToAdd, deepEqual } = require("../../handlers/funciones");
 const { desequipar, reEquipar } = require("../../handlers/juegos/funcionesMascotas");
 const { MascotasData } = require("../../models/mascotas");
 const RecapData = require("../../models/recapData");
@@ -30,7 +30,7 @@ module.exports = async (client, oldPresence, newPresence) => {
 
     if (arrayVictimas.map(v => v.id).includes(member.id)) {
         let victima = arrayVictimas.filter(v => v.id == member.id)[0];
-        if (victima.nombre == 'Fiuva') return;
+        //if (victima.nombre == 'Fiuva') return;
         if (!victima.nombre.startsWith('//'))
             espiarUsuario(member, oldPresence, newPresence, client, victima);
     }
@@ -232,9 +232,10 @@ function espiarUsuario(member, oldPresence, newPresence, client, victima) {
     //Musica
     let spotifyNuevo = newPresence?.activities?.filter(a => a.type == 2)[0];
     let spotifyViejo = oldPresence?.activities?.filter(a => a.type == 2)[0];
-    cambioMusica = spotifyNuevo?.syncId != spotifyViejo?.syncId;
+    cambioMusica = !deepEqual(spotifyNuevo, spotifyViejo);
+
     if (spotifyNuevo) {
-        embed.addFields({ name: 'Escuchando: ', value: `${spotifyNuevo.details} (${spotifyNuevo.state})`, inline: true })
+        embed.addFields({ name: 'Escuchando ', value: `${spotifyNuevo.details} (${spotifyNuevo.state})`, inline: true })
     } else if (cambioMusica) {
         if (spotifyViejo && newPresence.status != 'offline') {
             embed.addFields({ name: 'Deja el Spotify', value: '❌', inline: true })
