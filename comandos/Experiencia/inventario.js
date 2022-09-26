@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO, NOMBRE_MONEDAS } = require("../../config/constantes");
 const Usuario = require("../../models/usuario");
 
@@ -18,7 +18,7 @@ module.exports = {
             username = message.author;
         }
 
-        const mensajeInventario = new MessageEmbed()
+        const mensajeInventario = new EmbedBuilder()
             .setColor(user[0].color)
             .setTitle('Inventario')
             .setAuthor({ name: username.username, iconURL: username.displayAvatarURL({ format: 'jpg' }) })

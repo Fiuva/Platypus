@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO } = require("../../config/constantes");
 const { findOrCreateDocument } = require("../../handlers/funciones");
 const { nombreRol, buscarMejorMascota, desequipar } = require("../../handlers/juegos/funcionesMascotas");
@@ -11,7 +11,7 @@ module.exports = {
     descripcion: "Equipa una mascota de las que tienes",
     run: async (client, message, args) => {
         var userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
-        if(message.member.presence?.status == "offline") return message.reply(`No puedes equipar mascotas estando offline`)
+        if (message.member.presence?.status == "offline") return message.reply(`No puedes equipar mascotas estando offline`)
         try {
             const mejorMascota = buscarMejorMascota(userMascotas, args.join(' '));
             if (Array.isArray(mejorMascota)) {
@@ -20,7 +20,7 @@ module.exports = {
                 for (var i = 0; i < arrArreglado.length && i < 30; i++) {
                     resultado += `${i + 1}. ${arrArreglado[i].nombre} (${arrArreglado[i].nombre != arrArreglado[i].animal.nombre ? `${arrArreglado[i].animal.nombre} | ` : ''}Exp: \`${arrArreglado[i].exp}\`) ${arrArreglado[i].count != 1 ? `x${arrArreglado[i].count}` : ''}\n`;
                 }
-                var embed = new MessageEmbed()
+                var embed = new EmbedBuilder()
                     .setTitle("Elige una mascota")
                     .setDescription(resultado)
                 return message.reply({ content: mejorMascota[1], embeds: [embed] })

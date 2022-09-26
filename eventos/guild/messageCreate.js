@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const antiSpam = require("../../config/antiSpam");
 const { CANAL_TEXTO, GUILD } = require("../../config/constantes");
 const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument, sleep } = require("../../handlers/funciones");
@@ -125,7 +125,7 @@ module.exports = async (client, message) => {
                 talkedRecently.delete(message.author.id);
             }, 5000);
             subirExperiencia(message);
-            // -----------
+            //------------
             subirExpMascota(message);
             subirExperienciaMascotaPareja(message);
             //------------
@@ -157,7 +157,7 @@ async function actualizarMensajesRecap(message) {
         const mensajes = { total: 1, tiempos: tiempos }
         console.log("Se crea un documento nuevo")
         if (!message.member.presence) return await new RecapData({ idDiscord: message.author.id, mensajes: mensajes }).save();
-        switch (message.member.presence.status) { 
+        switch (message.member.presence.status) {
             case 'online':
                 await new RecapData({ idDiscord: message.author.id, fechaOnline: date, mensajes: mensajes }).save();
                 break;
@@ -230,7 +230,7 @@ async function funcionEliminar(message, member) {
     } else {
         let token = await getToken();
         var texto = "Para eliminar: !eliminar <ID> \\**!elminar 12345*\\* \n";
-        var embed = new MessageEmbed()
+        var embed = new EmbedBuilder()
             .setTitle(`!eliminar`)
         for (var i = 0; i < userTwitch.usuarios.length; i++) {
             texto += `ID: **${userTwitch.usuarios[i]}** (${await getNamebyID(token, userTwitch.usuarios[i])}) \n`
@@ -284,7 +284,7 @@ async function funcionBuscar(message, member) {
 }
 
 function funcionHelp(message) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle(`Monitorizar usuarios de TWITCH`)
         .setColor("DARK_VIVID_PINK")
         .setFooter({ text: `✨Si necesitas más ayuda habla con Fiuva :>` })
@@ -304,10 +304,10 @@ function funcionHelp(message) {
 }
 
 function funcionPlanes(message) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle(`Planes`)
         .setDescription(`Para acceder a algún plan solo tienes que __suscribirte__ (es **gratis con Amazon Prime**) al canal de twitch.tv/fiuva2 y vincular tu cuenta de twitch en discord`)
-        .setColor("ORANGE")
+        .setColor("Orange")
         .setAuthor({ name: `Fiuva2`, url: `https://twitch.tv/fiuva2` })
         .setFooter({ text: `✨Oferta 50% y más planes con pagos vía PayPal (habla con Fiuva)` })
         .setFields(

@@ -1,6 +1,6 @@
 {
   "name": "platypus",
-  "version": "3.1.0",
+  "version": "4.0.1",
   "description": "Bot para mi server de discord :)",
   "main": "index.js",
   "engines": {
@@ -12,13 +12,14 @@
   "author": "@Fiuva5",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.7.0",
+    "@discordjs/opus": "^0.8.0",
     "@distube/soundcloud": "^1.1.0",
     "@distube/spotify": "^1.2.1",
-    "canvas": "^2.9.1",
+    "@distube/ytdl-core": "^4.11.5",
+    "canvas": "^2.10.1",
     "discord-anti-spam": "^2.7.3",
-    "discord.js": "^13.7.0",
-    "distube": "^3.3.4",
+    "discord.js": "^14.3.0",
+    "distube": "^4.0.3",
     "ffmpeg-static": "^4.4.1",
     "g-i-s": "^2.1.6",
     "genius-lyrics": "^4.3.8",

@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO, NOMBRE_MONEDAS } = require("../../config/constantes");
 const config = require('../../config/config.json')
 
@@ -12,13 +12,13 @@ module.exports = {
             mostrarHelpComandos(client.commands, message);
         } else if (message.channel.id == CANAL_TEXTO.MUSICA) {
             mostrarHelpMusica(client.commands, message);
-        } 
+        }
     }
 }
 
 function mostrarHelpComandos(comandos, message) {
     const p = config.prefix;
-    const mensajeAyuda = new MessageEmbed()
+    const mensajeAyuda = new EmbedBuilder()
         .setColor('#FEA0FA')
         .setTitle('COMANDOS')
         .setAuthor({ name: 'PLATYPUS', iconURL: 'https://images.vexels.com/media/users/3/206179/isolated/preview/abd45dacf6e78736c9cf49e6ae3d9bba-trazo-de-signo-de-interrogaci-oacute-n-by-vexels.png' })
@@ -44,7 +44,7 @@ function mostrarHelpComandos(comandos, message) {
 
 function mostrarHelpMusica(comandos, message) {
     const p = config.prefix;
-    const mensajeAyuda = new MessageEmbed()
+    const mensajeAyuda = new EmbedBuilder()
         .setColor('#FEA0FA')
         .setTitle('COMANDOS MÚSICA')
         .setAuthor({ name: 'PLATYPUS', iconURL: 'https://images.vexels.com/media/users/3/206179/isolated/preview/abd45dacf6e78736c9cf49e6ae3d9bba-trazo-de-signo-de-interrogaci-oacute-n-by-vexels.png' })

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { inspect } = require("util");
 const { ROL } = require("../../config/constantes");
 const CONSTANTES = require("../../config/constantes");
@@ -15,7 +15,7 @@ module.exports = {
         try {
             const evaluado = await eval(args.join(' ').replace('-nd', ''));
             enviarSinLimite(inspect(evaluado), message, args.includes('-nd'), '#26FF00');
-            
+
         } catch (e) {
             enviarSinLimite(e.toString(), message, args.includes('-nd'), '#FF0000');
         }
@@ -31,7 +31,7 @@ function enviarSinLimite(s, message, nd, color) {
         n = Math.max(Math.min(trimmedString.length, trimmedString.lastIndexOf("\n")), 1000);
         const recortado = s.substring(i, i + n)
 
-        embeds.push(new MessageEmbed()
+        embeds.push(new EmbedBuilder()
             .setDescription(`\`\`\`js\n${recortado.replace(/<ref \*1>/gi, '')}\`\`\``)
             .setColor(color));
     }

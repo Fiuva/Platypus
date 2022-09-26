@@ -1,4 +1,4 @@
-﻿const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
+﻿const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { CANAL_TEXTO, NOMBRE_MONEDAS, PRECIO } = require("../../config/constantes");
 const { calcularPrecioVenta } = require("../../handlers/funciones");
 
@@ -8,7 +8,7 @@ module.exports = {
     canales: [CANAL_TEXTO.COMANDOS],
     descripcion: "Vende cosas de la tienda",
     run: async (client, message, args) => {
-        const mensajeTienda = new MessageEmbed()
+        const mensajeTienda = new EmbedBuilder()
             .setColor('#AB0101')
             .setTitle('Vender')
             .setAuthor({ name: 'Server de Fiuva', iconURL: message.guild.iconURL() })
@@ -18,20 +18,20 @@ module.exports = {
                 { name: 'Vender: Anillo 💍', value: `${calcularPrecioVenta(PRECIO.ANILLO)} ${NOMBRE_MONEDAS}` },
                 { name: 'Vender: Musica⟬*ventajas*⟭ 🎶', value: `${calcularPrecioVenta(PRECIO.MUSICA_PRO)} ${NOMBRE_MONEDAS}` },
                 { name: 'Vender: Millonario 💰', value: `${calcularPrecioVenta(PRECIO.MILLONARIO)} ${NOMBRE_MONEDAS}` }
-        )
-        const botonAnillo = new MessageButton()
+            )
+        const botonAnillo = new ButtonBuilder()
             .setEmoji('💍')
             .setCustomId(`vender_anillo_${message.author.id}`)
-            .setStyle('DANGER')
-        const botonMusica = new MessageButton()
+            .setStyle('Danger')
+        const botonMusica = new ButtonBuilder()
             .setEmoji('🎶')
             .setCustomId(`vender_musica-pro_${message.author.id}`)
-            .setStyle('DANGER')
-        const botonMillonario = new MessageButton()
+            .setStyle('Danger')
+        const botonMillonario = new ButtonBuilder()
             .setEmoji('💰')
             .setCustomId(`vender_millonario_${message.author.id}`)
-            .setStyle('DANGER')
-        const row = new MessageActionRow()
+            .setStyle('Danger')
+        const row = new ActionRowBuilder()
             .addComponents(botonAnillo, botonMusica, botonMillonario)
         message.channel.send({ embeds: [mensajeTienda], components: [row] });
     }

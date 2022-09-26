@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO } = require("../../config/constantes");
 const { findOrCreateDocument } = require("../../handlers/funciones");
 const { calcularNivelMascota, equiparMascota } = require("../../handlers/juegos/funcionesMascotas");
@@ -82,7 +82,7 @@ async function fusionar(mascotaConCount, message, userMascotas) {
 
     }
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle(nuevaMascota.nombre)
         .setColor(nuevaMascota.animal.calidad.color)
         .setDescription(`Se ha fusionado la mascota y se ha equipado`)

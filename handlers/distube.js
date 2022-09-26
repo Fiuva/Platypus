@@ -1,7 +1,7 @@
 ﻿const { DisTube } = require('distube');
 const { SpotifyPlugin } = require('@distube/spotify');
 const { SoundCloudPlugin } = require('@distube/soundcloud');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { PRIVATE_CONFIG, CANAL_TEXTO } = require('../config/constantes');
 
 module.exports = (client, Discord) => {
@@ -23,7 +23,7 @@ module.exports = (client, Discord) => {
             liveBuffer: 60000,
             dlChunkSize: 1024 * 1024 * 4
         },
-        youtubeDL: false,
+        //youtubeDL: false,
         plugins: [
             new SpotifyPlugin({
                 parallel: true,
@@ -51,7 +51,7 @@ module.exports = (client, Discord) => {
                 mensajeBucle = '';
                 break;
         }
-        var escuchando = new MessageEmbed()
+        var escuchando = new EmbedBuilder()
             .setTitle(song.name)
             .setColor('#00FF3C')
             .setURL(song.url)
@@ -71,14 +71,15 @@ module.exports = (client, Discord) => {
             tiempoDeEspera = tiempoDeEspera + parseInt(canciones[i].duration);
         }
 
-        const mensCancion = new MessageEmbed()
+        const mensCancion = new EmbedBuilder()
             .setTitle(song.name)
             .setColor('#006ABD')
             .setURL(song.url)
             .setThumbnail(song.thumbnail)
             .setAuthor({ name: `Se ha añadido a la cola:` })
-            .addField('Tiempo estimado de espera:', `${Math.floor(tiempoDeEspera / 60)}:${tiempoDeEspera - Math.floor(tiempoDeEspera / 60) * 60 < 10 ? '0' : ''}${tiempoDeEspera - Math.floor(tiempoDeEspera / 60) * 60}`, true)
-            .addField('Posición:', i.toString(), true)
+            .addFields(
+                { name: 'Tiempo estimado de espera:', value: `${Math.floor(tiempoDeEspera / 60)}:${tiempoDeEspera - Math.floor(tiempoDeEspera / 60) * 60 < 10 ? '0' : ''}${tiempoDeEspera - Math.floor(tiempoDeEspera / 60) * 60}`, inline: true },
+                { name: 'Posición:', value: i.toString(), inline: true })
             .setFooter({ text: `Duración:  ${song.formattedDuration}` })
 
         queue.textChannel.send({ embeds: [mensCancion] });
@@ -89,7 +90,7 @@ module.exports = (client, Discord) => {
     });
 
     client.distube.on("addList", (queue, playlist) => {
-        const mensPlaylist = new MessageEmbed()
+        const mensPlaylist = new EmbedBuilder()
             .setTitle(playlist.name)
             .setColor('#E758A1')
             .setURL(playlist.url)

@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO, NOMBRE_MONEDAS } = require("../../config/constantes");
 const config = require('../../config/config.json')
 
@@ -14,7 +14,7 @@ module.exports = {
 
 function mostrarHelpComandos(comandos, message) {
     const p = config.prefix;
-    const mensajeAyuda = new MessageEmbed()
+    const mensajeAyuda = new EmbedBuilder()
         .setColor('#A0FEFE')
         .setTitle('COMANDOS DE MASCOTAS')
         .setAuthor({ name: 'PLATYPUS', iconURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Adopt_Me%21_Wordmark.svg/1280px-Adopt_Me%21_Wordmark.svg.png' })

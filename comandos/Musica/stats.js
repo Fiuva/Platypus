@@ -1,5 +1,5 @@
-const { MessageEmbed } = require("discord.js");
-const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
+const { EmbedBuilder } = require("discord.js");
+const { CANAL_TEXTO } = require("../../config/constantes");
 
 module.exports = {
     name: "stats",
@@ -26,7 +26,7 @@ module.exports = {
             minutos = tiempo / 60 << 0;
             tiempo = tiempo - minutos * 60;
         }
-        const stats = new MessageEmbed()
+        const stats = new EmbedBuilder()
             .setTitle('Stats de la musica')
             .setFooter({ text: `${songs.length} canciones en cola | ${horas != '' ? horas + 'h ' : ''}${minutos}min` })
             .setDescription(mensajeCanciones)

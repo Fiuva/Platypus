@@ -1,6 +1,6 @@
 ﻿const { CANAL_TEXTO } = require("../../config/constantes");
 const Genius = require("genius-lyrics");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const Client = new Genius.Client();
 
 module.exports = {
@@ -56,10 +56,11 @@ module.exports = {
                     var n = 2048;
                     for (var i = 0; i < lyrics.length; i += n) {
                         var trimmedString = lyrics.substring(i, i + 2048);
+                        if (trimmedString.length < 2048) trimmedString += "\n";
                         n = Math.max(Math.min(trimmedString.length, trimmedString.lastIndexOf("\n")), 1000);
                         if (i == 0) {
                             embeds.push(
-                                new MessageEmbed()
+                                new EmbedBuilder()
                                     .setTitle(firstSong.title)
                                     .setAuthor({ name: firstSong.artist.name, iconURL: firstSong.artist.thumbnail })
                                     .setThumbnail(firstSong.thumbnail)
@@ -68,19 +69,20 @@ module.exports = {
                             );
                         } else {
                             embeds.push(
-                                new MessageEmbed()
+                                new EmbedBuilder()
                                     .setDescription(lyrics.substring(i, i + n))
                             );
                         }
                     }
+
                     embeds[embeds.length - 1].setTimestamp(new Date(`${firstSong._raw.release_date_for_display}`)).setFooter({ text: `Fecha de lanzamiento` });
 
                     var i = 0;
                     var j = 0;
                     var len = 0;
                     while (i < embeds.length) {
-                        if (len + embeds[i].length <= 6000) {
-                            len += embeds[i].length;
+                        if (len + embeds[i].data.description.length <= 6000) {
+                            len += embeds[i].data.description.length;
                             i++;
                             if (i < embeds.length) continue;
                             else {
@@ -92,6 +94,8 @@ module.exports = {
                         message.channel.send({ embeds: embeds.slice(j, i) });
                         j = i;
                     }
+                    //----
+
                 } else {
                     message.channel.send('Canción no encontrada');
                 }

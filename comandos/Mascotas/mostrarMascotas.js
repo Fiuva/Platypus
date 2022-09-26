@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO } = require("../../config/constantes");
 const { nombreRol, buscarMejorMascota } = require("../../handlers/juegos/funcionesMascotas");
 const { Calidad, MascotasData } = require("../../models/mascotas");
@@ -51,7 +51,7 @@ module.exports = {
         }
 
         const total = count.legendarias + count.ultra_raras + count.raras + count.especiales + count.comunes;
-        var embed = new MessageEmbed()
+        var embed = new EmbedBuilder()
             .setTitle(`Mascotas de ${author.username}`)
             .setColor(rgbToHex(
                 mediaColor("r", count, total),
@@ -63,7 +63,7 @@ module.exports = {
 
         for (key of Object.keys(textos)) {
             hacerTextos(mascotasOrdenadas, key, textos);
-            if (textos[key].value.length > 1) embed.addField(textos[key].name, textos[key].value);
+            if (textos[key].value.length > 1) embed.addFields({ name: textos[key].name, value: textos[key].value });
         }
 
         message.reply({ embeds: [embed] });

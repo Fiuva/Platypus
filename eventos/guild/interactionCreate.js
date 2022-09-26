@@ -6,7 +6,7 @@ const { onClickPareja } = require("../../handlers/botones/funcionesPareja");
 const { onClickVender } = require("../../handlers/botones/funcionesVender");
 const { onClickIntercambio } = require("../../handlers/botones/funcionesIntercambiar");
 
-/*
+
 module.exports = async (client, button) => {
     if (button.customId.startsWith('3enRaya_'))
         tresEnRaya(button);
@@ -25,4 +25,3 @@ module.exports = async (client, button) => {
     else if (button.customId.startsWith('equiparAhora_'))
         onClickEquiparAhora(button);
 }
-*/

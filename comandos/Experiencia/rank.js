@@ -1,5 +1,5 @@
 const Canvas = require('canvas');
-const { MessageAttachment } = require('discord.js');
+const { AttachmentBuilder } = require('discord.js');
 const { CANAL_TEXTO } = require('../../config/constantes');
 const { findOrCreateDocument } = require('../../handlers/funciones');
 const { msg, calcularNivel, roundRect } = require(`${process.cwd()}/handlers/funciones.js`);
@@ -124,9 +124,9 @@ module.exports = {
         ctx.arc(240, 240, 125, 0, Math.PI * 2, true); //ref1: 1700, 250, 200
         ctx.closePath();
         ctx.clip();
-        const avatar = await Canvas.loadImage(username.displayAvatarURL({ format: 'jpg' }));
+        const avatar = await Canvas.loadImage(username.displayAvatarURL({ extension: 'jpg' }));
         ctx.drawImage(avatar, 115, 115, 250, 250); //ref1: 1500, 50, 400, 400
-        const attachment = new MessageAttachment(canvas.toBuffer(), 'imagenRank.png');
-        message.channel.send({files: [attachment] });
+        const attachment = new AttachmentBuilder(canvas.toBuffer(), 'imagenRank.png');
+        message.channel.send({ files: [attachment] });
     }
 }

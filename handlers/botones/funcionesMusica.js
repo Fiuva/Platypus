@@ -1,4 +1,4 @@
-﻿const { MessageActionRow } = require("discord.js");
+﻿const { ActionRowBuilder } = require("discord.js");
 
 var onClickMusica = async function (button, client) {
     var id = button.customId.split('_');
@@ -7,7 +7,7 @@ var onClickMusica = async function (button, client) {
         var nb = button.message.components[0].components[0];
         nb.setEmoji('▶');
         nb.setDisabled(true);
-        await button.message.edit({ components: [new MessageActionRow().addComponents(nb)] })
+        await button.message.edit({ components: [new ActionRowBuilder().addComponents(nb)] })
         button.deferUpdate();
     }
 }

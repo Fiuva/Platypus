@@ -1,5 +1,5 @@
 ﻿const Genius = require("genius-lyrics");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const Client = new Genius.Client();
 const { ROL } = require("../../config/constantes");
 const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
@@ -19,17 +19,17 @@ module.exports = {
         const song = await buscarCancion(arreglarTitulo(qSong.name));
         var embedGuardado;
         if (song != undefined) {
-            embedGuardado = new MessageEmbed()
+            embedGuardado = new EmbedBuilder()
                 .setAuthor({ name: song.artist.name, iconURL: song.artist.thumbnail })
-                .setColor("GOLD")
+                .setColor("Gold")
                 .setDescription(`${qSong.name}`)
                 .setFooter({ text: `Duración: ${qSong.formattedDuration}` })
                 .setTitle(song.title)
                 .setURL(qSong.url)
                 .setThumbnail(song.thumbnail || qSong.thumbnail)
         } else {
-            embedGuardado = new MessageEmbed()
-                .setColor("GOLD")
+            embedGuardado = new EmbedBuilder()
+                .setColor("Gold")
                 .setFooter({ text: `Duración: ${qSong.formattedDuration}` })
                 .setTitle(qSong.name)
                 .setURL(qSong.url)

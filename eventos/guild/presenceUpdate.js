@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { GUILD, varOnUpdateMessageEspia } = require("../../config/constantes");
 const { calcularTiempoToAdd } = require("../../handlers/funciones");
 const { desequipar, reEquipar } = require("../../handlers/juegos/funcionesMascotas");
@@ -217,11 +217,11 @@ async function actualizarTiemposMovil(member, oldPresence, newPresence) {
 function espiarUsuario(member, oldPresence, newPresence, client, victima) {
     let detective = client.users.cache.get('431071887372845061');
     const iconUrl = member.user.displayAvatarURL({ format: 'png', size: 4096 });
-    var embed = new MessageEmbed()
+    var embed = new EmbedBuilder()
         .setAuthor({ name: member.user.username, iconURL: iconUrl, url: iconUrl })
         .setColor(victima.color)
         .setFooter({ text: `Cambios en musica: ${victima.musica}` })
-        .setTimestamp(new Date());;
+        .setTimestamp(new Date());
 
     var cambioMusica = false;
     let estadoNuevo = newPresence.activities?.filter(a => a.type == 'CUSTOM')[0];
@@ -244,11 +244,11 @@ function espiarUsuario(member, oldPresence, newPresence, client, victima) {
     if (newPresence.status != 'offline') embed.addFields({ name: 'Clientes', value: Object.keys(newPresence.clientStatus).join(', '), inline: true });
     if (oldPresence == null || newPresence == null) {
         embed.setTitle(`${newPresence.status == 'online' ? '🟢' : newPresence.status == 'idle' ? '🟡' : newPresence.status == 'dnd' ? '🔴' : '☁️'} | Está ${newPresence.status}`)
-        return detective.send({ embeds: [embed]});
+        return detective.send({ embeds: [embed] });
     }
     if (oldPresence.status != newPresence.status) {
         embed.setTitle(`${newPresence.status == 'online' ? '🟢' : newPresence.status == 'idle' ? '🟡' : newPresence.status == 'dnd' ? '🔴' : '☁️'} | Se ha cambiado a ${newPresence.status}`)
-        detective.send({ embeds: [embed]})
+        detective.send({ embeds: [embed] })
     } else {
         if (cambioMusica) {
             if (victima.musica) {
@@ -260,7 +260,7 @@ function espiarUsuario(member, oldPresence, newPresence, client, victima) {
             detective.send({ embeds: [embed] })
         }
     }
-    
+
 }
 function parseMensajeEspia(mensajeEspia) {
     var arrayVictimas = [];

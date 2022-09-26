@@ -1,4 +1,4 @@
-﻿const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
+﻿const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require('discord.js');
 const { PRECIO, NOMBRE_MONEDAS, ROL } = require('../../config/constantes');
 const { wiki, Calidad, MascotasData, Mascota } = require('../../models/mascotas');
 const Usuario = require('../../models/usuario');
@@ -76,7 +76,7 @@ async function abrir(huevo, monedas, message, collected, components) {
         mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Legendario)));
     }
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle(mascotaQueSale.nombre)
         .addFields(
             { name: `Clase: `, value: mascotaQueSale.animal.clase, inline: true },
@@ -110,11 +110,11 @@ async function abrir(huevo, monedas, message, collected, components) {
         } else {
             console.log(error);
         }
-        const botonEquipar = new MessageButton()
+        const botonEquipar = new ButtonBuilder()
             .setLabel('Equipar ahora')
             .setCustomId(`equiparAhora_${mascotaQueSale.refUltimoRol}_${userMascotas.idDiscord}`)
-            .setStyle('SUCCESS')
-        await message.channel.send({ content: `${user} has comprado un huevo :>`, embeds: [embed], components: [new MessageActionRow().addComponents(botonEquipar)] });
+            .setStyle('Success')
+        await message.channel.send({ content: `${user} has comprado un huevo :>`, embeds: [embed], components: [new ActionRowBuilder().addComponents(botonEquipar)] });
         try {
             await collected.deferUpdate();
             collected.editReply({ embeds: collected.message.embeds, components: components })
@@ -133,15 +133,15 @@ var onClickEquiparAhora = async function (button) {
         if (mascota) {
             try {
                 await equiparMascota(mascota, userMascotas, authorInteraction);
-                button.reply({ content: `Mascota equipada`, ephemeral: true });
+                await button.reply({ content: `Mascota equipada`, ephemeral: true });
             } catch (e) {
-                button.reply({ content: e.message, ephemeral: true });
+                await button.reply({ content: e.message, ephemeral: true });
             }
         } else {
-            button.reply({ content: `No tienes esa mascota`, ephemeral: true });
+            await button.reply({ content: `No tienes esa mascota`, ephemeral: true });
         }
     } else {
-        button.reply({ content: `Botón caducado :'> equípatela con !equipar`, ephemeral: true });
+        await button.reply({ content: `Botón caducado :'> equípatela con !equipar`, ephemeral: true });
     }
 }
 

@@ -17,7 +17,7 @@ module.exports = {
             message.channel.send("**Filtro actual en la lista:** " + (filter.join(", ") || "Off"));
         } else {
             const filter = client.distube.getQueue(message).filters;
-            return message.reply("Filtro actual en la lista: " + (filter.join(", ") || "Off")+"\nEspecifica el filtro: **`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`**");
+            return message.reply("Filtro actual en la lista: " + (filter.join(", ") || "Off") + "\nEspecifica el filtro: **`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`**");
         }
     }
 }

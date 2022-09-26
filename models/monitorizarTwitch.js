@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require('discord.js');
+﻿const { EmbedBuilder } = require('discord.js');
 const mongoose = require('mongoose');
 const { scheduleJob } = require('node-schedule');
 const request = require("request");
@@ -9,10 +9,10 @@ const Schema = mongoose.Schema;
 
 const monitorizarSchema = new Schema({
 	idDiscord: { type: String, unique: true },
-	fechaFin: { type: Number, default: Date.now() + 7*24*60*60*1000 },
-    usuarios: { type: Array, default: [] },
-    active: { type: Boolean, default: false },
-    delay: { type: Number, default: 4 }
+	fechaFin: { type: Number, default: Date.now() + 7 * 24 * 60 * 60 * 1000 },
+	usuarios: { type: Array, default: [] },
+	active: { type: Boolean, default: false },
+	delay: { type: Number, default: 4 }
 })
 const MonitorizarTwitch = mongoose.model('MonitorizarTwitch', monitorizarSchema);
 
@@ -42,7 +42,7 @@ async function mostrarStatsTwitch(message) {
 
 	let tipoPlan = await calcularPlan((await message.client.guilds.cache.get(GUILD.SERVER_PLATY).members.fetch(userTwitch.idDiscord)), userTwitch);
 	if (!userTwitch.active) {
-		var embed = new MessageEmbed()
+		var embed = new EmbedBuilder()
 			.setTitle(`Stats`)
 			.setAuthor({ name: `Desactivado` })
 			.setDescription(`**!planes** para ver los planes disponibles`)
@@ -50,20 +50,20 @@ async function mostrarStatsTwitch(message) {
 				{ name: `Plan`, value: tipoPlan, inline: true },
 				{ name: `Delay`, value: `${userTwitch.delay} min`, inline: true }
 			)
-			.setColor('DARK_RED')
+			.setColor('Dark_red')
 			.setFooter({ text: `!start para activarlo` })
 
 		message.channel.send({ embeds: [embed] });
 		return;
 	} else {
-		var embed = new MessageEmbed()
+		var embed = new EmbedBuilder()
 			.setTitle(`Stats`)
 			.setAuthor({ name: `Activado` })
 			.setFields(
 				{ name: `Plan`, value: tipoPlan, inline: true },
 				{ name: `Delay`, value: `${userTwitch.delay}min`, inline: true }
-		)
-			.setColor('PURPLE')
+			)
+			.setColor('Purple')
 			.setFooter({ text: `!stop para desactivarlo` })
 		for (var i = 0; i < userTwitch.usuarios.length; i++) {
 			if (!cacheCanalesViendo[userTwitch.idDiscord.toString()][userTwitch.usuarios[i].toString()]) {
@@ -77,13 +77,13 @@ async function mostrarStatsTwitch(message) {
 					stringCanales = `**${canales[j].name}** - ${((Date.now() - canales[j].time) / 1000 / 60).toFixed(2)}min \n`
 				} else {
 					stringCanales += `**${canales[j].name}** - ${((Date.now() - canales[j].time) / 1000 / 60).toFixed(2)}min \n`
-                }
+				}
 			}
-			embed.addField(cacheFollowing[userTwitch.idDiscord.toString()][userTwitch.usuarios[i].toString()].name, stringCanales);
+			embed.addFields({ name: cacheFollowing[userTwitch.idDiscord.toString()][userTwitch.usuarios[i].toString()].name, value: stringCanales });
 		}
 		message.channel.send({ embeds: [embed] });
-    }
-	
+	}
+
 }
 
 function createJob(authorId, userTwitch, client) {
@@ -119,9 +119,9 @@ function createJob(authorId, userTwitch, client) {
 					if (empiezaASeguir.length >= 1) {
 						channel.send({
 							embeds: [
-								new MessageEmbed()
+								new EmbedBuilder()
 									.setTitle(thisCache.name)
-									.setColor('GREEN')
+									.setColor('Green')
 									.setDescription(`Ha empezado seguir a **${empiezaASeguir.join(', ')}**`)
 									.setTimestamp(new Date())
 							]
@@ -130,9 +130,9 @@ function createJob(authorId, userTwitch, client) {
 					if (dejaDeSeguir.length >= 1) {
 						channel.send({
 							embeds: [
-								new MessageEmbed()
+								new EmbedBuilder()
 									.setTitle(thisCache.name)
-									.setColor('DARK_GREEN')
+									.setColor('Dark_green')
 									.setDescription(`Ha dejado de seguir a **${dejaDeSeguir.join(', ')}**`)
 									.setTimestamp(new Date())
 							]
@@ -152,9 +152,9 @@ function createJob(authorId, userTwitch, client) {
 					if (newCanales.length != 0)
 						channel.send({
 							embeds: [
-								new MessageEmbed()
+								new EmbedBuilder()
 									.setTitle(thisCache.name)
-									.setColor('BLURPLE')
+									.setColor('Blurple')
 									.setDescription(`Está viendo a **${newCanales.join(', ')}**`)
 									.setTimestamp(new Date())
 							]
@@ -183,36 +183,36 @@ function createJob(authorId, userTwitch, client) {
 									name: newCanales[k],
 									time: thisCacheViendo.canales.find(c => c.name = newCanales[k]).time
 								}
-                            }
+							}
 						}
-						
+
 						if (empiezaAVer.length != 0) {
-							var embed = new MessageEmbed()
+							var embed = new EmbedBuilder()
 								.setAuthor({ name: thisCache.name })
 								.setTitle(`Empieza a ver...`)
-								.setColor('AQUA')
+								.setColor('Aqua')
 								.setTimestamp(new Date())
 							empiezaAVer.forEach(canal => {
-								embed.addField(canal, `<t:${Date.now() / 1000 << 0}:R>`, true);
+								embed.addFields({ name: canal, value: `<t:${Date.now() / 1000 << 0}:R>`, inline: true });
 							})
 							channel.send({ embeds: [embed] });
 						}
 						if (dejaDeVer.length != 0) {
-							var embed = new MessageEmbed()
+							var embed = new EmbedBuilder()
 								.setAuthor({ name: thisCache.name })
 								.setTitle(`Deja de ver...`)
-								.setColor('DARK_AQUA')
+								.setColor('Dark_aqua')
 								.setTimestamp(new Date())
 							dejaDeVer.forEach(canal => {
-								embed.addField(canal, `Tiempo visto: **${((Date.now() - thisCacheViendo.canales.find(c => c.name = canal).time) / 1000 / 60).toFixed(2)}min**`, true);
+								embed.addFields({ name: canal, value: `Tiempo visto: **${((Date.now() - thisCacheViendo.canales.find(c => c.name = canal).time) / 1000 / 60).toFixed(2)}min**`, inline: true });
 							})
 							channel.send({ embeds: [embed] });
 						}
 
 						cacheCanalesViendo[userTwitch.idDiscord.toString()][userTwitch.usuarios[i].toString()].canales = newCanales;
-                    }
+					}
 				}
-            }
+			}
 		}
 	});
 	return job;
@@ -235,7 +235,7 @@ async function getToken() {
 			request.post(options, async (err, res, body) => {
 				if (err) {
 					return console.log(err);
-				} 
+				}
 				try {
 					let token;
 					if (res.body) {
@@ -424,8 +424,8 @@ async function calcularPlan(member, userTwitch) {
 			return `Prueba *termina <t:${userTwitch.fechaFin / 1000 << 0}:R>*`
 		} else {
 			return `Sin Plan`
-        }
-    }
+		}
+	}
 }
 
 async function testPlan(plan, userTwitch, member) {
@@ -440,22 +440,22 @@ async function testPlan(plan, userTwitch, member) {
 			}
 			await MonitorizarTwitch.updateOne({ idDiscord: userTwitch.idDiscord }, { delay: userTwitch.delay, usuarios: userTwitch.usuarios });
 			await funcionStart(member)
-			member.send({ embeds: [new MessageEmbed().setTitle(`Ahora el plan es Tier 1`).setColor('RED').setDescription(`**El delay y los usuarios han podido ser modificados** \n !planes para ver los beneficios de tener un plan mejor`)] });
+			member.send({ embeds: [new EmbedBuilder().setTitle(`Ahora el plan es Tier 1`).setColor('Red').setDescription(`**El delay y los usuarios han podido ser modificados** \n !planes para ver los beneficios de tener un plan mejor`)] });
 			break;
 		case "Tier 2":
 			if (userTwitch.usuarios.length <= 2) return;
 			userTwitch.usuarios = [userTwitch.usuarios[0], userTwitch.usuarios[1]];
 			await MonitorizarTwitch.updateOne({ idDiscord: userTwitch.idDiscord }, { usuarios: userTwitch.usuarios });
 			await funcionStart(member)
-			member.send({ embeds: [new MessageEmbed().setTitle(`Ahora el plan es Tier 2`).setColor('RED').setDescription(`**Los usuarios han podido ser modificados** \n !planes para ver los beneficios de tener un plan mejor`)] });
+			member.send({ embeds: [new EmbedBuilder().setTitle(`Ahora el plan es Tier 2`).setColor('Red').setDescription(`**Los usuarios han podido ser modificados** \n !planes para ver los beneficios de tener un plan mejor`)] });
 			break;
 		case "Tier 3":
 			break;
 		case "Sin Plan":
 			await funcionStop(member);
-			member.send({ embeds: [new MessageEmbed().setTitle(`Ya no tienes ningún plan activo :<`).setColor('RED').setDescription(`**Debes estar en el servidor de Fiuva** \n Debes tener la cuenta de twitch vinculada a discord \n *!planes para ver los planes disponibles*`)] });
+			member.send({ embeds: [new EmbedBuilder().setTitle(`Ya no tienes ningún plan activo :<`).setColor('Red').setDescription(`**Debes estar en el servidor de Fiuva** \n Debes tener la cuenta de twitch vinculada a discord \n *!planes para ver los planes disponibles*`)] });
 			break;
-    }
+	}
 }
 
 async function funcionStart(member, reinicio = false) {
@@ -463,7 +463,7 @@ async function funcionStart(member, reinicio = false) {
 	if (await calcularPlan(member, userTwitch) == 'Sin Plan') {
 		if (!reinicio) member.send(`Necesitas algún **plan** para activar la monitorización de usuarios de Twitch __*!planes*__`);
 		return;
-    }
+	}
 	if (userTwitch.active) {
 		try {
 			jobs[member.id.toString()].cancel();
@@ -494,7 +494,7 @@ async function buscarTwitch(nombre, idTwitch, message, token, fechaInicio) {
 	nombre = nombre.toLowerCase();
 	let newFollowings = await getFollows(token, idTwitch);
 	let newCanales = await buscarCanalQueVe(nombre, newFollowings);
-	var embed = new MessageEmbed()
+	var embed = new EmbedBuilder()
 		.setTitle(nombre)
 		.setTimestamp(Date.now())
 		.setAuthor({ name: `Sigue a ${newFollowings.length} canales` });
@@ -506,7 +506,7 @@ async function buscarTwitch(nombre, idTwitch, message, token, fechaInicio) {
 			texto += `• **${newCanales[i]}** \n`
 		}
 		embed.setDescription(texto);
-		embed.setColor('BLURPLE')
+		embed.setColor('Blurple')
 	}
 	embed.setFooter({ text: `Tiempo: ${((Date.now() - fechaInicio) / 1000).toFixed(2)} seg` })
 	message.edit({ content: " ", embeds: [embed] });

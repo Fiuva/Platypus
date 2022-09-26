@@ -1,6 +1,6 @@
-﻿const { MessageEmbed } = require("discord.js");
-const { ROL, CANAL_TEXTO } = require("../../config/constantes");
-const { findOrCreateDocument, random } = require("../../handlers/funciones");
+﻿const { EmbedBuilder } = require("discord.js");
+const { CANAL_TEXTO } = require("../../config/constantes");
+const { findOrCreateDocument } = require("../../handlers/funciones");
 const { calcularNivelMascota, buscarMejorMascota, mascotaEquipada } = require("../../handlers/juegos/funcionesMascotas");
 const { MascotasData } = require("../../models/mascotas");
 
@@ -29,7 +29,7 @@ module.exports = {
                 for (var i = 0; i < arrArreglado.length; i++) {
                     resultado += `${i + 1}. ${arrArreglado[i].nombre} (${arrArreglado[i].nombre != arrArreglado[i].animal.nombre ? `${arrArreglado[i].animal.nombre} | ` : ''}Exp: \`${arrArreglado[i].exp}\`) ${arrArreglado[i].count != 1 ? `x${arrArreglado[i].count}` : ''}\n`;
                 }
-                var embed = new MessageEmbed()
+                var embed = new EmbedBuilder()
                     .setTitle("Elige una mascota")
                     .setDescription(resultado)
                 return message.reply({ content: mascotaElegida[1], embeds: [embed] })
@@ -45,9 +45,9 @@ module.exports = {
 
 function embedMascota(mascota, message) {
     const nivel = calcularNivelMascota(mascota);
-    var embed = new MessageEmbed()
+    var embed = new EmbedBuilder()
         .setTitle(mascota.animal.nombre)
-        .setDescription(nivel[0]==5?`Nivel: \`Max\``:`Nivel: \`${nivel[0]}\` \n Exp: \`${mascota.exp}/${nivel[1]}\``)
+        .setDescription(nivel[0] == 5 ? `Nivel: \`Max\`` : `Nivel: \`${nivel[0]}\` \n Exp: \`${mascota.exp}/${nivel[1]}\``)
         .addFields(
             { name: `Clase: `, value: mascota.animal.clase, inline: true },
             { name: `Hábitat: `, value: mascota.animal.habitat, inline: true },

@@ -1,4 +1,4 @@
-const { MessageButton, MessageActionRow } = require("discord.js");
+const { ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { CANAL_TEXTO } = require("../../config/constantes");
 const Usuario = require("../../models/usuario");
 
@@ -14,17 +14,17 @@ module.exports = {
             var user = await Usuario.find({ idDiscord: message.author.id }).exec();
             var toUser = await Usuario.find({ idDiscord: message.mentions.users.first().id }).exec();
             if (user[0].parejaId == '0' && toUser[0].parejaId == '0' && user[0].anillo >= 2) {
-                const casar = new MessageButton()
+                const casar = new ButtonBuilder()
                     .setLabel('Casarse')
                     .setCustomId(`pareja_casar_${message.mentions.users.first().id}_${message.author.id}`)
-                    .setStyle('SUCCESS')
+                    .setStyle('Success')
                     .setEmoji('✅')
-                const rechazar = new MessageButton()
+                const rechazar = new ButtonBuilder()
                     .setLabel('Rechazar')
                     .setCustomId(`pareja_rechazar_${message.mentions.users.first().id}_${message.author.id}`)
-                    .setStyle('DANGER')
+                    .setStyle('Danger')
                     .setEmoji('❌')
-                const casarRow = new MessageActionRow()
+                const casarRow = new ActionRowBuilder()
                     .addComponents(casar, rechazar)
                 message.channel.send({ content: `${message.author.username} se quiere casar con ${message.mentions.users.first().username}, aceptas ${message.mentions.users.first()}?`, components: [casarRow] });
             } else if (user[0].parejaId != '0') {

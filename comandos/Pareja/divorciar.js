@@ -1,4 +1,4 @@
-const { MessageButton, MessageActionRow } = require("discord.js");
+const { ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { CANAL_TEXTO, NOMBRE_MONEDAS, PRECIO } = require("../../config/constantes");
 const Usuario = require("../../models/usuario");
 
@@ -16,15 +16,15 @@ module.exports = {
                 if (user[0].monedas < PRECIO.DIVORCIO) {
                     message.channel.send(`${message.author} necesitas ${PRECIO.DIVORCIO} ${NOMBRE_MONEDAS} para divorciarte`);
                 } else {
-                    const botonSi = new MessageButton()
+                    const botonSi = new ButtonBuilder()
                         .setLabel('Si')
                         .setCustomId(`pareja_divorciar-si_${message.author.id}`)
-                        .setStyle('SUCCESS')
-                    const botonNo = new MessageButton()
+                        .setStyle('Success')
+                    const botonNo = new ButtonBuilder()
                         .setLabel('No')
                         .setCustomId(`pareja_divorciar-no_${message.author.id}`)
-                        .setStyle('DANGER')
-                    const botonesRow = new MessageActionRow()
+                        .setStyle('Danger')
+                    const botonesRow = new ActionRowBuilder()
                         .addComponents(botonSi, botonNo)
                     message.channel.send({
                         content: `${message.author} seguro que te quieres divorciar de ${await message.guild.members.fetch(user[0].parejaId)} y dejar a los 7 niños abandonados? \n (${PRECIO.DIVORCIO} ${NOMBRE_MONEDAS})`,

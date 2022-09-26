@@ -1,4 +1,4 @@
-﻿const { MessageEmbed, MessageCollector, ReactionCollector } = require("discord.js");
+﻿const { EmbedBuilder, MessageCollector, ReactionCollector } = require("discord.js");
 const config = require(`${process.cwd()}/config/config.json`);
 const { MascotasData } = require("../../models/mascotas");
 const { findOrCreateDocument } = require("../funciones");
@@ -9,14 +9,14 @@ var onClickIntercambio = async function (button, client) {
     if (id[1] == 'aceptar' && button.user.id == id[2]) {
         const tiempo = 200; //seg
         const user = (await button.guild.members.fetch(id[3])).user;
-        var embed = new MessageEmbed()
+        var embed = new EmbedBuilder()
             .setTitle(`${user.username} y ${button.user.username} están intercambiando mascotas`)
-            .setColor("GREEN")
-            .setDescription(`*!add <mascota> | !remove <numero>* \n Termina <t:${(Date.now() + tiempo * 1000)/1000<<0}:R>`)
+            .setColor("Green")
+            .setDescription(`*!add <mascota> | !remove <numero>* \n Termina <t:${(Date.now() + tiempo * 1000) / 1000 << 0}:R>`)
             .setFields(
                 { name: `${user.username} da:`, value: `•`, inline: true },
                 { name: `${button.user.username} da:`, value: `•`, inline: true }
-        )
+            )
         await button.message.edit({ embeds: [embed], components: [] });
         button.deferUpdate();
         const filter = (m) => [id[2], id[3]].includes(m.author.id) && (m.content.startsWith(`${config.prefix}add `) || m.content.startsWith(`${config.prefix}remove `));
@@ -55,14 +55,14 @@ var onClickIntercambio = async function (button, client) {
                     rCollector.stop();
                     button.message.reactions.removeAll();
                     await intercambiarMascotas();
-                    embed.setDescription(`Se han intercambiado las mascotas`).setColor("BLURPLE");
+                    embed.setDescription(`Se han intercambiado las mascotas`).setColor("Blurple");
                     await button.message.edit({ embeds: [embed] });
                 }
             } else if (reaction.emoji.name == '❌') {
                 collector.stop('manual');
                 rCollector.stop();
                 button.message.reactions.removeAll();
-                await button.message.edit({ embeds: [new MessageEmbed().setTitle(`${user.username} ha cancelado el intercambio`).setColor("RED")], components: [] });
+                await button.message.edit({ embeds: [new EmbedBuilder().setTitle(`${user.username} ha cancelado el intercambio`).setColor("Red")], components: [] });
             } else {
                 reaction.remove();
             }
@@ -137,7 +137,7 @@ var onClickIntercambio = async function (button, client) {
                     await actualizarFields();
                 }
             }
-            
+
         });
         collector.on('end', async (collected, reason) => {
             if (reason == 'manual') return;
@@ -188,7 +188,8 @@ var onClickIntercambio = async function (button, client) {
             mens = `${button.user.username} ha cancelado el interambio`;
         else
             mens = `${button.user.username} ha rechazado el interambio`;
-        await button.message.edit({ embeds: [new MessageEmbed().setTitle(mens).setColor("RED")], components: [] });
+
+        await button.message.edit({ embeds: [new EmbedBuilder().setTitle(mens).setColor("Red")], components: [] });
         button.deferUpdate();
     } else {
         button.deferUpdate();

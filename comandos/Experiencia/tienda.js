@@ -1,8 +1,9 @@
-﻿const { MessageEmbed, MessageButton, MessageActionRow, MessageSelectMenu } = require("discord.js");
+﻿const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, SelectMenuBuilder } = require("discord.js");
 const { NOMBRE_MONEDAS, PRECIO, CANAL_TEXTO } = require("../../config/constantes");
 const { abrir } = require("../../handlers/botones/funcionesTienda");
 const { HUEVOS } = require("../../handlers/juegos/funcionesMascotas");
 const Usuario = require("../../models/usuario");
+const { ComponentType } = require("../../node_modules/discord-api-types/v10");
 
 
 module.exports = {
@@ -12,7 +13,7 @@ module.exports = {
     descripcion: `Compra cosas en la tienda con ${NOMBRE_MONEDAS}`,
     run: async (client, message, args) => {
         var userTienda = (await Usuario.find({ idDiscord: message.author.id }))[0];
-        const mensajeTienda = new MessageEmbed()
+        const mensajeTienda = new EmbedBuilder()
             .setColor('#74d600')
             .setTitle('Tienda')
             .setAuthor({ name: 'Server de Fiuva', iconURL: message.guild.iconURL() })
@@ -23,33 +24,33 @@ module.exports = {
                 { name: '🎶 Musica ⟬*más comandos*⟭', value: `${PRECIO.MUSICA_PRO} ${NOMBRE_MONEDAS}` },
                 { name: '💰 Rol Millonario', value: `${PRECIO.MILLONARIO} ${NOMBRE_MONEDAS}` }
             )
-            .addField('\u200B', '\u200B')
+            .addFields({ name: '\u200B', value: '\u200B' })
             .setFooter({ text: `${message.author.username} tienes ${userTienda.monedas} ${NOMBRE_MONEDAS}`, iconURL: message.author.displayAvatarURL() });
 
-        var bAnillo = new MessageButton()
+        var bAnillo = new ButtonBuilder()
             .setEmoji('💍')
             .setCustomId(`tienda_anillo_${message.author.id}`)
-            .setStyle('SECONDARY')
-        var bMillonario = new MessageButton()
+            .setStyle('Secondary')
+        var bMillonario = new ButtonBuilder()
             .setEmoji('💰')
             .setCustomId(`tienda_millonario_${message.author.id}`)
-            .setStyle('SECONDARY')
-        var bMusicaPro = new MessageButton()
+            .setStyle('Secondary')
+        var bMusicaPro = new ButtonBuilder()
             .setEmoji('🎶')
             .setCustomId(`tienda_musica-pro_${message.author.id}`)
-            .setStyle('SECONDARY')
+            .setStyle('Secondary')
         if (userTienda.monedas > PRECIO.ANILLO) {
-            bAnillo.setStyle('SUCCESS');
+            bAnillo.setStyle('Success');
             if (userTienda.monedas > PRECIO.MUSICA_PRO) {
-                bMusicaPro.setStyle('SUCCESS');
+                bMusicaPro.setStyle('Success');
                 if (userTienda.monedas > PRECIO.MILLONARIO) {
-                    bMillonario.setStyle('SUCCESS');
+                    bMillonario.setStyle('Success');
                 }
             }
         }
 
         const tituloMenu = `Compra huevos✨`;
-        var menu = new MessageSelectMenu()
+        var menu = new SelectMenuBuilder()
             .setPlaceholder(tituloMenu)
             .setCustomId(`id_menu_huevos`);
 
@@ -64,14 +65,14 @@ module.exports = {
                 })
         })
 
-        var rowTienda = new MessageActionRow()
+        var rowTienda = new ActionRowBuilder()
             .addComponents(bAnillo, bMusicaPro, bMillonario)
 
-        const components = [rowTienda, new MessageActionRow().addComponents(menu)];
+        const components = [rowTienda, new ActionRowBuilder().addComponents(menu)];
         const m = await message.channel.send({ embeds: [mensajeTienda], components: components });
 
         const collector = m.createMessageComponentCollector({
-            componentType: 'SELECT_MENU'
+            componentType: ComponentType.SelectMenu
         });
 
         collector.on('collect', async (collected) => {

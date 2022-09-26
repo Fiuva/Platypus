@@ -1,4 +1,4 @@
-﻿const { MessageButton, MessageActionRow } = require("discord.js");
+﻿const { ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { CANAL_TEXTO, CANAL_VOZ, ROL } = require("../../config/constantes");
 
 module.exports = {
@@ -15,11 +15,11 @@ module.exports = {
 
         client.distube.pause(message)
 
-        const resume = new MessageButton()
+        const resume = new ButtonBuilder()
             .setEmoji('⏸️')
-            .setStyle('PRIMARY')
+            .setStyle('Primary')
             .setCustomId('musica_resume')
 
-        message.channel.send({ components: [new MessageActionRow().addComponents(resume)] })
+        message.channel.send({ components: [new ActionRowBuilder().addComponents(resume)] })
     }
 }

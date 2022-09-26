@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO } = require("../../config/constantes");
 const { calcularNivel } = require("../../handlers/funciones");
 const Usuario = require("../../models/usuario");
@@ -11,7 +11,7 @@ module.exports = {
     run: async (client, message, args) => {
         Usuario.find({}).sort({ expTotal: -1 }).exec(async function (err, docs) {
             var j = 0;
-            var top = new MessageEmbed()
+            var top = new EmbedBuilder()
                 .setTitle(message.guild.name)
                 .setThumbnail(message.guild.iconURL())
                 .setColor('#FFCB00')

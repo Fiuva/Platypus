@@ -5,11 +5,11 @@ const { MascotasData } = require("../../models/mascotas");
 module.exports = async (client, member) => {
     if (member.guild.id != GUILD.SERVER_PLATY) return;
 
-    member.guild.channels.cache.get("837367366227853423")
-        .channel.setName('Ornitorrincos: ' + member.guild.memberCount);
+    member.guild.channels.fetch("837367366227853423")
+        .then(channel => channel.setName('Ornitorrincos: ' + member.guild.memberCount));
 
-    member.guild.channels.cache.get(CANAL_TEXTO.BIENVENIDA)
-        .channel.send(`${member.user} ha abandonado la familia de ornitorrincos :'<`);
+    member.guild.channels.fetch(CANAL_TEXTO.BIENVENIDA)
+        .then(channel => channel.send(`${member.user} ha abandonado la familia de ornitorrincos :'<`))
 
     let userMacotas = (await MascotasData.find({ idDiscord: member.id }))[0];
     if (userMacotas) {

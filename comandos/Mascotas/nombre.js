@@ -24,10 +24,10 @@ module.exports = {
             updateRol(message.guild, userMascotas).then(() => {
                 message.reply(`Se ha cambiado el nombre de ${nombreAntiguo} a ${nuevoNombre}`);
             }).catch(() => message.reply(`No se ha podido cambiar el nombre del rol`))
-            
+
         } catch {
             message.reply("Error al cambiar el nombre :<")
         }
-        
+
     }
 }
