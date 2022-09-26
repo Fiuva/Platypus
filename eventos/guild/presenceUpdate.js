@@ -30,6 +30,7 @@ module.exports = async (client, oldPresence, newPresence) => {
 
     if (arrayVictimas.map(v => v.id).includes(member.id)) {
         let victima = arrayVictimas.filter(v => v.id == member.id)[0];
+        if (victima.nombre == 'Fiuva') return;
         if (!victima.nombre.startsWith('//'))
             espiarUsuario(member, oldPresence, newPresence, client, victima);
     }
