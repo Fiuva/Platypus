@@ -8,7 +8,7 @@ module.exports = {
     name: "mascota",
     aliases: ["pet"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Para ver las estadísticas de la mascota equipada o cualquier otra",
+    description: "Para ver las estadísticas de la mascota equipada o cualquier otra",
     run: async (client, message, args) => {
         const userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
         if (!args[0]) {

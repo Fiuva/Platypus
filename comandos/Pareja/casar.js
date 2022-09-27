@@ -6,7 +6,7 @@ module.exports = {
     name: "casar",
     canales: [CANAL_TEXTO.GENERAL],
     aliases: ["casarse"],
-    descripcion: "Sirve para formar una bonita pareja :))",
+    description: "Sirve para formar una bonita pareja :))",
     run: async (client, message, args) => {
         if (message.mentions.users.size == 0) return message.channel.send(`${message.author} menciona a quien quieres enviar tu solicitud para casarte`);
         if (message.mentions.users.first().id == message.author.id) return message.channel.send(`${message.author} perdone, no le permito casarse con una persona tan fea`);

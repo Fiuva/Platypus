@@ -5,7 +5,7 @@ const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 module.exports = {
     name: "bucle",
     aliases: ["repeat"],
-    descripcion: "Cambia el modo de repetición en las canciones (🔁, 🔂)",
+    description: "Cambia el modo de repetición en las canciones (🔁, 🔂)",
     canales: [CANAL_TEXTO.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {

@@ -1,10 +1,10 @@
 {
   "name": "platypus",
-  "version": "4.0.1",
+  "version": "4.2.0",
   "description": "Bot para mi server de discord :)",
   "main": "index.js",
   "engines": {
-    "node": "16.15.0"
+    "node": "16.17.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,7 +18,7 @@
     "@distube/ytdl-core": "^4.11.5",
     "canvas": "^2.10.1",
     "discord-anti-spam": "^2.7.3",
-    "discord.js": "^14.3.0",
+    "discord.js": "^14.5.0",
     "distube": "^4.0.3",
     "ffmpeg-static": "^4.4.1",
     "g-i-s": "^2.1.6",

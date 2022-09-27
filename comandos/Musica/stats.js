@@ -4,7 +4,7 @@ const { CANAL_TEXTO } = require("../../config/constantes");
 module.exports = {
     name: "stats",
     aliases: ["estadisticas"],
-    descripcion: "Sirve para ver las canciones en cola",
+    description: "Sirve para ver las canciones en cola",
     canales: [CANAL_TEXTO.MUSICA],
     run: async (client, message, args) => {
         const queue = client.distube.getQueue(message);

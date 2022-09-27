@@ -7,7 +7,7 @@ module.exports = {
     name: "nombre",
     alias: ["cambiarnombre"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Cambia el nombre a tu mascota y aparecerá en tu rol de mascota",
+    description: "Cambia el nombre a tu mascota y aparecerá en tu rol de mascota",
     run: async (client, message, args) => {
         if (!args[0]) return message.reply("Tienes que especificar un nombre para la mascota que tienes equipada");
         const userMascotas = await findOrCreateDocument(message.author.id, MascotasData);

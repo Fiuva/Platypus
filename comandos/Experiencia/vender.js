@@ -6,7 +6,7 @@ module.exports = {
     name: "vender",
     aliases: ["sell"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Vende cosas de la tienda",
+    description: "Vende cosas de la tienda",
     run: async (client, message, args) => {
         const mensajeTienda = new EmbedBuilder()
             .setColor('#AB0101')

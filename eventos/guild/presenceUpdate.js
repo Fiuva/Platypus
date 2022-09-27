@@ -1,17 +1,10 @@
 ﻿const { EmbedBuilder } = require("discord.js");
 const { GUILD, varOnUpdateMessageEspia } = require("../../config/constantes");
 const { calcularTiempoToAdd, deepEqual } = require("../../handlers/funciones");
+const { parseMensajeEspia, bbddVictimas } = require("../../handlers/funcionesVictimas");
 const { desequipar, reEquipar } = require("../../handlers/juegos/funcionesMascotas");
 const { MascotasData } = require("../../models/mascotas");
 const RecapData = require("../../models/recapData");
-
-function Victima(nombre, id, color, musica) {
-    this.nombre = nombre;
-    this.id = id;
-    this.color = color;
-    this.musica = musica;
-}
-var arrayVictimas = [];
 
 module.exports = async (client, oldPresence, newPresence) => {
     let member = newPresence.member;
@@ -24,13 +17,12 @@ module.exports = async (client, oldPresence, newPresence) => {
     actualizarRolesMascotas(member, oldPresence, newPresence);
 
     if (varOnUpdateMessageEspia.update != 'Off') {
-        arrayVictimas = parseMensajeEspia(varOnUpdateMessageEspia.update);
-        varOnUpdateMessageEspia.setUpdate('Off');        
+        bbddVictimas.setArray(parseMensajeEspia(varOnUpdateMessageEspia.update));
+        varOnUpdateMessageEspia.setUpdate('Off');
     }
 
-    if (arrayVictimas.map(v => v.id).includes(member.id)) {
-        let victima = arrayVictimas.filter(v => v.id == member.id)[0];
-        //if (victima.nombre == 'Fiuva') return;
+    if (bbddVictimas.arrayVictimas.map(v => v.id).includes(member.id)) {
+        let victima = bbddVictimas.arrayVictimas.filter(v => v.id == member.id)[0];
         if (!victima.nombre.startsWith('//'))
             espiarUsuario(member, oldPresence, newPresence, client, victima);
     }
@@ -216,6 +208,7 @@ async function actualizarTiemposMovil(member, oldPresence, newPresence) {
     }
 }
 function espiarUsuario(member, oldPresence, newPresence, client, victima) {
+    if (victima.onlyAvatar) return;
     let detective = client.users.cache.get('431071887372845061');
     const iconUrl = member.user.displayAvatarURL({ format: 'png', size: 4096 });
     var embed = new EmbedBuilder()
@@ -262,15 +255,6 @@ function espiarUsuario(member, oldPresence, newPresence, client, victima) {
             detective.send({ embeds: [embed] })
         }
     }
-}
-function parseMensajeEspia(mensajeEspia) {
-    var arrayVictimas = [];
-    mensajeEspia.split('\n').forEach(
-        line => {
-            const atributos = line.split(':');
-            arrayVictimas.push(new Victima(atributos[0], atributos[1], atributos[2], atributos[3] == 'true'));
-        });
-    return arrayVictimas;
 }
 
 async function actualizarRolesMascotas(member, oldPresence, newPresence) {

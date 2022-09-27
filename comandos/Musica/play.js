@@ -3,7 +3,7 @@ const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 module.exports = {
     name: "play",
     aliases: ["reproducir"],
-    descripcion: "Añade una canción a la cola \n`Compatible con YT, Spotify y SoundCloud.` *Admite playlist*",
+    description: "Añade una canción a la cola \n`Compatible con YT, Spotify y SoundCloud.` *Admite playlist*",
     canales: [CANAL_TEXTO.MUSICA],
     run: async (client, message, args) => {
         if (!args.length) return message.reply("Pero pon el nombre de la canción... cara alfombra!");

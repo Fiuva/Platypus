@@ -7,7 +7,7 @@ module.exports = {
     name: "intercambiar",
     aliases: ["intercambio"],
     canales: [CANAL_TEXTO.COMANDOS, CANAL_TEXTO.GENERAL],
-    descripcion: "Intercambaia mascotas con alguien",
+    description: "Intercambaia mascotas con alguien",
     run: async (client, message, args) => {
         const to = message.mentions.members.first();
         if (!to) return message.reply(`Menciona a la persona con la que quieres intercambiar mascotas :>`);

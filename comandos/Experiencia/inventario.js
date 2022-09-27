@@ -6,7 +6,7 @@ module.exports = {
     name: "inventario",
     aliases: ["inventory", "bag", "monedas"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Consulta tu inventario :>",
+    description: "Consulta tu inventario :>",
     run: async (client, message, args) => {
         var username;
         var user;

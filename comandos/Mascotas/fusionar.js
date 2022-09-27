@@ -7,7 +7,7 @@ const { MascotasData, Mascota, Animal } = require("../../models/mascotas");
 module.exports = {
     name: "fusionar",
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Fusiona 4 mascotas iguales a nivel máximo para obtener una mascota \"evolucionada\"",
+    description: "Fusiona 4 mascotas iguales a nivel máximo para obtener una mascota \"evolucionada\"",
     run: async (client, message, args) => {
         const userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
         const mascotasNivel5 = userMascotas.mascotas.filter(mascota => calcularNivelMascota(mascota)[0] == 5);

@@ -5,7 +5,7 @@ module.exports = {
     name: "rank2048",
     aliases: ["2048rank", "ranking2048", "2048ranking"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Mira el ranking del 2048",
+    description: "Mira el ranking del 2048",
     run: async (client, message, args) => {
         rank2048(message);
     }

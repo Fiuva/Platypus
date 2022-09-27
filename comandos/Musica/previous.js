@@ -3,7 +3,7 @@
 module.exports = {
     name: "anterior",
     aliases: ["previous", "ant", "prev"],
-    descripcion: "Vuelve a la canción anterior ⏮️",
+    description: "Vuelve a la canción anterior ⏮️",
     canales: [CANAL_TEXTO.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {

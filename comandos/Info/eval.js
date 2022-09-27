@@ -8,7 +8,7 @@ const Usuario = require("../../models/usuario");
 module.exports = {
     name: "eval",
     roles: [ROL.ADMIN],
-    descripcion: "Comando para evaluar codigo (solo para el admin)",
+    description: "Comando para evaluar codigo (solo para el admin)",
     run: async (client, message, args) => {
         if (!args.length) return;
 

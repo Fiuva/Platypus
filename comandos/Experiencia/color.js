@@ -5,7 +5,7 @@ module.exports = {
     name: "color",
     aliases: [],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Cambai tu color del perfil (!rank)",
+    description: "Cambai tu color del perfil (!rank)",
     run: async (client, message, args) => {
         if (args[0] == undefined) return message.channel.send(`${message.author} escriba el codigo del color que desee (de esta forma: "#FFFFFF" o estos colores: azul, blanco, morado, amarillo, rojo, verde, naranja, rosa o default)`);
         

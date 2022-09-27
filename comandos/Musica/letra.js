@@ -6,7 +6,7 @@ const Client = new Genius.Client();
 module.exports = {
     name: "letra",
     aliases: ["lyrics"],
-    descripcion: "Para ver la letra de la canción actual o cualquier otra",
+    description: "Para ver la letra de la canción actual o cualquier otra",
     canales: [CANAL_TEXTO.MUSICA],
     run: async (client, message, args) => {
         if (args.length > 0) { //Titulo escrito

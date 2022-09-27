@@ -5,7 +5,7 @@ module.exports = {
     name: "timeout",
     aliases: ["mutear", "mute"],
     roles: [ROL.MOD, ROL.ADMIN],
-    descripcion: "Sirve para dar timeout a gente :0",
+    description: "Sirve para dar timeout a gente :0",
     run: async (client, message, args) => {
         message.delete();
         var toUser = message.mentions.members.first();

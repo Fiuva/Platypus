@@ -3,7 +3,7 @@
 module.exports = {
     name: "skip",
     aliases: ["saltar"],
-    descripcion: "Salta a la siguiente canción ⏭️",
+    description: "Salta a la siguiente canción ⏭️",
     canales: [CANAL_TEXTO.MUSICA],
     run: async (client, message, args) => {
         if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return message.reply("Tienes que meterte al canal de musica... cara alcachofa!");

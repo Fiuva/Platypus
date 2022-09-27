@@ -4,7 +4,7 @@ const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 module.exports = {
     name: "filtro",
     aliases: ["filter", "filters", "filtros"],
-    descripcion: "Pon filtros en tus canciones (`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`)",
+    description: "Pon filtros en tus canciones (`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`)",
     canales: [CANAL_TEXTO.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {

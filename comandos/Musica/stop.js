@@ -3,7 +3,7 @@
 module.exports = {
     name: "stop",
     aliases: ["desconectar", "leave", "disconnect"],
-    descripcion: "Desconecta al platypus de música 🛑",
+    description: "Desconecta al platypus de música 🛑",
     canales: [CANAL_TEXTO.MUSICA],
     run: async (client, message, args) => {
         if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return message.reply("Tienes que meterte al canal de musica... cara alcachofa!");

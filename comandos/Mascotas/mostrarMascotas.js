@@ -7,7 +7,7 @@ module.exports = {
     name: "mascotas",
     aliases: ["mostrarmascotas", "pets"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Una lista de tus mascotas",
+    description: "Una lista de tus mascotas",
     run: async (client, message, args) => {
         var author = message.mentions.users.first() || message.author;
         let userMascotas = (await MascotasData.find({ idDiscord: author.id }))[0];

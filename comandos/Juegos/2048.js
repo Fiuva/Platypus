@@ -5,7 +5,7 @@ module.exports = {
     name: "2048",
     aliases: ["juego2048"],
     canales: [CANAL_TEXTO.GENERAL],
-    descripcion: "Juega al 2048 🎮",
+    description: "Juega al 2048 🎮",
     run: async (client, message, args) => {
         iniciar2048(message);
     }

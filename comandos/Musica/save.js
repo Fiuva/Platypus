@@ -7,7 +7,7 @@ const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 module.exports = {
     name: "guardar",
     aliases: ["save"],
-    descripcion: "Te enviaré la canción que suena por MD",
+    description: "Te enviaré la canción que suena por MD",
     canales: [CANAL_TEXTO.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {

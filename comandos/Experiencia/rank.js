@@ -10,7 +10,7 @@ Canvas.registerFont('./config/Fonts/Impacted.ttf', { family: "Impacted" });
 module.exports = {
     name: "rank",
     aliases: ["perfil", "nivel"],
-    descripcion: "Mira tu nivel de experiencia",
+    description: "Mira tu nivel de experiencia",
     canales: [CANAL_TEXTO.COMANDOS],
     run: async (client, message, args) => {
         var username;

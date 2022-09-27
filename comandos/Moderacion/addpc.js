@@ -6,7 +6,7 @@ module.exports = {
     name: "addpc",
     aliases: ["addplatycoins"],
     roles: [ROL.ADMIN],
-    descripcion: "Sirve para añadir platycoins a alguien",
+    description: "Sirve para añadir platycoins a alguien",
     run: async (client, message, args) => {
         message.delete();
         const toUser = message.mentions.members.first();

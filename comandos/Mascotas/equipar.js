@@ -8,7 +8,7 @@ const Usuario = require("../../models/usuario");
 module.exports = {
     name: "equipar",
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Equipa una mascota de las que tienes",
+    description: "Equipa una mascota de las que tienes",
     run: async (client, message, args) => {
         var userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
         if (message.member.presence?.status == "offline") return message.reply(`No puedes equipar mascotas estando offline`)

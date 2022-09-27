@@ -8,7 +8,7 @@ module.exports = {
     name: "huevos",
     aliases: ["eggs", "probabilidades"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "Mira los huevos disponibles en la tienda y sus probabilides",
+    description: "Mira los huevos disponibles en la tienda y sus probabilides",
     run: async (client, message, args) => {
         var embed = new EmbedBuilder()
             .setTitle(`Huevos disponibles ✨`)

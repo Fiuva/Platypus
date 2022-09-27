@@ -4,7 +4,7 @@ const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 module.exports = {
     name: "mezclar",
     aliases: ["shuffle", "sh"],
-    descripcion: "Mezcla tus canciones para no escucharlas en el mismo orden siempre 🔀",
+    description: "Mezcla tus canciones para no escucharlas en el mismo orden siempre 🔀",
     canales: [CANAL_TEXTO.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {

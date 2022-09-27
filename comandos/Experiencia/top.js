@@ -7,7 +7,7 @@ module.exports = {
     name: "top",
     aliases: ["lb", "ranking"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: "El ranking de la gente más activa del server",
+    description: "El ranking de la gente más activa del server",
     run: async (client, message, args) => {
         Usuario.find({}).sort({ expTotal: -1 }).exec(async function (err, docs) {
             var j = 0;

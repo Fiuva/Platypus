@@ -10,7 +10,7 @@ module.exports = {
     name: "tienda",
     aliases: ["comprar", "shop"],
     canales: [CANAL_TEXTO.COMANDOS],
-    descripcion: `Compra cosas en la tienda con ${NOMBRE_MONEDAS}`,
+    description: `Compra cosas en la tienda con ${NOMBRE_MONEDAS}`,
     run: async (client, message, args) => {
         var userTienda = (await Usuario.find({ idDiscord: message.author.id }))[0];
         const mensajeTienda = new EmbedBuilder()

@@ -4,7 +4,7 @@ module.exports = {
     name: "ban",
     aliases: ["banear", "carcel"],
     roles: [ROL.MOD, ROL.ADMIN],
-    descripcion: "Sirve para banear a gente :>>>",
+    description: "Sirve para banear a gente :>>>",
     run: async (client, message, args) => {
         message.delete();
         var toUser = message.mentions.members.first();

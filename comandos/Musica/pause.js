@@ -4,7 +4,7 @@ const { CANAL_TEXTO, CANAL_VOZ, ROL } = require("../../config/constantes");
 module.exports = {
     name: "pause",
     aliases: ["pausar"],
-    descripcion: "Pausa una canción ⏸️",
+    description: "Pausa una canción ⏸️",
     canales: [CANAL_TEXTO.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {

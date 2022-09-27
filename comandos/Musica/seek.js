@@ -4,7 +4,7 @@ const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 module.exports = {
     name: "adelantar",
     aliases: ["seek", "avanzar", "av"],
-    descripcion: "Sirve para adelantar o avanzar una cancion x tiempo ⏩",
+    description: "Sirve para adelantar o avanzar una cancion x tiempo ⏩",
     canales: [CANAL_TEXTO.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {

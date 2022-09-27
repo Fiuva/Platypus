@@ -6,7 +6,7 @@ module.exports = {
     name: "divorciar",
     canales: [CANAL_TEXTO.GENERAL],
     aliases: ["divorcio", "divorciarse"],
-    descripcion: "Sirve para divorciarse :<",
+    description: "Sirve para divorciarse :<",
     run: async (client, message, args) => {
         try {
             var user = await Usuario.find({ idDiscord: message.author.id }).exec();
