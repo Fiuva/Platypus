@@ -10,8 +10,8 @@ module.exports = async (client, oldUser, newUser) => {
         varOnUpdateMessageEspia.setUpdate('Off');
     }
 
-    if (bbddVictimas.arrayVictimas.map(v => v.id).includes(member.id)) {
-        let victima = bbddVictimas.arrayVictimas.filter(v => v.id == member.id)[0];
+    if (bbddVictimas.arrayVictimas.map(v => v.id).includes(newUser.id)) {
+        let victima = bbddVictimas.arrayVictimas.filter(v => v.id == newUser.id)[0];
         if (!victima.nombre.startsWith('//'))
             espiarAvatarUsuario(newUser);
     }
