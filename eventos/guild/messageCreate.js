@@ -1,7 +1,7 @@
-﻿const { EmbedBuilder } = require("discord.js");
+﻿const { EmbedBuilder, ChannelType } = require("discord.js");
 const antiSpam = require("../../config/antiSpam");
 const { CANAL_TEXTO, GUILD } = require("../../config/constantes");
-const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument, sleep } = require("../../handlers/funciones");
+const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument } = require("../../handlers/funciones");
 const { subirExpMascota, subirExperienciaMascotaPareja } = require("../../handlers/juegos/funcionesMascotas");
 const { MonitorizarTwitch, getIDbyName, getToken, mostrarStatsTwitch, funcionStart, funcionStop, calcularPlan, getNamebyID, buscarTwitch } = require("../../models/monitorizarTwitch");
 const RecapData = require("../../models/recapData");
@@ -12,7 +12,7 @@ var ultimoIdQueHabla = 0;
 
 module.exports = async (client, message) => {
     if (message.author.bot) return;
-    if (message.channel?.type == 'DM') {
+    if (message.channel?.type == ChannelType.DM) {
         if (message.content.startsWith(config.prefix)) {
             if (talkedRecently2.has(message.author.id))
                 return message.reply(`No tan rápido! \nCada comando tiene un cooldown asignado por seguridad`)
