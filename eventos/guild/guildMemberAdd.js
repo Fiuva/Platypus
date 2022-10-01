@@ -6,6 +6,11 @@ Canvas.registerFont('./config/Fonts/Impacted.ttf', { family: "Impacted" });
 module.exports = async (client, member) => {
     if (member.guild.id != GUILD.SERVER_PLATY) return;
 
+    if (member.id == "959157740591259658") {
+        await member.kick();
+        return;
+    } 
+
     //Actualiza numero de usuarios
     member.guild.channels.fetch("837367366227853423")
         .then(channel => channel.setName('Ornitorrincos: ' + member.guild.memberCount));
