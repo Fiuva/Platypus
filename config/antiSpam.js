@@ -16,7 +16,7 @@ const antiSpam = () => {
 		maxDuplicatesKick: 5, // Amount of duplicate messages that trigger a warning.
 		maxDuplicatesBan: 7, // Amount of duplicate messages that trigger a warning.
 		maxDuplicatesMute: 10, // Ammount of duplicate message that trigger a mute.
-		ignoredPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions.
+		ignoredPermissions: [], // Bypass users with any of these permissions.
 		ignoreBots: true, // Ignore bot messages.
 		verbose: true, // Extended Logs from module.
 		ignoredMembers: [], // Array of User IDs that get ignored.
