@@ -5,6 +5,8 @@ const { MascotasData } = require("../../models/mascotas");
 module.exports = async (client, member) => {
     if (member.guild.id != GUILD.SERVER_PLATY) return;
 
+    if (member.id == "959157740591259658") return;
+
     member.guild.channels.fetch("837367366227853423")
         .then(channel => channel.setName('Ornitorrincos: ' + member.guild.memberCount));
 

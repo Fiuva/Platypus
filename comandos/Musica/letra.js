@@ -45,6 +45,7 @@ module.exports = {
             return tituloFix.trim();
         }
         async function buscarCancion(titulo) {
+            var mensInfo = await message.channel.send({ embeds: [new EmbedBuilder().setColor('#DED500').setDescription(`Obteniendo info de la canción...`)] });
             try {
                 const searches = await Client.songs.search(titulo);
 
@@ -66,41 +67,53 @@ module.exports = {
                                     .setThumbnail(firstSong.thumbnail)
                                     .setDescription(lyrics.substring(i, i + n))
                                     .setURL(firstSong.url)
+                                    .setColor('#49D414')
                             );
                         } else {
                             embeds.push(
                                 new EmbedBuilder()
                                     .setDescription(lyrics.substring(i, i + n))
+                                    .setColor('#49D414')
                             );
                         }
                     }
 
                     embeds[embeds.length - 1].setTimestamp(new Date(`${firstSong._raw.release_date_for_display}`)).setFooter({ text: `Fecha de lanzamiento` });
-
+                    //---Enviar embeds de 6k como max
                     var i = 0;
                     var j = 0;
                     var len = 0;
+                    var primerMensaje = true;
                     while (i < embeds.length) {
                         if (len + embeds[i].data.description.length <= 6000) {
                             len += embeds[i].data.description.length;
                             i++;
                             if (i < embeds.length) continue;
                             else {
+                                if (primerMensaje) {
+                                    mensInfo.edit({ embeds: embeds.slice(j, i) });
+                                    primerMensaje = false;
+                                    break;
+                                }
                                 message.channel.send({ embeds: embeds.slice(j, i) });
                                 break;
                             }
                         }
                         len = 0;
-                        message.channel.send({ embeds: embeds.slice(j, i) });
+                        if (primerMensaje) {
+                            mensInfo.edit({ embeds: embeds.slice(j, i) });
+                            primerMensaje = false;
+                        } else
+                            message.channel.send({ embeds: embeds.slice(j, i) });
                         j = i;
                     }
                     //----
 
                 } else {
-                    message.channel.send('Canción no encontrada');
+                    mensInfo.edit({ embeds: [new EmbedBuilder().setColor('#DE2B00').setDescription(`Canción no encontrada :(`)] });
                 }
             } catch {
-                message.channel.send('Canción no encontrada');
+                mensInfo.edit({ embeds: [new EmbedBuilder().setColor('#DE2B00').setDescription(`Canción no encontrada :(`)] });
             }
 
         }
