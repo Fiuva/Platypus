@@ -1,7 +1,7 @@
-const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 var cambiarTurno = function (button, b00, b01, b02, b10, b11, b12, b20, b21, b22, content) {
-    var id = button.data.custom_id.split('_');
+    var id = button.customId.split('_');
     var idCambio;
     if (id[4] == id[2]) {
         idCambio = id[3];
@@ -12,50 +12,50 @@ var cambiarTurno = function (button, b00, b01, b02, b10, b11, b12, b20, b21, b22
     }
     var reg = new RegExp(id[4], 'g')
     var t = 0;
-    b00 = b00.setCustomId(b00.data.custom_id.replace(reg, function (match) {
+    b00.data.custom_id = b00.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     t = 0;
-    b01 = b01.setCustomId(b01.data.custom_id.replace(reg, function (match) {
+    b01.data.custom_id = b01.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     t = 0;
-    b02 = b02.setCustomId(b02.data.custom_id.replace(reg, function (match) {
+    b02.data.custom_id = b02.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     t = 0;
-    b10 = b10.setCustomId(b10.data.custom_id.replace(reg, function (match) {
+    b10.data.custom_id = b10.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     t = 0;
-    b11 = b11.setCustomId(b11.data.custom_id.replace(reg, function (match) {
+    b11.data.custom_id = b11.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     t = 0;
-    b12 = b12.setCustomId(b12.data.custom_id.replace(reg, function (match) {
+    b12.data.custom_id = b12.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     t = 0;
-    b20 = b20.setCustomId(b20.data.custom_id.replace(reg, function (match) {
+    b20.data.custom_id = b20.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     t = 0;
-    b21 = b21.setCustomId(b21.data.custom_id.replace(reg, function (match) {
+    b21.data.custom_id = b21.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     t = 0;
-    b22 = b22.setCustomId(b22.data.custom_id.replace(reg, function (match) {
+    b22.data.custom_id = b22.data.custom_id.replace(reg, function (match) {
         t++;
         return (t === 2) ? idCambio : match
-    }))
+    })
     return content;
 }
 var comprobarSiWin = function (button, content) {
@@ -139,68 +139,68 @@ function editButtons3enRaya(id1, button, b00, b01, b02, b10, b11, b12, b20, b21,
     var label, style;
     if (tipo == 1) {
         label = 'O';
-        style = 'Success';
+        style = ButtonStyle.Success;
     } else if (tipo == 2) {
         label = 'X';
-        style = 'Danger';
+        style = ButtonStyle.Danger;
     } else if (tipo == 3) {
         label = 'win';
-        style = 'Primary';
-        b00.setDisabled(true);
-        b01.setDisabled(true);
-        b02.setDisabled(true);
-        b10.setDisabled(true);
-        b11.setDisabled(true);
-        b12.setDisabled(true);
-        b20.setDisabled(true);
-        b21.setDisabled(true);
-        b22.setDisabled(true);
+        style = ButtonStyle.Primary;
+        b00.data.disabled = true;
+        b01.data.disabled = true;
+        b02.data.disabled = true;
+        b10.data.disabled = true;
+        b11.data.disabled = true;
+        b12.data.disabled = true;
+        b20.data.disabled = true;
+        b21.data.disabled = true;
+        b22.data.disabled = true;
     }
     switch (id1) {
         case '00':
-            if (label != 'win') b00 = b00.setLabel(label);
-            b00 = b00.setStyle(style);
-            b00 = b00.setCustomId(`3enRaya_00_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b00.data.label = label;
+            b00.data.style = style;
+            b00.data.custom_id = `3enRaya_00_${button.customId.slice(11, -2)}_${tipo}`;
             break;
         case '01':
-            if (label != 'win') b01 = b01.setLabel(label);
-            b01 = b01.setStyle(style);
-            b01 = b01.setCustomId(`3enRaya_01_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b01.data.label = label;
+            b01.data.style = style;
+            b01.data.custom_id = `3enRaya_01_${button.customId.slice(11, -2)}_${tipo}`;
             break;
         case '02':
-            if (label != 'win') b02 = b02.setLabel(label);
-            b02 = b02.setStyle(style);
-            b02 = b02.setCustomId(`3enRaya_02_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b02.data.label = label;
+            b02.data.style = style;
+            b02.data.custom_id = `3enRaya_02_${button.customId.slice(11, -2)}_${tipo}`;
             break;
         case '10':
-            if (label != 'win') b10 = b10.setLabel(label);
-            b10 = b10.setStyle(style);
-            b10 = b10.setCustomId(`3enRaya_10_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b10.data.label = label;
+            b10.data.style = style;
+            b10.data.custom_id = `3enRaya_10_${button.customId.slice(11, -2)}_${tipo}`;
             break;
         case '11':
-            if (label != 'win') b11 = b11.setLabel(label);
-            b11 = b11.setStyle(style);
-            b11 = b11.setCustomId(`3enRaya_11_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b11.data.label = label;
+            b11.data.style = style;
+            b11.data.custom_id = `3enRaya_11_${button.customId.slice(11, -2)}_${tipo}`;
             break;
         case '12':
-            if (label != 'win') b12 = b12.setLabel(label);
-            b12 = b12.setStyle(style);
-            b12 = b12.setCustomId(`3enRaya_12_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b12.data.label = label;
+            b12.data.style = style;
+            b12.data.custom_id = `3enRaya_12_${button.customId.slice(11, -2)}_${tipo}`;
             break;
         case '20':
-            if (label != 'win') b20 = b20.setLabel(label);
-            b20 = b20.setStyle(style);
-            b20 = b20.setCustomId(`3enRaya_20_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b20.data.label = label;
+            b20.data.style = style;
+            b20.data.custom_id = `3enRaya_20_${button.customId.slice(11, -2)}_${tipo}`;
             break;
         case '21':
-            if (label != 'win') b21 = b21.setLabel(label);
-            b21 = b21.setStyle(style);
-            b21 = b21.setCustomId(`3enRaya_21_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b21.data.label = label;
+            b21.data.style = style;
+            b21.data.custom_id = `3enRaya_21_${button.customId.slice(11, -2)}_${tipo}`;
             break;
         case '22':
-            if (label != 'win') b22 = b22.setLabel(label);
-            b22 = b22.setStyle(style);
-            b22 = b22.setCustomId(`3enRaya_22_${button.data.custom_id.slice(11, -2)}_${tipo}`)
+            if (label != 'win') b22.data.label = label;
+            b22.data.style = style;
+            b22.data.custom_id = `3enRaya_22_${button.customId.slice(11, -2)}_${tipo}`;
             break;
     }
 }
@@ -214,7 +214,7 @@ var tresEnRaya = function (button) {
     var b20 = button.message.components[2].components[0];
     var b21 = button.message.components[2].components[1];
     var b22 = button.message.components[2].components[2];
-    var id = button.data.custom_id.split('_');
+    var id = button.customId.split('_');
     var tipo = button.user.id == id[2] ? 1 : 2;
     var content;
     if (id[5] == '0' && id[4] == button.user.id) {

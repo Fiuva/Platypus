@@ -7,12 +7,13 @@ const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwi
 
 
 module.exports = async client => {
+    const guild = client.guilds.cache.get(GUILD.SERVER_PLATY);
     mongoose.connect(PRIVATE_CONFIG.MONGODB, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
         console.log(`Conectado a la base de datos`);
-        schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(client.guilds.cache.get(GUILD.SERVER_PLATY)));
+        schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(guild));
         iniciarMonitorizacionesTwitch(client);
     }).catch((err) => {
         console.log("Error al conectar a la base de datos: " + err);
@@ -21,7 +22,7 @@ module.exports = async client => {
     console.log(`Conectado como ${client.user.tag}`);
     client.channels.cache.get('836734022184861706').send('Bot reiniciado');
 
-    comprobarEstados(await RecapData.find(), client.guilds.cache.get(GUILD.SERVER_PLATY));
+    comprobarEstados(await RecapData.find(), guild);
     cambiarEstadoConMensaje(client);
     varOnUpdateMessageEspia.setUpdate((await client.channels.cache.get(CONFIG.CANAL_CONFIG).messages.fetch(CONFIG.MENSAJE_ESPIA)).content);
 }
