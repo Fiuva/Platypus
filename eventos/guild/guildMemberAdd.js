@@ -20,7 +20,7 @@ module.exports = async (client, member) => {
         .then(async channel => 
             channel.send({
                 content: `**Bienvenid@ ${member.user}, que lo pases bien!** 🤤`,
-                files: [await crearImagen(member)]
+                //files: [await crearImagen(member)] //_arreglar_
             })
         );
 }
