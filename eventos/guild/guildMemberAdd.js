@@ -1,5 +1,5 @@
 ﻿const Canvas = require("canvas");
-const { MessageAttachment } = require("discord.js");
+const { AttachmentBuilder } = require("discord.js");
 const { GUILD, CANAL_TEXTO } = require("../../config/constantes");
 Canvas.registerFont('./config/Fonts/Impacted.ttf', { family: "Impacted" });
 
@@ -26,6 +26,7 @@ module.exports = async (client, member) => {
 }
 
 async function crearImagen(member) {
+    console.log("Se crea una imagen");
     const canvas = Canvas.createCanvas(1600, 814);
     const ctx = canvas.getContext('2d');
     const background = await Canvas.loadImage('./config/Imagenes/platyWall.jpg');
@@ -52,5 +53,5 @@ async function crearImagen(member) {
     const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
     ctx.drawImage(avatar, 1215, 430, 330, 330); //1500, 50, 400, 400
 
-    return new MessageAttachment(canvas.toBuffer(), 'imagenDeBienvenida.png');
+    return new AttachmentBuilder(canvas.toBuffer(), 'imagen_de_bienvenida.png');
 }
