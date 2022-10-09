@@ -8,7 +8,6 @@ const { onClickIntercambio } = require("../../handlers/botones/funcionesIntercam
 
 
 module.exports = async (client, button) => {
-    return; //_quitar_
     if (button.customId.startsWith('3enRaya_'))
         tresEnRaya(button);
     else if (button.customId.startsWith('2048_'))
