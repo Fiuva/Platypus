@@ -1,5 +1,6 @@
 const { AUMENTA_NIVEL, CONFIG, AUMENTAR_MONEDAS_NIVEL } = require("../config/constantes");
 const Usuario = require("../models/usuario");
+const { ActivityType } = require("discord.js");
 
 module.exports = {
     msg,
@@ -86,21 +87,21 @@ async function cambiarEstadoConMensaje(client) {
     var tipo;
     const mensaje = msg(0, 1000).replace('-p ', '').replace('-s ', '').replace('-w ', '').replace('-c ', '').replace('-l ', '').replace('-dnd ', '').replace('-inv ', '').replace('-idl ', '');
     if (msg(0, 100).match('-p')) {
-        tipo = 'PLAYING';
+        tipo = ActivityType.Playing;
     } else if (msg(0, 100).match('-s')) {
         client.user.setActivity(mensaje, {
-            type: 'STREAMING',
+            type: ActivityType.Streaming,
             url: 'https://www.twitch.tv/fiuva2'
         })
         return;
     } else if (msg(0, 100).match('-w')) {
-        tipo = 'WATCHING';
+        tipo = ActivityType.Watching;
     } else if (msg(0, 100).match('-c')) {
-        tipo = 'COMPETING';
+        tipo = ActivityType.Competing;
     } else if (msg(0, 100).match('-l')) {
-        tipo = 'LISTENING';
+        tipo = ActivityType.Listening;
     } else {
-        tipo = 'CUSTOM_STATUS';
+        tipo = ActivityType.Custom;
         message.channel.send('!estado <-p, -c, -l, -w, -s>')
         return;
     }
@@ -114,7 +115,7 @@ async function cambiarEstadoConMensaje(client) {
     } else {
         status = 'online';
     }
-    client.user.setPresence({ status: status, activities: [{ name: mensaje, type: tipo }] });
+    client.user.setPresence({ activities: [{ name: mensaje, type: tipo }], status: status });
 }
 
 async function findOrCreateDocument(id, Modelo) {

@@ -132,7 +132,7 @@ function createJob(authorId, userTwitch, client) {
 							embeds: [
 								new EmbedBuilder()
 									.setTitle(thisCache.name)
-									.setColor('Dark_green')
+									.setColor('DarkGreen')
 									.setDescription(`Ha dejado de seguir a **${dejaDeSeguir.join(', ')}**`)
 									.setTimestamp(new Date())
 							]
@@ -201,7 +201,7 @@ function createJob(authorId, userTwitch, client) {
 							var embed = new EmbedBuilder()
 								.setAuthor({ name: thisCache.name })
 								.setTitle(`Deja de ver...`)
-								.setColor('Dark_aqua')
+								.setColor('DarkAqua')
 								.setTimestamp(new Date())
 							dejaDeVer.forEach(canal => {
 								embed.addFields({ name: canal, value: `Tiempo visto: **${((Date.now() - thisCacheViendo.canales.find(c => c.name = canal).time) / 1000 / 60).toFixed(2)}min**`, inline: true });
