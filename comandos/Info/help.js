@@ -1,16 +1,17 @@
 ﻿const { EmbedBuilder } = require("discord.js");
-const { CANAL_TEXTO, NOMBRE_MONEDAS } = require("../../config/constantes");
+const { CANAL_TEXTO, NOMBRE_MONEDAS, CANAL_VOZ } = require("../../config/constantes");
 const config = require('../../config/config.json')
 
 module.exports = {
     name: "ayuda",
     aliases: ["help", "comandos", "commands"],
-    canales: [CANAL_TEXTO.COMANDOS, CANAL_TEXTO.MUSICA],
+    canales: [CANAL_TEXTO.COMANDOS, CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
     description: "Sirve para ver los comandos disponibles",
     run: async (client, message, args) => {
-        if (message.channel.id == CANAL_TEXTO.COMANDOS) {
+        let channelId = message.channel.id;
+        if (channelId == CANAL_TEXTO.COMANDOS) {
             mostrarHelpComandos(client.commands, message);
-        } else if (message.channel.id == CANAL_TEXTO.MUSICA) {
+        } else if (channelId == CANAL_TEXTO.MUSICA || channelId == CANAL_VOZ.MUSICA) {
             mostrarHelpMusica(client.commands, message);
         }
     }

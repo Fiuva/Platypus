@@ -1,4 +1,4 @@
-﻿const { CANAL_TEXTO } = require("../../config/constantes");
+﻿const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 const Genius = require("genius-lyrics");
 const { EmbedBuilder } = require("discord.js");
 const Client = new Genius.Client();
@@ -7,7 +7,7 @@ module.exports = {
     name: "letra",
     aliases: ["lyrics"],
     description: "Para ver la letra de la canción actual o cualquier otra",
-    canales: [CANAL_TEXTO.MUSICA],
+    canales: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
     run: async (client, message, args) => {
         if (args.length > 0) { //Titulo escrito
             buscarCancion(args.join());

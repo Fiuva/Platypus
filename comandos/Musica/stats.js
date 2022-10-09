@@ -1,11 +1,11 @@
 const { EmbedBuilder } = require("discord.js");
-const { CANAL_TEXTO } = require("../../config/constantes");
+const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 
 module.exports = {
     name: "stats",
     aliases: ["estadisticas"],
     description: "Sirve para ver las canciones en cola",
-    canales: [CANAL_TEXTO.MUSICA],
+    canales: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
     run: async (client, message, args) => {
         const queue = client.distube.getQueue(message);
         var songs = queue.songs

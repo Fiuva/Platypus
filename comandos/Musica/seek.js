@@ -5,7 +5,7 @@ module.exports = {
     name: "adelantar",
     aliases: ["seek", "avanzar", "av"],
     description: "Sirve para adelantar o avanzar una cancion x tiempo ⏩",
-    canales: [CANAL_TEXTO.MUSICA],
+    canales: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {
         if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return message.reply("Tienes que meterte al canal de musica... cara alcachofa!");

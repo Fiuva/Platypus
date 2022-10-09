@@ -6,7 +6,7 @@ module.exports = {
     name: "bucle",
     aliases: ["repeat"],
     description: "Cambia el modo de repetición en las canciones (🔁, 🔂)",
-    canales: [CANAL_TEXTO.MUSICA],
+    canales: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {
         if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return message.reply("Tienes que meterte al canal de musica... cara alcachofa!");

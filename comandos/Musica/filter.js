@@ -5,7 +5,7 @@ module.exports = {
     name: "filtro",
     aliases: ["filter", "filters", "filtros"],
     description: "Pon filtros en tus canciones (`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`)",
-    canales: [CANAL_TEXTO.MUSICA],
+    canales: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
     roles: [ROL.MUSICA_PRO],
     run: async (client, message, args) => {
         if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return message.reply("Tienes que meterte al canal de musica... cara alcachofa!");
