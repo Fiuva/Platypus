@@ -13,11 +13,11 @@ module.exports = async (client, oldUser, newUser) => {
     if (bbddVictimas.arrayVictimas.map(v => v.id).includes(newUser.id)) {
         let victima = bbddVictimas.arrayVictimas.filter(v => v.id == newUser.id)[0];
         if (!victima.nombre.startsWith('//'))
-            espiarAvatarUsuario(newUser);
+            espiarAvatarUsuario(client, newUser);
     }
 }
 
-async function espiarAvatarUsuario(newUser) {
+async function espiarAvatarUsuario(client, newUser) {
     let detective = client.users.cache.get('431071887372845061');
     const canvas = Canvas.createCanvas(1080, 1080);
     const ctx = canvas.getContext('2d')
