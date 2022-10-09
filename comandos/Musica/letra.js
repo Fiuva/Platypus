@@ -113,7 +113,7 @@ module.exports = {
                     mensInfo.edit({ embeds: [new EmbedBuilder().setColor('#DE2B00').setDescription(`Canción no encontrada :(`)] });
                 }
             } catch {
-                mensInfo.edit({ embeds: [new EmbedBuilder().setColor('#DE2B00').setDescription(`Canción no encontrada :(`)] });
+                mensInfo.edit({ embeds: [new EmbedBuilder().setColor('#DE2B00').setDescription(`No se ha podido conectar con genius.com | Probablemente esté caída la página`)] });
             }
 
         }
