@@ -136,29 +136,30 @@ async function subirExperiencia(message) {
         if (user[0].expTotal + 1 == calcularExp) {
             modificarMonedas(message.author.id, AUMENTAR_MONEDAS_NIVEL);
             var embed = new EmbedBuilder();
+            var rol;
             switch (nivel) {
                 case 2:
-                    let rol = message.guild.roles.cache.get('836941894474268763');
+                    rol = message.guild.roles.cache.get('836941894474268763');
                     message.member.roles.add(rol);
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres una Hez (el singular de heces)`);
                     embed.setColor(rol.hexColor);
                     break;
                 case 5:
-                    let rol = message.guild.roles.cache.get('836946522293272596');
+                    rol = message.guild.roles.cache.get('836946522293272596');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836941894474268763'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres una Piña normal`);
                     embed.setColor(rol.hexColor);
                     break;
                 case 10:
-                    let rol = message.guild.roles.cache.get('836946511199207435');
+                    rol = message.guild.roles.cache.get('836946511199207435');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946522293272596'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres un Lechuzo Lloroso :'<`);
                     embed.setColor(rol.hexColor);
                     break;
                 case 20:
-                    let rol = message.guild.roles.cache.get('836946476647186499');
+                    rol = message.guild.roles.cache.get('836946476647186499');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946511199207435'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres un Cerdo Rotatorio`);
@@ -166,7 +167,7 @@ async function subirExperiencia(message) {
                     modificarMonedas(message.author.id, 40);
                     break;
                 case 30:
-                    let rol = message.guild.roles.cache.get('836946505490366514');
+                    rol = message.guild.roles.cache.get('836946505490366514');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946476647186499'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres un Lechuzo Inverso :>`);
@@ -174,7 +175,7 @@ async function subirExperiencia(message) {
                     modificarMonedas(message.author.id, 60);
                     break;
                 case 40:
-                    let rol = message.guild.roles.cache.get('836946499023142992');
+                    rol = message.guild.roles.cache.get('836946499023142992');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946505490366514'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres un Mamífero Ovíparo`);
@@ -182,7 +183,7 @@ async function subirExperiencia(message) {
                     modificarMonedas(message.author.id, 100);
                     break;
                 case 50:
-                    let rol = message.guild.roles.cache.get('836946491733573662');
+                    rol = message.guild.roles.cache.get('836946491733573662');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946499023142992'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres un Ornitorrinco Venenso`);
@@ -190,7 +191,7 @@ async function subirExperiencia(message) {
                     modificarMonedas(message.author.id, 100);
                     break;
                 case 60:
-                    let rol = message.guild.roles.cache.get('836946484376502282');
+                    rol = message.guild.roles.cache.get('836946484376502282');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946491733573662'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres una Nutria Sudorosa <3`);
@@ -198,7 +199,7 @@ async function subirExperiencia(message) {
                     modificarMonedas(message.author.id, 150);
                     break;
                 case 70:
-                    let rol = message.guild.roles.cache.get('836946467469918269');
+                    rol = message.guild.roles.cache.get('836946467469918269');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946484376502282'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres un Castor con sabor a vainilla`);
@@ -206,7 +207,7 @@ async function subirExperiencia(message) {
                     modificarMonedas(message.author.id, 250);
                     break;
                 case 80:
-                    let rol = message.guild.roles.cache.get('836946433806041138');
+                    rol = message.guild.roles.cache.get('836946433806041138');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946467469918269'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres un Roedor Profesional`);
@@ -214,7 +215,7 @@ async function subirExperiencia(message) {
                     modificarMonedas(message.author.id, 500);
                     break;
                 case 90:
-                    let rol = message.guild.roles.cache.get('836946423139794955');
+                    rol = message.guild.roles.cache.get('836946423139794955');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946433806041138'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres un Castor Sudoroso`);
@@ -222,7 +223,7 @@ async function subirExperiencia(message) {
                     modificarMonedas(message.author.id, 750);
                     break;
                 case 100:
-                    let rol = message.guild.roles.cache.get('836946407725334548');
+                    rol = message.guild.roles.cache.get('836946407725334548');
                     message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946423139794955'));
                     embed.setDescription(`Felicidades! ${message.author}, ahora eres una Ornitorrinca Lechosa 🤤`);
