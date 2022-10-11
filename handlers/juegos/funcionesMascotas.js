@@ -1,94 +1,95 @@
 ﻿const { Calidad, MascotasData } = require("../../models/mascotas");
 const Usuario = require("../../models/usuario");
 const { modificarMonedas, findOrCreateDocument } = require("../funciones");
+const { EmbedBuilder } = require("discord.js")
 
 const HUEVOS = {
-	HUEVO_COMUN: {
-		NOMBRE: "Huevo Común",
-		PROBABILIDAD: {
-			COMUN: 0.45,
-			ESPECIAL: 0.33,
-			RARO: 0.145,
-			ULTRA_RARO: 0.06,
-			LEGENDARIO: 0.015
-		},
+    HUEVO_COMUN: {
+        NOMBRE: "Huevo Común",
+        PROBABILIDAD: {
+            COMUN: 0.45,
+            ESPECIAL: 0.33,
+            RARO: 0.145,
+            ULTRA_RARO: 0.06,
+            LEGENDARIO: 0.015
+        },
         PRECIO: 52,
         EMOJI: '🥚',
         TIENDA: true
-	},
-	HUEVO_RARO: {
-		NOMBRE: "Huevo Raro",
-		PROBABILIDAD: {
-			COMUN: 0.20,
-			ESPECIAL: 0.35,
-			RARO: 0.27,
-			ULTRA_RARO: 0.15,
-			LEGENDARIO: 0.03
-		},
+    },
+    HUEVO_RARO: {
+        NOMBRE: "Huevo Raro",
+        PROBABILIDAD: {
+            COMUN: 0.20,
+            ESPECIAL: 0.35,
+            RARO: 0.27,
+            ULTRA_RARO: 0.15,
+            LEGENDARIO: 0.03
+        },
         PRECIO: 90,
         EMOJI: '🐣',
         TIENDA: true
-	},
-	HUEVO_LEGENDARIO: {
-		NOMBRE: "Huevo Legendario",
-		PROBABILIDAD: {
-			COMUN: 0,
-			ESPECIAL: 0.25,
-			RARO: 0.37,
-			ULTRA_RARO: 0.30,
-			LEGENDARIO: 0.08
-		},
+    },
+    HUEVO_LEGENDARIO: {
+        NOMBRE: "Huevo Legendario",
+        PROBABILIDAD: {
+            COMUN: 0,
+            ESPECIAL: 0.25,
+            RARO: 0.37,
+            ULTRA_RARO: 0.30,
+            LEGENDARIO: 0.08
+        },
         PRECIO: 217,
         EMOJI: '🪙',
         TIENDA: true
-	}
+    }
 }
 
 function nombreRol(mascotaElegida) {
     const nivelArray = calcularNivelMascota(mascotaElegida);
     if (nivelArray[0] == 5) nivelArray[0] = "Max";
-	return `Pet: ${mascotaElegida.nombre}${mascotaElegida.nombre != mascotaElegida.animal.nombre ? ` - ${mascotaElegida.animal.nombre}『${nivelArray[0]}』` : `『${nivelArray[0]}』`}`;
+    return `Pet: ${mascotaElegida.nombre}${mascotaElegida.nombre != mascotaElegida.animal.nombre ? ` - ${mascotaElegida.animal.nombre}『${nivelArray[0]}』` : `『${nivelArray[0]}』`}`;
 }
 
 
 function calcularNivelMascota(mascota) {
     var aumento, modo = 1;
     if (!mascota) return;
-	switch (mascota.animal.calidad.nombre) {
-		case Calidad.Comun.nombre:
-			aumento = 10;
-			break;
-		case Calidad.Especial.nombre:
-			aumento = 20;
-			break;
-		case Calidad.Raro.nombre:
-			aumento = 40;
-			break;
-		case Calidad.Ultra_raro.nombre:
-			aumento = 80;
-			break;
-		case Calidad.Legendario.nombre:
-			aumento = 160;
-			break;
+    switch (mascota.animal.calidad.nombre) {
+        case Calidad.Comun.nombre:
+            aumento = 10;
+            break;
+        case Calidad.Especial.nombre:
+            aumento = 20;
+            break;
+        case Calidad.Raro.nombre:
+            aumento = 40;
+            break;
+        case Calidad.Ultra_raro.nombre:
+            aumento = 80;
+            break;
+        case Calidad.Legendario.nombre:
+            aumento = 160;
+            break;
     }
     if (mascota.animal.nombre.endsWith('✨')) {
         modo = 2;
     } else if (mascota.animal.nombre.endsWith('👑')) {
         modo = 3;
     }
-	return calcularLvl(mascota.exp, aumento, modo);
+    return calcularLvl(mascota.exp, aumento, modo);
 }
 function calcularLvl(experienciaTotal, aumento, modo = 1) { //10, 20, 40, 80, 160
-	var expActual = experienciaTotal;
-	var nivel = 0;
-	var calcularExp = 0;
-	var calcularExpAnterior;
-	for (nivel; calcularExp < expActual + 1; nivel++) {
-		calcularExp = calcularExp + (nivel + modo) * aumento;
-		if (calcularExp < expActual + 1) calcularExpAnterior = calcularExp;
-	}
-	nivel--;
-	return [nivel, calcularExp, calcularExpAnterior];
+    var expActual = experienciaTotal;
+    var nivel = 0;
+    var calcularExp = 0;
+    var calcularExpAnterior;
+    for (nivel; calcularExp < expActual + 1; nivel++) {
+        calcularExp = calcularExp + (nivel + modo) * aumento;
+        if (calcularExp < expActual + 1) calcularExpAnterior = calcularExp;
+    }
+    nivel--;
+    return [nivel, calcularExp, calcularExpAnterior];
 }
 
 async function subirExpMascota(message, member = message.member) {
@@ -117,15 +118,18 @@ async function subirExpMascota(message, member = message.member) {
                     break;
             }
             modificarMonedas(userMascotas.idDiscord, nivel * cali * 3);
-            
+
+            let embed = new EmbedBuilder()
+                .setColor(mascota.animal.calidad.color);
             switch (nivel) {
                 case 5:
-                    message.channel.send(`${member.user} -> **${mascota.nombre}** ha subido a nivel **máximo**`);
+                    embed.setDescription(`${member.user} -> **${mascota.nombre}** ha subido a nivel **máximo**`);
                     break;
                 default:
-                    message.channel.send(`${member.user} -> **${mascota.nombre}** ha subido a nivel **${nivel}**`);
+                    embed.setDescription(`${member.user} -> **${mascota.nombre}** ha subido a nivel **${nivel}**`);
                     break;
             }
+            message.channel.send({ embeds: [embed] });
             updateRol(message.guild, userMascotas);
         }
         await MascotasData.findOneAndUpdate({
@@ -154,7 +158,7 @@ async function reEquipar(userMascotas, member) {
     if (member.roles.cache.has(userMascotas.refRolMascota)) {
         console.log(`Ya tiene esa mascota equipada ${userMascotas.idDiscord}`);
         return;
-    } 
+    }
     let mascotaElegida = mascotaEquipada(userMascotas);
     try {
         member.guild.roles.create({
@@ -179,8 +183,7 @@ async function reEquipar(userMascotas, member) {
                 await MascotasData.findOneAndUpdate({ idDiscord: memberPareja.id }, { refRolMascotaP: role.id });
                 if (memberPareja.presence == null || memberPareja.presence.status == "offline") return;
                 memberPareja.roles.add(role);
-                /* NO FUNCIONA :(
-                try { //_probar_
+                try { //_probar_ NO FUNCIONA
                     let mascotaEquipadaPareja = mascotaEquipada(parejaMascotas);
                     if (mascotaEquipadaPareja) {
                         let rolPareja = await member.guild.roles.fetch(mascotaEquipadaPareja.refRolMascota);
@@ -191,7 +194,6 @@ async function reEquipar(userMascotas, member) {
                     console.log(e);
                     console.log(`No se ha podido equipar la mascota de la pareja`);
                 }
-                */
             } catch (e) {
                 console.log(`No se ha podido equipar la mascota a la pareja ${e.message}`);
             }
@@ -204,8 +206,8 @@ async function reEquipar(userMascotas, member) {
 }
 
 module.exports = {
-	HUEVOS,
-	nombreRol,
+    HUEVOS,
+    nombreRol,
     calcularNivelMascota,
     buscarMejorMascota,
     subirExpMascota,

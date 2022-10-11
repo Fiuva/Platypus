@@ -1,6 +1,6 @@
 const { AUMENTA_NIVEL, CONFIG, AUMENTAR_MONEDAS_NIVEL } = require("../config/constantes");
 const Usuario = require("../models/usuario");
-const { ActivityType } = require("discord.js");
+const { ActivityType, EmbedBuilder } = require("discord.js");
 
 module.exports = {
     msg,
@@ -134,80 +134,107 @@ async function subirExperiencia(message) {
 
         await Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { expTotal: user[0].expTotal + 1 }, { new: true });
         if (user[0].expTotal + 1 == calcularExp) {
-            await Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { monedas: user[0].monedas + AUMENTAR_MONEDAS_NIVEL }, { new: true });
+            modificarMonedas(message.author.id, AUMENTAR_MONEDAS_NIVEL);
+            var embed = new EmbedBuilder();
             switch (nivel) {
                 case 2:
-                    message.member.roles.add(message.guild.roles.cache.get('836941894474268763'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres una Hez (el singular de heces)`);
+                    let rol = message.guild.roles.cache.get('836941894474268763');
+                    message.member.roles.add(rol);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres una Hez (el singular de heces)`);
+                    embed.setColor(rol.hexColor);
                     break;
                 case 5:
-                    message.member.roles.add(message.guild.roles.cache.get('836946522293272596'));
+                    let rol = message.guild.roles.cache.get('836946522293272596');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836941894474268763'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres una Piña normal`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres una Piña normal`);
+                    embed.setColor(rol.hexColor);
                     break;
                 case 10:
-                    message.member.roles.add(message.guild.roles.cache.get('836946511199207435'));
+                    let rol = message.guild.roles.cache.get('836946511199207435');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946522293272596'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres un Lechuzo Lloroso :'<`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Lechuzo Lloroso :'<`);
+                    embed.setColor(rol.hexColor);
                     break;
                 case 20:
-                    message.member.roles.add(message.guild.roles.cache.get('836946476647186499'));
+                    let rol = message.guild.roles.cache.get('836946476647186499');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946511199207435'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres un Cerdo Rotatorio`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Cerdo Rotatorio`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 40);
                     break;
                 case 30:
-                    message.member.roles.add(message.guild.roles.cache.get('836946505490366514'));
+                    let rol = message.guild.roles.cache.get('836946505490366514');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946476647186499'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres un Lechuzo Inverso :>`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Lechuzo Inverso :>`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 60);
                     break;
                 case 40:
-                    message.member.roles.add(message.guild.roles.cache.get('836946499023142992'));
+                    let rol = message.guild.roles.cache.get('836946499023142992');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946505490366514'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres un Mamífero Ovíparo`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Mamífero Ovíparo`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 100);
                     break;
                 case 50:
-                    message.member.roles.add(message.guild.roles.cache.get('836946491733573662'));
+                    let rol = message.guild.roles.cache.get('836946491733573662');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946499023142992'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres un Ornitorrinco Venenso`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Ornitorrinco Venenso`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 100);
                     break;
                 case 60:
-                    message.member.roles.add(message.guild.roles.cache.get('836946484376502282'));
+                    let rol = message.guild.roles.cache.get('836946484376502282');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946491733573662'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres una Nutria Sudorosa <3`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres una Nutria Sudorosa <3`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 150);
                     break;
                 case 70:
-                    message.member.roles.add(message.guild.roles.cache.get('836946467469918269'));
+                    let rol = message.guild.roles.cache.get('836946467469918269');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946484376502282'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres un Castor con sabor a vainilla`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Castor con sabor a vainilla`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 250);
                     break;
                 case 80:
-                    message.member.roles.add(message.guild.roles.cache.get('836946433806041138'));
+                    let rol = message.guild.roles.cache.get('836946433806041138');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946467469918269'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres un Roedor Profesional`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Roedor Profesional`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 500);
                     break;
                 case 90:
-                    message.member.roles.add(message.guild.roles.cache.get('836946423139794955'));
+                    let rol = message.guild.roles.cache.get('836946423139794955');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946433806041138'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres un Castor Sudoroso`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Castor Sudoroso`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 750);
                     break;
                 case 100:
-                    message.member.roles.add(message.guild.roles.cache.get('836946407725334548'));
+                    let rol = message.guild.roles.cache.get('836946407725334548');
+                    message.member.roles.add(rol);
                     message.member.roles.remove(message.guild.roles.cache.get('836946423139794955'));
-                    message.channel.send(`Felicidades! ${message.author}, ahora eres una Ornitorrinca Lechosa 🤤`);
+                    embed.setDescription(`Felicidades! ${message.author}, ahora eres una Ornitorrinca Lechosa 🤤`);
+                    embed.setColor(rol.hexColor);
                     modificarMonedas(message.author.id, 1000);
                     break;
                 default:
-                    message.channel.send(`Felicidades! ${message.author}, has subido a nivel ${nivel}`);
+                    embed.setDescription(`Felicidades! ${message.author}, has subido a nivel ${nivel}`);
+                    embed.setColor("#A1F975");
                     break;
             }
+            message.channel.send({ embeds: [embed] });
         }
     } catch {
         await new Usuario({ idDiscord: message.author.id, expTotal: 0 }).save();
