@@ -161,6 +161,7 @@ async function reEquipar(userMascotas, member) {
         return;
     }
     let mascotaElegida = mascotaEquipada(userMascotas);
+    if (!mascotaElegida) return console.log(`${member.user.username} no tiene mascota equipada`);
     try {
         console.log("Re-equipar 2");
         member.guild.roles.create({
