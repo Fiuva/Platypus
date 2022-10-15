@@ -155,12 +155,14 @@ async function desequipar(guild, userMascotas) {
     }
 }
 async function reEquipar(userMascotas, member) {
+    console.log("Re-equipar 1");
     if (member.roles.cache.has(userMascotas.refRolMascota)) {
         console.log(`Ya tiene esa mascota equipada ${userMascotas.idDiscord}`);
         return;
     }
     let mascotaElegida = mascotaEquipada(userMascotas);
     try {
+        console.log("Re-equipar 2");
         member.guild.roles.create({
             name: nombreRol(mascotaElegida),
             color: mascotaElegida.animal.calidad.color,
@@ -184,12 +186,14 @@ async function reEquipar(userMascotas, member) {
                 if (memberPareja.presence == null || memberPareja.presence.status == "offline") return;
                 memberPareja.roles.add(role);
                 try { //_probar_ NO FUNCIONA
+                    console.log("Re-equipar 2.0");
                     let mascotaEquipadaPareja = mascotaEquipada(parejaMascotas);
                     if (mascotaEquipadaPareja) {
                         let rolPareja = await member.guild.roles.fetch(mascotaEquipadaPareja.refRolMascota);
                         if (rolPareja)
                             member.roles.add(rolPareja);
                     }
+                    console.log("Re-equipar 2.1");
                 } catch (e) {
                     console.log(e);
                     console.log(`No se ha podido equipar la mascota de la pareja`);
@@ -201,7 +205,10 @@ async function reEquipar(userMascotas, member) {
             console.log(e);
             console.log(`No se ha podido crear el rol para equipar, inténtalo más tarde`)
         })
-    } catch {
+        console.log("Re-equipar 3 acabado");
+    } catch (e) {
+        console.log("Error al re-equipar");
+        console.log(e);
     }
 }
 
