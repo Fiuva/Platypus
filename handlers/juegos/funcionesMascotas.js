@@ -185,14 +185,15 @@ async function reEquipar(userMascotas, member) {
                 let parejaMascotas = await findOrCreateDocument(memberPareja.id, MascotasData);
                 await MascotasData.findOneAndUpdate({ idDiscord: memberPareja.id }, { refRolMascotaP: role.id });
                 if (memberPareja.presence == null || memberPareja.presence.status == "offline") return;
-                memberPareja.roles.add(role);
+                await memberPareja.roles.add(role);
                 try { //_probar_ NO FUNCIONA
                     console.log("Re-equipar 2.0");
                     let mascotaEquipadaPareja = mascotaEquipada(parejaMascotas);
                     if (mascotaEquipadaPareja) {
                         let rolPareja = await member.guild.roles.fetch(mascotaEquipadaPareja.refRolMascota);
+                        console.log(`Rol: ${rolPareja.id}`);
                         if (rolPareja)
-                            member.roles.add(rolPareja);
+                            await member.roles.add(rolPareja);
                     }
                     console.log("Re-equipar 2.1");
                 } catch (e) {
