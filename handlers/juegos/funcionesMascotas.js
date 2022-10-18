@@ -191,12 +191,10 @@ async function reEquipar(userMascotas, member) {
                     //let mascotaEquipadaPareja = mascotaEquipada(parejaMascotas);
                     //console.log("Mascota equipada pareja:");
                     //console.log(mascotaEquipadaPareja);
-                    if (mascotaEquipadaPareja) {
-                        let rolPareja = await member.guild.roles.fetch(parejaMascotas.refRolMascota);
-                        console.log(`Rol: ${rolPareja.id}`);
-                        if (rolPareja)
-                            await member.roles.add(rolPareja);
-                    }
+                    let rolPareja = await member.guild.roles.fetch(parejaMascotas.refRolMascota);
+                    console.log(`Rol: ${rolPareja.id}`);
+                    if (rolPareja)
+                        await member.roles.add(rolPareja);
                     console.log("Re-equipar 2.1");
                 } catch (e) {
                     console.log(e);
