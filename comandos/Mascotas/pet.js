@@ -12,7 +12,7 @@ module.exports = {
     run: async (client, message, args) => {
         const userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
         if (!args[0]) {
-            if (userMascotas.refRolMascota == '0') return message.reply('No tienes ninguna mascota equipada ni has esecificado la mascota');
+            if (userMascotas.refRolMascota == '0') return message.reply('No tienes ninguna mascota equipada ni has especificado la mascota');
             if (!message.guild.roles.cache.has(userMascotas.refRolMascota)) return message.reply("Base de datos no sincronizada, por favor equipese de nuevo una mascota o especifique la mascota que quiere ver");
             try {
                 await message.channel.send({ embeds: [embedMascota(mascotaEquipada(userMascotas), message)] });
