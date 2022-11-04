@@ -20,13 +20,12 @@ module.exports = async (client, member) => {
         .then(async channel => 
             channel.send({
                 content: `**Bienvenid@ ${member.user}, que lo pases bien!** 🤤`,
-                //files: [await crearImagen(member)] //_arreglar_
+                files: [await crearImagen(member)]
             })
         );
 }
 
 async function crearImagen(member) {
-    console.log("Se crea una imagen");
     const canvas = Canvas.createCanvas(1600, 814);
     const ctx = canvas.getContext('2d');
     const background = await Canvas.loadImage('./config/Imagenes/platyWall.jpg');
@@ -50,7 +49,7 @@ async function crearImagen(member) {
     ctx.arc(1380, 595, 200, 0, Math.PI * 2, true); //1700, 250, 250
     ctx.closePath();
     ctx.clip();
-    const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
+    const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ extension: 'jpg' }));
     ctx.drawImage(avatar, 1215, 430, 330, 330); //1500, 50, 400, 400
 
     return new AttachmentBuilder(canvas.toBuffer(), 'imagen_de_bienvenida.png');
