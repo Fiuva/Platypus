@@ -1,6 +1,6 @@
 {
   "name": "platypus",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "Bot para mi server de discord :)",
   "main": "index.js",
   "engines": {
@@ -16,7 +16,7 @@
     "@distube/soundcloud": "^1.1.0",
     "@distube/spotify": "^1.2.1",
     "@distube/ytdl-core": "^4.11.5",
-    "canvas": "^2.10.1",
+    "canvas": "^2.10.2",
     "discord-anti-spam": "^2.7.3",
     "discord.js": "^14.5.0",
     "distube": "^4.0.3",
