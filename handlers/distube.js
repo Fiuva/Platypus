@@ -39,6 +39,11 @@ module.exports = (client, Discord) => {
         ]
         */
     });
+
+    client.ditube.on('error', (channel, e) => {
+        console.log('AAA errorrr');
+        console.log(e);
+    })
     /* probando distube
     client.distube.on("playSong", (queue, song) => {
         client.distube.setVolume(queue, 100);
