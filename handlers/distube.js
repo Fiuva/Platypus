@@ -8,6 +8,7 @@ const { PRIVATE_CONFIG, CANAL_TEXTO } = require('../config/constantes');
 module.exports = (client, Discord) => {
     console.log("Módulo de música cargado!");
     client.distube = new DisTube(client, {
+        /*
         emitNewSongOnly: false,
         leaveOnEmpty: true,
         leaveOnFinish: true,
@@ -36,6 +37,7 @@ module.exports = (client, Discord) => {
             new SoundCloudPlugin(),
             new YtDlpPlugin()
         ]
+        */
     });
     /* probando distube
     client.distube.on("playSong", (queue, song) => {
