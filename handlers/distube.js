@@ -44,7 +44,6 @@ module.exports = (client, Discord) => {
         console.log('AAA errorrr');
         console.log(e);
     })
-    /* probando distube
     client.distube.on("playSong", (queue, song) => {
         client.distube.setVolume(queue, 100);
         var mensajeBucle;
@@ -70,7 +69,7 @@ module.exports = (client, Discord) => {
         queue.textChannel.send({ embeds: [escuchando] });
     });
 
-
+    /* probando distube
     client.distube.on("addSong", (queue, song) => {
         const canciones = queue.songs;
         var tiempoDeEspera = 0;
