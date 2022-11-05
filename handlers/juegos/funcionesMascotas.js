@@ -176,7 +176,7 @@ async function reEquipar(userMascotas, member) {
                     console.log(`Has equipado a ${mascotaElegida.nombre} ${mascotaElegida.nombre != mascotaElegida.animal.nombre ? `(${mascotaElegida.animal.nombre})` : ''}`) //
                 }).catch(() => {
                     desequipar(member.guild, userMascotas);
-                    console.log(`Error al asignarte el rol`) 
+                    console.log(`Error al asignarte el rol`)
                 })
             try {
                 let memberPareja = await member.guild.members.fetch((await Usuario.find({ idDiscord: userMascotas.idDiscord }))[0].parejaId);
@@ -192,13 +192,12 @@ async function reEquipar(userMascotas, member) {
                     console.log(`No se ha podido equipar la mascota de la pareja`);
                 }
             } catch {
-                console.log(`No se ha podido equipar la mascota a la pareja ${e.message}`);
+                console.log(`No se ha podido equipar la mascota a la pareja`);
             }
         }).catch(e => {
             console.log(e);
             console.log(`No se ha podido crear el rol para equipar, inténtalo más tarde`)
         })
-        console.log("Re-equipar 3 acabado");
     } catch (e) {
         console.log("Error al re-equipar");
         console.log(e);
@@ -353,8 +352,8 @@ async function equiparMascota(mascotaElegida, userMascotas, member) {
             await MascotasData.findOneAndUpdate({ idDiscord: memberPareja.id }, { refRolMascotaP: role.id });
             if (memberPareja.presence == null || memberPareja.presence.status == "offline") return;
             memberPareja.roles.add(role);
-        } catch (e) {
-            console.log(`No se ha podido equipar la mascota a la pareja ${e.message}`);
+        } catch {
+            console.log(`No se ha podido equipar la mascota a la pareja`);
         }
     }).catch(e => {
         console.log(e);
