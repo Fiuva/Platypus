@@ -1,6 +1,7 @@
 ﻿const { DisTube } = require('distube');
 const { SpotifyPlugin } = require('@distube/spotify');
 const { SoundCloudPlugin } = require('@distube/soundcloud');
+const { YtDlpPlugin } = require('@distube/yt-dlp')
 const { EmbedBuilder } = require('discord.js');
 const { PRIVATE_CONFIG, CANAL_TEXTO } = require('../config/constantes');
 
@@ -23,7 +24,6 @@ module.exports = (client, Discord) => {
             liveBuffer: 60000,
             dlChunkSize: 1024 * 1024 * 4
         },
-        //youtubeDL: false,
         plugins: [
             new SpotifyPlugin({
                 parallel: true,
@@ -33,7 +33,8 @@ module.exports = (client, Discord) => {
                     clientSecret: PRIVATE_CONFIG.SPOTIFY.clientSecret
                 }
             }),
-            new SoundCloudPlugin()
+            new SoundCloudPlugin(),
+            new YtDlpPlugin()
         ]
     });
 

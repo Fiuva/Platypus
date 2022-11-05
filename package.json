@@ -15,6 +15,7 @@
     "@discordjs/opus": "^0.9.0",
     "@distube/soundcloud": "^1.2.2",
     "@distube/spotify": "^1.4.2",
+    "@distube/yt-dlp": "^1.1.3",
     "@distube/ytdl-core": "^4.11.5",
     "canvas": "^2.10.2",
     "discord-anti-spam": "^2.7.3",
