@@ -9,9 +9,9 @@ module.exports = (client, Discord) => {
     console.log("Módulo de música cargado!");
     client.distube = new DisTube(client, {
         emitNewSongOnly: false,
-        leaveOnEmpty: true,
+        leaveOnEmpty: false,
         leaveOnFinish: false,
-        leaveOnStop: true,
+        leaveOnStop: false,
         savePreviousSongs: true,
         emitAddSongWhenCreatingQueue: false,
         searchSongs: 0,
@@ -41,6 +41,10 @@ module.exports = (client, Discord) => {
     client.distube.on('error', (channel, e) => {
         console.log('AAA errorrr');
         console.log(e);
+    })
+
+    client.distube.on('deleteQueue', queue => {
+        console.log("Se eliminó la cola");
     })
     /*
     client.distube.on("playSong", (queue, song) => {

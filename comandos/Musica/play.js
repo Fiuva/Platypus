@@ -14,10 +14,6 @@ module.exports = {
         }
 
         try {
-            console.log(message.member.voice?.channel);
-            console.log(args.join(' '));
-            console.log(message.member);
-
             await client.distube.play(message.member.voice?.channel, args.join(' '), {
                 member: message.member,
                 textChannel: message.channel,
