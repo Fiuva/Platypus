@@ -10,7 +10,7 @@ module.exports = (client, Discord) => {
     client.distube = new DisTube(client, {
         emitNewSongOnly: false,
         leaveOnEmpty: true,
-        leaveOnFinish: true,
+        leaveOnFinish: false, //
         leaveOnStop: true,
         savePreviousSongs: true,
         emitAddSongWhenCreatingQueue: false,
@@ -96,7 +96,7 @@ module.exports = (client, Discord) => {
     });
 
     client.distube.on("initQueue", (queue) => {
-        queue.autoplay = true;
+        //queue.autoplay = true;
     });
 
     client.distube.on("addList", (queue, playlist) => {
