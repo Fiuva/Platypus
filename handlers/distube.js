@@ -8,18 +8,6 @@ const { PRIVATE_CONFIG, CANAL_TEXTO } = require('../config/constantes');
 module.exports = (client, Discord) => {
     console.log("Módulo de música cargado!");
     client.distube = new DisTube(client, {
-        leaveOnStop: false,
-        emitNewSongOnly: true,
-        emitAddSongWhenCreatingQueue: false,
-        emitAddListWhenCreatingQueue: false,
-        plugins: [
-            new SpotifyPlugin({
-                emitEventsAfterFetching: true
-            }),
-            new SoundCloudPlugin(),
-            new YtDlpPlugin()
-        ]
-        /*
         emitNewSongOnly: false,
         leaveOnEmpty: true,
         leaveOnFinish: true,
@@ -48,7 +36,6 @@ module.exports = (client, Discord) => {
             new SoundCloudPlugin(),
             new YtDlpPlugin()
         ]
-        */
     });
 
     client.distube.on('error', (channel, e) => {
