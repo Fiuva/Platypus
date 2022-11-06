@@ -46,6 +46,8 @@ module.exports = (client, Discord) => {
     client.distube.on('deleteQueue', queue => {
         console.log("Se eliminó la cola");
     })
+
+    //client.distube.on('finish')
     /*
     client.distube.on("playSong", (queue, song) => {
         client.distube.setVolume(queue, 100);
