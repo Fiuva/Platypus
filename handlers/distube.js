@@ -8,22 +8,10 @@ const { PRIVATE_CONFIG, CANAL_TEXTO } = require('../config/constantes');
 module.exports = (client, Discord) => {
     console.log("Módulo de música cargado!");
     client.distube = new DisTube(client, {
-        leaveOnStop: false,
-        emitNewSongOnly: true,
-        emitAddSongWhenCreatingQueue: false,
-        emitAddListWhenCreatingQueue: false,
-        plugins: [
-            new SpotifyPlugin({
-                emitEventsAfterFetching: true
-            }),
-            new SoundCloudPlugin(),
-            new YtDlpPlugin()
-        ]
-        /*
         emitNewSongOnly: false,
-        leaveOnEmpty: false,
-        leaveOnFinish: false,
-        leaveOnStop: false,
+        leaveOnEmpty: true,
+        leaveOnFinish: true,
+        leaveOnStop: true,
         savePreviousSongs: true,
         emitAddSongWhenCreatingQueue: false,
         searchSongs: 0,
@@ -48,7 +36,6 @@ module.exports = (client, Discord) => {
             new SoundCloudPlugin(),
             new YtDlpPlugin()
         ]
-        */
     });
 
     client.distube.on('error', (channel, e) => {
@@ -60,8 +47,6 @@ module.exports = (client, Discord) => {
         console.log("Se eliminó la cola");
     })
 
-    //client.distube.on('finish')
-    /*
     client.distube.on("playSong", (queue, song) => {
         client.distube.setVolume(queue, 100);
         var mensajeBucle;
@@ -86,8 +71,8 @@ module.exports = (client, Discord) => {
         if (song.user.bot) escuchando.setDescription('Recomendación del ornitorrinco :>');
         queue.textChannel.send({ embeds: [escuchando] });
     });
-    */
-    /* probando distube
+
+
     client.distube.on("addSong", (queue, song) => {
         const canciones = queue.songs;
         var tiempoDeEspera = 0;
@@ -130,5 +115,4 @@ module.exports = (client, Discord) => {
             .messages.cache.get(playlist.metadata.messageId)
             .delete();
     });
-    */
 };
