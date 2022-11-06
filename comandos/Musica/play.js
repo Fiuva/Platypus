@@ -14,14 +14,19 @@ module.exports = {
         }
 
         try {
+            console.log(message.member.voice?.channel);
+            console.log(args.join(' '));
+            console.log(message.member);
+
             await client.distube.play(message.member.voice?.channel, args.join(' '), {
                 member: message.member,
                 textChannel: message.channel,
-                message,
+                message: message,
                 metadata: {
                     messageId: message.id
                 }
             });
+            console.log("Se ha añadido una canción");
         } catch {
             message.reply(`No he podido añadir eso, puede que sea una lista privada :'''>`);
         }
