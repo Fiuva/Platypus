@@ -8,6 +8,18 @@ const { onClickIntercambio } = require("../../handlers/botones/funcionesIntercam
 
 
 module.exports = async (client, button) => {
+    if (button.isCommand()) {
+        if (button.commandName == 'hola') {
+            try {
+                await button.user.send('Hola humano/a :>')
+                button.reply({ content: 'Ya te envié un mensaje :>', ephemeral: true })
+            } catch (e) {
+                button.reply({ content: 'No tienes los MDs activados o me has bloqueado :<', ephemeral: true })
+            }
+        }
+        return;
+    }
+
     if (button.customId.startsWith('3enRaya_'))
         tresEnRaya(button);
     else if (button.customId.startsWith('2048_'))
