@@ -1,4 +1,4 @@
-const { onClick2048 } = require("../../handlers/juegos/funciones2048");
+﻿const { onClick2048 } = require("../../handlers/juegos/funciones2048");
 const { tresEnRaya } = require("../../handlers/juegos/funciones3enRaya");
 const { onClickTienda, onClickEquiparAhora } = require("../../handlers/botones/funcionesTienda");
 const { onClickMusica } = require("../../handlers/botones/funcionesMusica");
@@ -12,7 +12,7 @@ module.exports = async (client, button) => {
         if (button.commandName == 'hola') {
             try {
                 await button.user.send('Hola humano/a :>')
-                button.reply({ content: 'Ya te envi� un mensaje :>', ephemeral: true })
+                button.reply({ content: 'Ya te envié un mensaje :>', ephemeral: true })
             } catch (e) {
                 button.reply({ content: 'No tienes los MDs activados o me has bloqueado :<', ephemeral: true })
             }
