@@ -317,15 +317,14 @@ function getMentionOrUser(message) {
     return message.mentions.users.first() || message.author;
 }
 
-function createRegaloRandom() {
-    Object.defineProperties(Array.prototype, {
-        count: {
-            value: function (value) {
-                return this.filter(x => x == value).length;
-            }
+Object.defineProperties(Array.prototype, {
+    count: {
+        value: function (value) {
+            return this.filter(x => x == value).length;
         }
-    });
-
+    }
+});
+function createRegaloRandom() {
     const emotes = {
         ornitorrinco: [
             "<:rechazado:1011314869691228241>",
