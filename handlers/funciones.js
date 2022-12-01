@@ -1,6 +1,7 @@
 const { AUMENTA_NIVEL, CONFIG, AUMENTAR_MONEDAS_NIVEL } = require("../config/constantes");
 const Usuario = require("../models/usuario");
-const { ActivityType, EmbedBuilder } = require("discord.js");
+const { ActivityType, EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
+const { ButtonStyle } = require("../node_modules/discord-api-types/v10");
 
 module.exports = {
     msg,
@@ -15,8 +16,23 @@ module.exports = {
     random,
     modificarMonedas,
     sleep,
-    deepEqual
+    deepEqual,
+    getMentionOrUser,
+    createRegaloRandom,
+    shuffle
 }
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+
+    while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -243,9 +259,12 @@ async function subirExperiencia(message) {
 
 }
 
-async function modificarMonedas(id, sumar) {
-    var user = await Usuario.find({ idDiscord: id }).exec();
-    await Usuario.findOneAndUpdate({ idDiscord: id }, { monedas: user[0].monedas + sumar }, { new: true });
+async function modificarMonedas(id, sumar, user = null, navidad = false) {
+    if (!user) user = await findOrCreateDocument(id, Usuario);
+    if (navidad)
+        await Usuario.findOneAndUpdate({ idDiscord: id }, { pavos: user.pavos + sumar });
+    else
+        await Usuario.findOneAndUpdate({ idDiscord: id }, { monedas: user.monedas + sumar });
 }
 
 async function reenviarMensajeTo(msg, canal, refDelAutor = false) {
@@ -293,4 +312,83 @@ function deepEqual(object1, object2) {
 }
 function isObject(object) {
     return object != null && typeof object === 'object';
+}
+function getMentionOrUser(message) {
+    return message.mentions.users.first() || message.author;
+}
+
+function createRegaloRandom() {
+    Object.defineProperties(Array.prototype, {
+        count: {
+            value: function (value) {
+                return this.filter(x => x == value).length;
+            }
+        }
+    });
+
+    const emotes = {
+        ornitorrinco: [
+            "<:rechazado:1011314869691228241>",
+            "<:platypusTarde:839396747008147487>",
+            "<:platypusSaludo:839394513653858335>",
+            "<:platypusRefachero:839042641945559051>",
+            "<:platypusOro:839396299517853747>",
+            "<:platypusNinja:839396877966639104>",
+            "<:platypusLloroso:839396511833653268>",
+            "<:platypusHambre:839397013623668756>",
+            "<:platypusEnfadado:839397136235364393>",
+            "<:platypusDudosoJesus:847563489521696788>",
+            "<:platypus1:839393604867063848><:platypus2:839393726610538506>",
+            "<:platypusPaulita:903974367468331038>",
+            "<:baboso:1047514787065626724>",
+            "<:platypusHez1:840339984128409602><:platypusHez2:840340006249037865>"
+        ],
+        getRandom(min = 1, max = 1) {
+            return getMultipleRandom(this.ornitorrinco, (Math.random() * (max - min) << 0) + min)
+        }
+    }
+    const emoteElegido = emotes.getRandom()[0];
+    const emotesRandom = emotes.getRandom(20, 75);
+    const premio = (Math.random() * 1000 << 0) + 100;
+    let regalo = new EmbedBuilder()
+        .setColor("#EBEF45")
+        .setTitle('¡Has encontrado un regalo!')
+        .setAuthor({ name: "Regalo", iconURL: "https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f381.png" })
+        .setDescription(emotesRandom.join(' ') + `\n\n**Cuántos ${emoteElegido} ves?**`)
+
+    const numGanador = emotesRandom.count(emoteElegido);
+    let posibles = [...Array(6).keys()].filter(a => a != numGanador);
+    posibles = shuffle(posibles);
+
+    let botones = [
+        new ButtonBuilder()
+            .setLabel(numGanador.toString())
+            .setCustomId(`regalo_navidad_sum_${premio}`)
+            .setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder()
+            .setLabel(posibles[0].toString())
+            .setCustomId(`regalo_navidad_perdido_1`)
+            .setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder()
+            .setLabel(posibles[1].toString())
+            .setCustomId(`regalo_navidad_perdido_2`)
+            .setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder()
+            .setLabel(posibles[2].toString())
+            .setCustomId(`regalo_navidad_perdido_3`)
+            .setStyle(ButtonStyle.Secondary)
+    ]
+    botones = shuffle(botones);
+    var rowBotones = new ActionRowBuilder()
+        .addComponents(botones[0], botones[1], botones[2], botones[3])
+
+    return [regalo, rowBotones]
+
+    function getMultipleRandom(arr, num) {
+        let res = [];
+        let l = arr.length
+        for (var i = 0; i < num; i++)
+            res.push(arr[Math.random() * l << 0]);
+        return res;
+    }
 }

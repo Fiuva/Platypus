@@ -1,4 +1,4 @@
-const GUILD = {
+﻿const GUILD = {
     SERVER_PLATY: '836721843955040337'
 }
 const CATEGORIA = {
@@ -60,7 +60,17 @@ const PRIVATE_CONFIG = {
 const MENSAJE = {
     INFO_ROLES: '837347810705539173'
 }
-const NOMBRE_MONEDAS = "PlatyCoins";
+
+const MONEDAS = {
+    PC: {
+        NOMBRE: "PlatyCoins",
+        EMOTE: "<:platyCoins:1047891251078369290>"
+    },
+    NAVIDAD: {
+        NOMBRE: "Pavos",
+        EMOTE: "🦃"
+    }
+}
 const AUMENTAR_MONEDAS_NIVEL = 25;
 const AUMENTA_NIVEL = 7;
 
@@ -82,7 +92,7 @@ module.exports = {
     CONFIG,
     PRIVATE_CONFIG,
     MENSAJE,
-    NOMBRE_MONEDAS,
+    MONEDAS,
     AUMENTAR_MONEDAS_NIVEL,
     AUMENTA_NIVEL,
     varOnUpdateMessageEspia

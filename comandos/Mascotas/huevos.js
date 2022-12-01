@@ -1,7 +1,7 @@
 ﻿const { EmbedBuilder } = require("discord.js");
-const { CANAL_TEXTO } = require("../../config/constantes");
+const { CANAL_TEXTO, MONEDAS } = require("../../config/constantes");
 const { HUEVOS } = require("../../handlers/juegos/funcionesMascotas");
-const { Calidad } = require("../../models/mascotas");
+const { Calidad, Tipo_Huevo } = require("../../models/mascotas");
 
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
         Object.values(HUEVOS).forEach(huevo => {
             if (!huevo.TIENDA) return;
             embed.addFields({
-                name: `${huevo.EMOJI} __${huevo.NOMBRE}__ _Precio: ${huevo.PRECIO}_`,
+                name: `${huevo.EMOJI} __${huevo.NOMBRE}__ _Precio: ${huevo.PRECIO} ${huevo.TIPO == Tipo_Huevo.Navidad ? MONEDAS.NAVIDAD.EMOTE : MONEDAS.PC.EMOTE}_`,
                 value:
                     `**${Calidad.Comun.nombre}:** ${mostrarProbabilidadFix(huevo.PROBABILIDAD.COMUN)}%
                     **${Calidad.Especial.nombre}:** ${mostrarProbabilidadFix(huevo.PROBABILIDAD.ESPECIAL)}%

@@ -1,7 +1,7 @@
 ﻿const { EmbedBuilder, ChannelType } = require("discord.js");
 const antiSpam = require("../../config/antiSpam");
 const { CANAL_TEXTO, GUILD } = require("../../config/constantes");
-const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument } = require("../../handlers/funciones");
+const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument, createRegaloRandom } = require("../../handlers/funciones");
 const { subirExpMascota, subirExperienciaMascotaPareja } = require("../../handlers/juegos/funcionesMascotas");
 const { MonitorizarTwitch, getIDbyName, getToken, mostrarStatsTwitch, funcionStart, funcionStop, calcularPlan, getNamebyID, buscarTwitch } = require("../../models/monitorizarTwitch");
 const RecapData = require("../../models/recapData");
@@ -119,6 +119,10 @@ module.exports = async (client, message) => {
     if (!message.content.startsWith(config.prefix)) { //MENSAJES SIN PREFIJO
         //SUBIR EXP -------------------- 
         if (!talkedRecently.has(message.author.id) && message.author.id != ultimoIdQueHabla) {
+            if (Math.random() < 0.05) {
+                const [embed, components] = createRegaloRandom();
+                message.channel.send({ embeds: [embed], components: [components] });
+            }
             ultimoIdQueHabla = message.author.id;
             talkedRecently.add(message.author.id);
             setTimeout(() => {

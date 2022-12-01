@@ -1,6 +1,6 @@
 ﻿const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require('discord.js');
-const { PRECIO, NOMBRE_MONEDAS, ROL } = require('../../config/constantes');
-const { wiki, Calidad, MascotasData, Mascota } = require('../../models/mascotas');
+const { PRECIO, ROL, MONEDAS } = require('../../config/constantes');
+const { wiki, Calidad, MascotasData, Mascota, Tipo_Huevo } = require('../../models/mascotas');
 const Usuario = require('../../models/usuario');
 const { findOrCreateDocument, random, modificarMonedas } = require('../funciones');
 var gis = require('g-i-s');
@@ -23,14 +23,14 @@ var onClickTienda = async function (button) {
             } else if (anillosUser >= 2) {
                 button.reply({ content: `${authorInteraction.user} ya has tienes el máximo de anillos (2)`, ephemeral: true });
             } else {
-                button.reply({ content: `${authorInteraction.user} no tienes suficientes ${NOMBRE_MONEDAS}`, ephemeral: true });
+                button.reply({ content: `${authorInteraction.user} no tienes suficientes ${MONEDAS.PC.NOMBRE}`, ephemeral: true });
             }
             break;
         case 'millonario':
             if (authorInteraction.roles.cache.has(ROL.MILLONARIO)) {
                 button.reply({ content: `${authorInteraction.user} ya tienes el rol de millonario`, ephemeral: true })
             } else if (monedasUser < PRECIO.MILLONARIO) {
-                button.reply({ content: `${authorInteraction.user} no tienes suficientes ${NOMBRE_MONEDAS}`, ephemeral: true })
+                button.reply({ content: `${authorInteraction.user} no tienes suficientes ${MONEDAS.PC.NOMBRE}`, ephemeral: true })
             } else {
                 await Usuario.findOneAndUpdate({ idDiscord: idUser }, { monedas: monedasUser - PRECIO.MILLONARIO }, { new: true });
                 var rolMill = button.guild.roles.cache.get(ROL.MILLONARIO);
@@ -42,7 +42,7 @@ var onClickTienda = async function (button) {
             if (authorInteraction.roles.cache.has(ROL.MUSICA_PRO)) {
                 button.reply({ content: `${authorInteraction.user} ya tienes el rol de música`, ephemeral: true })
             } else if (monedasUser < PRECIO.MUSICA_PRO) {
-                button.reply({ content: `${authorInteraction.user} no tienes suficientes ${NOMBRE_MONEDAS}`, ephemeral: true })
+                button.reply({ content: `${authorInteraction.user} no tienes suficientes ${MONEDAS.PC.NOMBRE}`, ephemeral: true })
             } else {
                 await Usuario.findOneAndUpdate({ idDiscord: idUser }, { monedas: monedasUser - PRECIO.MUSICA_PRO }, { new: true });
                 var rolMus = button.guild.roles.cache.get(ROL.MUSICA_PRO);
@@ -53,9 +53,20 @@ var onClickTienda = async function (button) {
     }
 }
 
-async function abrir(huevo, monedas, message, collected, components) {
+async function abrir(huevo, userUsuario, message, collected, components) {
+    let monedas, tipo_huevo, nombreMonedas;
+    if (huevo.TIPO == Tipo_Huevo.Navidad) {
+        monedas = userUsuario.pavos;
+        tipo_huevo = Tipo_Huevo.Navidad;
+        nombreMonedas = MONEDAS.NAVIDAD.NOMBRE;
+    } else {
+        monedas = userUsuario.monedas;
+        tipo_huevo = Tipo_Huevo.Normal;
+        nombreMonedas = MONEDAS.PC.NOMBRE;
+    }
+
     if (monedas < huevo.PRECIO)
-        throw new Error(`No tienes suficientes monedas, el huevo vale ${huevo.PRECIO}`);
+        throw new Error(`No tienes suficientes monedas, el huevo vale **${huevo.PRECIO} ${nombreMonedas}**`);
 
     const user = collected.user;
     const userMascotas = await findOrCreateDocument(user.id, MascotasData);
@@ -65,15 +76,15 @@ async function abrir(huevo, monedas, message, collected, components) {
 
     const probHuevo = huevo.PROBABILIDAD;
     if (prob < probHuevo.COMUN) { //SALE COMUN
-        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Comun)));
+        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Comun, tipo_huevo)));
     } else if (prob < probHuevo.COMUN + probHuevo.ESPECIAL) { //SALE ESPECIAL
-        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Especial)));
+        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Especial, tipo_huevo)));
     } else if (prob < probHuevo.COMUN + probHuevo.ESPECIAL + probHuevo.RARO) { //SALE RARO
-        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Raro)));
+        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Raro, tipo_huevo)));
     } else if (prob < probHuevo.COMUN + probHuevo.ESPECIAL + probHuevo.RARO + probHuevo.ULTRA_RARO) { //SALE ULTRA RARO
-        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Ultra_raro)));
+        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Ultra_raro, tipo_huevo)));
     } else { //SALE LEGENDARIO
-        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Legendario)));
+        mascotaQueSale = new Mascota(random(wiki.filterAnimalesByCalidad(Calidad.Legendario, tipo_huevo)));
     }
 
     const embed = new EmbedBuilder()
@@ -89,7 +100,10 @@ async function abrir(huevo, monedas, message, collected, components) {
         .setTimestamp(new Date());
 
     await MascotasData.findOneAndUpdate({ idDiscord: userMascotas.idDiscord }, { $push: { mascotas: mascotaQueSale } });
-    await modificarMonedas(userMascotas.idDiscord, -huevo.PRECIO);
+    if (tipo_huevo == Tipo_Huevo.Normal)
+        await modificarMonedas(userMascotas.idDiscord, -huevo.PRECIO, userUsuario);
+    else
+        await modificarMonedas(userMascotas.idDiscord, -huevo.PRECIO, userUsuario, true);
 
     var opts = {
         searchTerm: mascotaQueSale.nombre,

@@ -1,5 +1,5 @@
-const { ROL, NOMBRE_MONEDAS } = require("../../config/constantes");
-const { msg } = require("../../handlers/funciones");
+const { ROL, MONEDAS } = require("../../config/constantes");
+const { msg, modificarMonedas, findOrCreateDocument } = require("../../handlers/funciones");
 const Usuario = require("../../models/usuario");
 
 module.exports = {
@@ -11,21 +11,21 @@ module.exports = {
         message.delete();
         const toUser = message.mentions.members.first();
         if (toUser) {
-            const user = await Usuario.find({ idDiscord: toUser.id }).exec();
-            const monedasAntes = user[0].monedas;
+            const user = await findOrCreateDocument(toUser.id, Usuario);
+            const monedasAntes = user.monedas;
             const numToAdd = parseInt(msg(message, 2, 3));
             if (!isNaN(numToAdd)) {
-                Usuario.findOneAndUpdate({ idDiscord: user[0].idDiscord }, { monedas: monedasAntes + numToAdd }, { new: true })
+                modificarMonedas(toUser.id, numToAdd, user)
                     .then(
                         message.channel.send(
-                            `${message.author}: Se han añadido ${numToAdd} ${NOMBRE_MONEDAS} a ${toUser} (Antes: ${monedasAntes} -> __Ahora: ${monedasAntes + numToAdd}__) | _Razón:_ **${msg(message, 3, 20, true) || 'Porque sí xd'}**`
+                            `${message.author}: Se han añadido ${numToAdd} ${MONEDAS.PC.NOMBRE} a ${toUser} (Antes: ${monedasAntes} -> __Ahora: ${monedasAntes + numToAdd}__) | _Razón:_ **${msg(message, 3, 20, true) || 'Porque sí xd'}**`
                         )
                     );
             } else {
-                message.channel.send(`${message.author}: añadir ${NOMBRE_MONEDAS} !addpc <@user> <${NOMBRE_MONEDAS}> [razón]`);
+                message.channel.send(`${message.author}: añadir ${MONEDAS.PC.NOMBRE} !addpc <@user> <${MONEDAS.PC.NOMBRE}> [razón]`);
             }
         } else {
-            message.channel.send(`${message.author}: añadir ${NOMBRE_MONEDAS} !addpc <@user> <${NOMBRE_MONEDAS}> [razón]`);
+            message.channel.send(`${message.author}: añadir ${MONEDAS.PC.NOMBRE} !addpc <@user> <${MONEDAS.PC.NOMBRE}> [razón]`);
         }
     }
 }

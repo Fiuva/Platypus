@@ -1,5 +1,5 @@
 ﻿const { EmbedBuilder } = require("discord.js");
-const { CANAL_TEXTO, NOMBRE_MONEDAS } = require("../../config/constantes");
+const { CANAL_TEXTO, MONEDAS } = require("../../config/constantes");
 const config = require('../../config/config.json')
 
 module.exports = {
@@ -28,7 +28,7 @@ function mostrarHelpComandos(comandos, message) {
             { name: `${p}${comandos.get('intercambiar').name}`, value: comandos.get('intercambiar').description },
             { name: `${p}${comandos.get('fusionar').name}`, value: comandos.get('fusionar').description },
             { name: `${p}${comandos.get('huevos').name}`, value: comandos.get('huevos').description },
-            { name: 'Niveles de mascota', value: `Sube de **nivel** a tu mascota equipada (*y a la de tu pareja*) para ganar ${NOMBRE_MONEDAS} *hablando con gente*` }
+            { name: 'Niveles de mascota', value: `Sube de **nivel** a tu mascota equipada (*y a la de tu pareja*) para ganar ${MONEDAS.PC.NOMBRE} *hablando con gente*` }
         );
     message.channel.send({ embeds: [mensajeAyuda] });
 }

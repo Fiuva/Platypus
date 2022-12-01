@@ -1,5 +1,5 @@
 ﻿const { EmbedBuilder } = require("discord.js");
-const { CANAL_TEXTO, NOMBRE_MONEDAS, CANAL_VOZ } = require("../../config/constantes");
+const { CANAL_TEXTO, MONEDAS, CANAL_VOZ } = require("../../config/constantes");
 const config = require('../../config/config.json')
 
 module.exports = {
@@ -38,7 +38,7 @@ function mostrarHelpComandos(comandos, message) {
             { name: `${p}${comandos.get('divorciar').name}`, value: comandos.get('divorciar').description, inline: true },
             { name: `${p}${comandos.get('3').name}`, value: comandos.get('3').description },
             { name: `${p}${comandos.get('2048').name}`, value: comandos.get('2048').description, inline: true },
-            { name: 'Nivel', value: `Gana **experiencia** siendo activo en el chat para conseguir ${NOMBRE_MONEDAS} \n y consigue **roles** en función de tu nivel` },
+            { name: 'Nivel', value: `Gana **experiencia** siendo activo en el chat para conseguir ${MONEDAS.PC.NOMBRE} \n y consigue **roles** en función de tu nivel` },
         );
     message.channel.send({ embeds: [mensajeAyuda] });
 }

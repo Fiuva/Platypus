@@ -5,6 +5,8 @@ const { onClickMusica } = require("../../handlers/botones/funcionesMusica");
 const { onClickPareja } = require("../../handlers/botones/funcionesPareja");
 const { onClickVender } = require("../../handlers/botones/funcionesVender");
 const { onClickIntercambio } = require("../../handlers/botones/funcionesIntercambiar");
+const { onClickRegalo } = require("../../handlers/botones/funcionesRegalo");
+const { onClickMostrarMascotas } = require("../../handlers/botones/funcionesMostrarMascota");
 
 
 module.exports = async (client, button) => {
@@ -36,4 +38,8 @@ module.exports = async (client, button) => {
         onClickIntercambio(button);
     else if (button.customId.startsWith('equiparAhora_'))
         onClickEquiparAhora(button);
+    else if (button.customId.startsWith('regalo_'))
+        onClickRegalo(button);
+    else if (button.customId.startsWith('mostrarMascotas_'))
+        onClickMostrarMascotas(button);
 }

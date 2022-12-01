@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
-const { CANAL_TEXTO, NOMBRE_MONEDAS } = require("../../config/constantes");
+const { CANAL_TEXTO, MONEDAS } = require("../../config/constantes");
+const { findOrCreateDocument, getMentionOrUser } = require("../../handlers/funciones");
 const Usuario = require("../../models/usuario");
 
 module.exports = {
@@ -8,24 +9,17 @@ module.exports = {
     canales: [CANAL_TEXTO.COMANDOS],
     description: "Consulta tu inventario :>",
     run: async (client, message, args) => {
-        var username;
-        var user;
-        try {
-            user = await Usuario.find({ idDiscord: message.mentions.users.first().id }).exec();
-            username = message.mentions.users.first();
-        } catch {
-            user = await Usuario.find({ idDiscord: message.author.id }).exec();
-            username = message.author;
-        }
+        var author = getMentionOrUser(message);
+        var user = await findOrCreateDocument(author.id, Usuario);
 
         const mensajeInventario = new EmbedBuilder()
-            .setColor(user[0].color)
+            .setColor(user.color)
             .setTitle('Inventario')
-            .setAuthor({ name: username.username, iconURL: username.displayAvatarURL({ format: 'jpg' }) })
-            .setDescription(`Contempla el hermoso inventario de ${username.username}`)
+            .setAuthor({ name: author.username, iconURL: author.displayAvatarURL({ format: 'jpg' }) })
+            .setDescription(`Contempla el hermoso inventario de ${author.username}`)
             .addFields(
-                { name: `Banco: `, value: `${user[0].monedas} ${NOMBRE_MONEDAS}` },
-                { name: 'Anillos: ', value: `${user[0].anillo}` },
+                { name: `Banco: `, value: `${user.monedas} ${MONEDAS.PC.EMOTE} \n${user.pavos} ${MONEDAS.NAVIDAD.EMOTE} ` },
+                { name: 'Anillos: ', value: `${user.anillo}` },
             )
         message.channel.send({ embeds: [mensajeInventario] });
     }

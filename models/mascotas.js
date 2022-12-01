@@ -1,6 +1,11 @@
 ﻿const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const Tipo_Huevo = {
+    Normal: "Huevo_normal",
+    Navidad: "Huevo_navidad"
+}
+
 const Calidad = Object.freeze({
     Comun: {
         nombre: "Común",
@@ -34,7 +39,9 @@ const Clase = Object.freeze({
     Anelido: "Anélidos",
     Insecto: "Insectos",
     Anfibio: "Anfibios",
-    Crustaceo: "Crustáceos"
+    Crustaceo: "Crustáceos",
+    Alimento: "Alimento",
+    Indefinido: "???"
 })
 const Habitat = Object.freeze({
     Rio: "Rio",
@@ -48,18 +55,21 @@ const Habitat = Object.freeze({
     Selva: "Selva",
     Tierra: "Tierra",
     Meseta: "Meseta",
-    Casa: "Tú casa"
+    Llanura: "Llanura",
+    Casa: "Tú casa",
+    Polo_sur: "Polo sur"
 })
 const Modo = Object.freeze({
     Normal: "Normal",
     Sudoroso: "Sudoroso",
     Lechoso: "Lechoso"
 })
-function Animal(nombre, clase, habitat, calidad) {
+function Animal(nombre, clase, habitat, calidad, huevo = Tipo_Huevo.Normal) {
     this.nombre = nombre;
     this.clase = clase;
     this.habitat = habitat;
     this.calidad = calidad;
+    this.huevo = huevo;
 }
 
 const wiki = Object.freeze({
@@ -80,6 +90,8 @@ const wiki = Object.freeze({
         new Animal("Elefante", Clase.Mamifero, Habitat.Sabana, Calidad.Comun),
         new Animal("Mono", Clase.Mamifero, Habitat.Selva, Calidad.Comun),
         new Animal("Morsa", Clase.Mamifero, Habitat.Hielo, Calidad.Comun),
+        new Animal("Hurón albino❄️", Clase.Mamifero, Habitat.Casa, Calidad.Comun, Tipo_Huevo.Navidad),
+        new Animal("Elfo❄️", Clase.Indefinido, Habitat.Polo_sur, Calidad.Comun, Tipo_Huevo.Navidad),
 
         new Animal("Cocodrilo", Clase.Reptil, Habitat.Rio, Calidad.Especial),
         new Animal("Gato salvaje", Clase.Mamifero, Habitat.Bosque, Calidad.Especial),
@@ -96,6 +108,8 @@ const wiki = Object.freeze({
         new Animal("Rinoceronte", Clase.Mamifero, Habitat.Sabana, Calidad.Especial),
         new Animal("Anchoa", Clase.Pez, Habitat.Oceano, Calidad.Especial),
         new Animal("Mapache", Clase.Mamifero, Habitat.Bosque, Calidad.Especial),
+        new Animal("Reno❄️", Clase.Mamifero, Habitat.Hielo, Calidad.Especial, Tipo_Huevo.Navidad),
+        new Animal("Pavo❄️", Clase.Ave, Habitat.Granja, Calidad.Especial, Tipo_Huevo.Navidad),
 
         new Animal("Gallina", Clase.Ave, Habitat.Granja, Calidad.Raro),
         new Animal("Cerdo", Clase.Mamifero, Habitat.Granja, Calidad.Raro),
@@ -111,6 +125,8 @@ const wiki = Object.freeze({
         new Animal("Alpaca", Clase.Mamifero, Habitat.Meseta, Calidad.Raro),
         new Animal("Armadillo", Clase.Mamifero, Habitat.Bosque, Calidad.Raro),
         new Animal("Mofeta", Clase.Mamifero, Habitat.Bosque, Calidad.Raro),
+        new Animal("Muñeco de nieve❄️", Clase.Mamifero, Habitat.Hielo, Calidad.Raro, Tipo_Huevo.Navidad),
+        new Animal("Yeti❄️", Clase.Indefinido, Habitat.Hielo, Calidad.Raro, Tipo_Huevo.Navidad),
 
         new Animal("Pingüino", Clase.Ave, Habitat.Hielo, Calidad.Ultra_raro),
         new Animal("Nutria", Clase.Mamifero, Habitat.Rio, Calidad.Ultra_raro),
@@ -122,20 +138,24 @@ const wiki = Object.freeze({
         new Animal("Llama", Clase.Mamifero, Habitat.Meseta, Calidad.Ultra_raro),
         new Animal("Koala", Clase.Mamifero, Habitat.Bosque, Calidad.Ultra_raro),
         new Animal("Oso hormiguero", Clase.Mamifero, Habitat.Bosque, Calidad.Ultra_raro),
+        new Animal("Rudolph❄️", Clase.Mamifero, Habitat.Polo_sur, Calidad.Ultra_raro, Tipo_Huevo.Navidad),
+        new Animal("Lechuza blanca❄️", Clase.Ave, Habitat.Llanura, Calidad.Ultra_raro, Tipo_Huevo.Navidad),
 
         new Animal("Ornitorrinco", Clase.Mamifero, Habitat.Rio, Calidad.Legendario),
         new Animal("Cuco ardilla", Clase.Ave, Habitat.Selva, Calidad.Legendario),
+        new Animal("Polvorón❄️", Clase.Alimento, Habitat.Casa, Calidad.Legendario, Tipo_Huevo.Navidad),
+        new Animal("Nutria albina❄️", Clase.Mamifero, Habitat.Rio, Calidad.Legendario, Tipo_Huevo.Navidad),
     ],
 
-    filterAnimalesByCalidad(calidad) {
-        return this.animales.filter(animal => animal.calidad == calidad);
+    filterAnimalesByCalidad(calidad, tipo_huevo) {
+        return this.animales.filter(animal => ((animal.calidad == calidad) && (animal.huevo == tipo_huevo)));
     },
     filterAnimalesByClase(clase) {
         return this.animales.filter(animal => animal.clase == clase);
     },
     filterAnimalesByHabitat(habitat) {
         return this.animales.filter(animal => animal.habitat == habitat);
-    },
+    }
 })
 
 class Mascota {
@@ -156,4 +176,4 @@ const mascotaSchema = new Schema({
 })
 const MascotasData = mongoose.model('Mascotas', mascotaSchema);
 
-module.exports = { MascotasData, wiki, Mascota, Calidad, Clase, Habitat, Animal };
+module.exports = { MascotasData, wiki, Mascota, Calidad, Clase, Habitat, Animal, Tipo_Huevo };
