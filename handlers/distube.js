@@ -10,7 +10,7 @@ module.exports = (client, Discord) => {
     client.distube = new DisTube(client, {
         emitNewSongOnly: false,
         leaveOnEmpty: true,
-        leaveOnFinish: false, //
+        leaveOnFinish: true,
         leaveOnStop: true,
         savePreviousSongs: true,
         emitAddSongWhenCreatingQueue: false,
@@ -37,15 +37,6 @@ module.exports = (client, Discord) => {
             new YtDlpPlugin()
         ]
     });
-
-    client.distube.on('error', (channel, e) => {
-        console.log('AAA errorrr');
-        console.log(e);
-    })
-
-    client.distube.on('deleteQueue', queue => {
-        console.log("Se eliminó la cola");
-    })
 
     client.distube.on("playSong", (queue, song) => {
         client.distube.setVolume(queue, 100);
@@ -96,7 +87,7 @@ module.exports = (client, Discord) => {
     });
 
     client.distube.on("initQueue", (queue) => {
-        //queue.autoplay = true;
+        queue.autoplay = true;
     });
 
     client.distube.on("addList", (queue, playlist) => {
@@ -106,8 +97,10 @@ module.exports = (client, Discord) => {
             .setURL(playlist.url)
             .setThumbnail(playlist.thumbnail)
             .setAuthor({ name: `Se ha añadido la playlist:` })
-            .addField('Canciones:', playlist.songs.length.toString(), true)
-            .addField('Añadida por:', playlist.member.user.username, true)
+            .addFields(
+                { name: 'Canciones:', value: playlist.songs.length.toString(), inline: true },
+                { name: 'Añadida por:', value: playlist.member.user.username, inline: true }
+            )
             .setFooter({ text: `Duración:  ${playlist.formattedDuration}` })
 
         queue.textChannel.send({ embeds: [mensPlaylist] });
