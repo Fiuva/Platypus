@@ -1,6 +1,7 @@
 ﻿const { GUILD, CANAL_TEXTO } = require("../../config/constantes");
 const { desequipar } = require("../../handlers/juegos/funcionesMascotas");
 const { MascotasData } = require("../../models/mascotas");
+const RecapData = require("../../models/recapData");
 
 module.exports = async (client, member) => {
     if (member.guild.id != GUILD.SERVER_PLATY) return;
@@ -27,7 +28,7 @@ module.exports = async (client, member) => {
 
     try { //mmm no lo he probado
         const mensajes = { total: 0, tiempos: [] }
-        await RecapData.findOneAndUpdate({ idDiscord: member.id }, { mensajes: mensajes, fechaMovil: null, fechaDnd: null, fechaOnline: null, fechaIdle: null });
+        //await RecapData.findOneAndUpdate({ idDiscord: member.id }, { mensajes: mensajes, fechaMovil: null, fechaDnd: null, fechaOnline: null, fechaIdle: null });
         console.log(`Alguien salió, se modifica su documento de ${member.id}`)
     } catch {
         console.log("No existe el documento");

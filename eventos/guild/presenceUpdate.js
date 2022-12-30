@@ -11,8 +11,8 @@ module.exports = async (client, oldPresence, newPresence) => {
     if (member.guild.id != GUILD.SERVER_PLATY) return;
 
     //-------------------RECAP-------------------- 
-    await actualizarTiemposStatus(member, oldPresence, newPresence);
-    await actualizarTiemposMovil(member, oldPresence, newPresence);
+    //await actualizarTiemposStatus(member, oldPresence, newPresence);
+    //await actualizarTiemposMovil(member, oldPresence, newPresence);
     //--------------------------------------------
     actualizarRolesMascotas(member, oldPresence, newPresence);
 

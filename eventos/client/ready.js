@@ -13,7 +13,7 @@ module.exports = async client => {
         useUnifiedTopology: true
     }).then(() => {
         console.log(`Conectado a la base de datos`);
-        schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(guild));
+        //schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(guild));
         iniciarMonitorizacionesTwitch(client);
     }).catch((err) => {
         console.log("Error al conectar a la base de datos: " + err);
