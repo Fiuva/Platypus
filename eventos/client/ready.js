@@ -122,9 +122,8 @@ async function comprobarEstados(guild) {
 }
 async function recopilarDatosDiarios(guild) {
     const allData = await RecapData.find()
-    let offset = 0, found = 0;
-    const promises = [];
     const date = new Date();
+    guild.channels.cache.get('836734022184861706').send(`Hoy debería de ser un día nuevo :)`);
     allData.forEach(async recDat => {
         let total = 0;
         let tiempos = [];
@@ -142,21 +141,11 @@ async function recopilarDatosDiarios(guild) {
 
         try {
             const member = await guild.members.fetch(recDat.idDiscord);
-            promises.push(
-                RecapData.findOneAndUpdate(
-                    { idDiscord: member.id },
-                    { mensajesMasFrecuencia, mensajes },
-                ),
-            );
-            found++;
+            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { mensajesMasFrecuencia, mensajes });
         } catch {
-            offset++;
+            console.log(`No encontrado`);
         }
     });
-    Promise.all(promises).then(() => {
-        guild.channels.cache.get('836734022184861706').send(`Hoy debería de ser un día nuevo :) || actualizados ${found} documentos (${offset} saltados) `);
-    });
-
     console.log('Esto se debería de enviar cada día a las 00:00 UTC');
 }
 function masFrecuencia(array, maximo) {
