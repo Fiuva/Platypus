@@ -123,7 +123,6 @@ async function actualizarTiempos(member, oldPresence, newPresence) {
             data = actualizarTiemposMovil(dispositivos, recDat, data, date);
         }
 
-        console.log(data);
         await RecapData.findOneAndUpdate({ idDiscord: member.id }, data);
     }
 }
