@@ -1,6 +1,6 @@
 ﻿const mongoose = require('mongoose');
 const { varOnUpdateMessageEspia, CONFIG, GUILD, PRIVATE_CONFIG } = require('../../config/constantes');
-const { cambiarEstadoConMensaje, calcularTiempoToAdd, add_data, create_data_inc } = require('../../handlers/funciones');
+const { cambiarEstadoConMensaje, calcularTiempoToAdd, add_data, createDataInc } = require('../../handlers/funciones');
 const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
 const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
@@ -59,13 +59,13 @@ async function comprobarEstados(guild) {
                 console.log(`Tiempo total DND: ${recDat.tiempoTotalDnd + t}`)
                 data.tiempoTotalDnd = recDat.tiempoTotalDnd + t;
                 data.fechaDnd = null;
-                data_inc = create_data_inc(recDat.fechaDnd, 'dnd');
+                data_inc = createDataInc(recDat.fechaDnd, 'dnd');
             } else if (recDat.fechaIdle != null) {
                 var t = calcularTiempoToAdd(date, recDat.fechaIdle);
                 console.log(`Tiempo total IDLE: ${recDat.tiempoTotalIdle + t}`)
                 data.tiempoTotalIdle = recDat.tiempoTotalIdle + t;
                 data.fechaIdle = null;
-                data_inc = create_data_inc(recDat.fechaIdle, 'idle');
+                data_inc = createDataInc(recDat.fechaIdle, 'idle');
             }
         } else if (s == 'idle' && recDat.fechaIdle == null) {
             console.log(`Se actualiza fecha IDLE: ${date}`)
@@ -75,13 +75,13 @@ async function comprobarEstados(guild) {
                 console.log(`Tiempo total DND: ${recDat.tiempoTotalDnd + t}`)
                 data.tiempoTotalDnd = recDat.tiempoTotalDnd + t;
                 data.fechaDnd = null;
-                data_inc = create_data_inc(recDat.fechaDnd, 'dnd');
+                data_inc = createDataInc(recDat.fechaDnd, 'dnd');
             } else if (recDat.fechaOnline != null) {
                 var t = calcularTiempoToAdd(date, recDat.fechaOnline);
                 console.log(`Tiempo total ONLINE: ${recDat.tiempoTotalOnline + t}`)
                 data.tiempoTotalOnline = recDat.tiempoTotalOnline + t;
                 data.fechaOnline = null;
-                data_inc = create_data_inc(recDat.fechaOnline, 'online');
+                data_inc = createDataInc(recDat.fechaOnline, 'online');
             }
         } else if (s == 'dnd' && recDat.fechaDnd == null) {
             console.log(`Se actualiza fecha DND: ${date}`)
@@ -91,13 +91,13 @@ async function comprobarEstados(guild) {
                 console.log(`Tiempo total IDLE: ${recDat.tiempoTotalIdle + t}`)
                 data.tiempoTotalIdle = recDat.tiempoTotalIdle + t;
                 data.fechaIdle = null;
-                data_inc = create_data_inc(recDat.fechaIdle, 'idle');
+                data_inc = createDataInc(recDat.fechaIdle, 'idle');
             } else if (recDat.fechaOnline != null) {
                 var t = calcularTiempoToAdd(date, recDat.fechaOnline);
                 console.log(`Tiempo total ONLINE: ${recDat.tiempoTotalOnline + t}`)
                 data.tiempoTotalOnline = recDat.tiempoTotalOnline + t;
                 data.fechaOnline = null;
-                data_inc = create_data_inc(recDat.fechaOnline, 'online');
+                data_inc = createDataInc(recDat.fechaOnline, 'online');
             }
         }
         data = add_data(data, data_inc);
@@ -111,7 +111,7 @@ async function comprobarEstados(guild) {
             console.log(`Tiempo total en MOVIL: ${recDat.tiempoTotalMovil + t}`)
             data.fechaMovil = null;
             data.tiempoTotalMovil = recDat.tiempoTotalMovil + t;
-            data_inc = create_data_inc(recDat.fechaMovil, 'mobile');
+            data_inc = createDataInc(recDat.fechaMovil, 'mobile');
         }
         data = add_data(data, data_inc);
 

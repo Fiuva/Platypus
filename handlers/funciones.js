@@ -21,7 +21,7 @@ module.exports = {
     createRegaloRandom,
     shuffle,
     add_data,
-    create_data_inc
+    createDataInc
 }
 function shuffle(array) {
     let currentIndex = array.length, randomIndex;
@@ -287,37 +287,47 @@ function calcularTiempoToAdd(date, fecha) {
     return t;
 }
 
-function create_data_inc(fecha, status_atributo) {
+function createDataInc(fecha, statusAtributo) {
     if (fecha == null) return null;
-    let cambios = []
-    let ultimaConexion = new Date(fecha);
-    let dateObject = new Date();
 
+    // Inicializar variables
+    const cambios = [];
+    const ultimaConexion = new Date(fecha);
+    const dateObject = new Date();
     let tiempoTotal = dateObject.getTime() - ultimaConexion.getTime();
-    let anteriorUltimaHora = new Date(dateObject.getFullYear(), dateObject.getMonth(), dateObject.getDate(), dateObject.getHours());
-    let ultimaHora = Math.min(dateObject.getTime() - anteriorUltimaHora.getTime(), dateObject.getTime() - ultimaConexion.getTime())
-    let horaActual = dateObject.getHours();
     let diaActual = dateObject.getDay();
-    cambios.push({ dia: diaActual, hora: horaActual, value: ultimaHora })
+    let horaActual = dateObject.getHours();
+
+    // Añadir el tiempo de la última hora
+    const anteriorUltimaHora = new Date(dateObject.getFullYear(), dateObject.getMonth(), dateObject.getDate(), dateObject.getHours());
+    const ultimaHora = Math.min(dateObject.getTime() - anteriorUltimaHora.getTime(), dateObject.getTime() - ultimaConexion.getTime());
+    cambios.push({ dia: diaActual, hora: horaActual, value: ultimaHora });
     tiempoTotal -= ultimaHora;
+
+    // Añadir el tiempo de las horas anteriores
     while (tiempoTotal > 0) {
-        if (horaActual == 0) {
+        if (horaActual === 0) {
             horaActual = 23;
-            if (diaActual == 0) diaActual = 6;
-            else diaActual--;
+            if (diaActual === 0) {
+                diaActual = 6;
+            } else {
+                diaActual--;
+            }
         } else {
             horaActual--;
         }
-        let valor = Math.min(3600000, tiempoTotal);
-        cambios.push({ dia: diaActual, hora: horaActual, value: valor })
+
+        const valor = Math.min(3600000, tiempoTotal);
+        cambios.push({ dia: diaActual, hora: horaActual, value: valor });
         tiempoTotal -= valor;
     }
 
-    let data_inc = {}
-    cambios.forEach(cambio => {
-        data_inc[`tiemposPorDia.${cambio.dia}.${cambio.hora}.${status_atributo}`] = cambio.value
-    })
-    return data_inc
+    // Crear el objeto de datos incremental
+    const dataInc = {};
+    cambios.forEach((cambio) => {
+        dataInc[`tiemposPorDia.${cambio.dia}.${cambio.hora}.${statusAtributo}`] = cambio.value;
+    });
+    return dataInc;
 }
 
 function add_data(data, data_to_add, tipo = "$inc") {

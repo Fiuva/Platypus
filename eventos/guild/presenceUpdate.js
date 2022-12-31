@@ -1,6 +1,6 @@
 ﻿const { EmbedBuilder } = require("discord.js");
 const { GUILD, varOnUpdateMessageEspia } = require("../../config/constantes");
-const { calcularTiempoToAdd, deepEqual, findOrCreateDocument, add_data, create_data_inc } = require("../../handlers/funciones");
+const { calcularTiempoToAdd, deepEqual, findOrCreateDocument, add_data, createDataInc } = require("../../handlers/funciones");
 const { parseMensajeEspia, bbddVictimas } = require("../../handlers/funcionesVictimas");
 const { desequipar, reEquipar } = require("../../handlers/juegos/funcionesMascotas");
 const { MascotasData } = require("../../models/mascotas");
@@ -82,19 +82,19 @@ async function actualizarTiempos(member, oldPresence, newPresence) {
                     var t = calcularTiempoToAdd(date, recDat.fechaOnline);
                     console.log(`Tiempo total ONLINE: ${recDat.tiempoTotalOnline + t}`)
                     data.tiempoTotalOnline = recDat.tiempoTotalOnline + t;
-                    data_inc = create_data_inc(recDat.fechaOnline, 'online');
+                    data_inc = createDataInc(recDat.fechaOnline, 'online');
                     break;
                 case 'idle':
                     var t = calcularTiempoToAdd(date, recDat.fechaIdle);
                     console.log(`Tiempo total IDLE: ${recDat.tiempoTotalIdle + t}`)
                     data.tiempoTotalIdle = recDat.tiempoTotalIdle + t;
-                    data_inc = create_data_inc(recDat.fechaIdle, 'idle');
+                    data_inc = createDataInc(recDat.fechaIdle, 'idle');
                     break;
                 case 'dnd':
                     var t = calcularTiempoToAdd(date, recDat.fechaDnd);
                     console.log(`Tiempo total DND: ${recDat.tiempoTotalDnd + t}`)
                     data.tiempoTotalDnd = recDat.tiempoTotalDnd + t;
-                    data_inc = create_data_inc(recDat.fechaDnd, 'dnd');
+                    data_inc = createDataInc(recDat.fechaDnd, 'dnd');
                     break;
                 case 'offline':
                     //NADA
@@ -137,7 +137,7 @@ function actualizarTiemposMovil(dispositivos, recDat, data, date) {
         data.fechaMovil = null;
         data.tiempoTotalMovil = recDat.tiempoTotalMovil + t;
 
-        data = add_data(data, create_data_inc(recDat.fechaMovil, 'mobile'))
+        data = add_data(data, createDataInc(recDat.fechaMovil, 'mobile'))
     }
     return data;
 }
