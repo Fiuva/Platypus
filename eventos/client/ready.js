@@ -1,6 +1,6 @@
 ﻿const mongoose = require('mongoose');
 const { varOnUpdateMessageEspia, CONFIG, GUILD, PRIVATE_CONFIG } = require('../../config/constantes');
-const { cambiarEstadoConMensaje, calcularTiempoToAdd, add_data } = require('../../handlers/funciones');
+const { cambiarEstadoConMensaje, calcularTiempoToAdd, add_data, create_data_inc } = require('../../handlers/funciones');
 const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
 const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
