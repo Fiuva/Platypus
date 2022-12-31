@@ -28,7 +28,7 @@ module.exports = async (client, member) => {
 
     try { //mmm no lo he probado
         const mensajes = { total: 0, tiempos: [] }
-        //await RecapData.findOneAndUpdate({ idDiscord: member.id }, { mensajes: mensajes, fechaMovil: null, fechaDnd: null, fechaOnline: null, fechaIdle: null });
+        await RecapData.findOneAndUpdate({ idDiscord: member.id }, { mensajes: mensajes, fechaMovil: null, fechaDnd: null, fechaOnline: null, fechaIdle: null });
         console.log(`Alguien salió, se modifica su documento de ${member.id}`)
     } catch {
         console.log("No existe el documento");

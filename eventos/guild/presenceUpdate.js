@@ -1,6 +1,6 @@
 ﻿const { EmbedBuilder } = require("discord.js");
 const { GUILD, varOnUpdateMessageEspia } = require("../../config/constantes");
-const { calcularTiempoToAdd, deepEqual } = require("../../handlers/funciones");
+const { calcularTiempoToAdd, deepEqual, findOrCreateDocument, add_data, create_data_inc } = require("../../handlers/funciones");
 const { parseMensajeEspia, bbddVictimas } = require("../../handlers/funcionesVictimas");
 const { desequipar, reEquipar } = require("../../handlers/juegos/funcionesMascotas");
 const { MascotasData } = require("../../models/mascotas");
@@ -10,9 +10,8 @@ module.exports = async (client, oldPresence, newPresence) => {
     let member = newPresence.member;
     if (member.guild.id != GUILD.SERVER_PLATY) return;
 
-    //-------------------RECAP-------------------- 
-    //await actualizarTiemposStatus(member, oldPresence, newPresence);
-    //await actualizarTiemposMovil(member, oldPresence, newPresence);
+    //-------------------RECAP--------------------
+    await actualizarTiempos(member, oldPresence, newPresence);
     //--------------------------------------------
     actualizarRolesMascotas(member, oldPresence, newPresence);
 
@@ -28,185 +27,124 @@ module.exports = async (client, oldPresence, newPresence) => {
     }
 }
 
-async function actualizarTiemposStatus(member, oldPresence, newPresence) {
+async function actualizarTiempos(member, oldPresence, newPresence) {
     if (oldPresence == null || newPresence == null) {
         console.log(`########${member.user.username}########`)
-        if (member.presence.status == "online") {
-            date = new Date();
-            console.log(`Se actualiza fecha ONLINE: ${date}`)
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date, fechaDnd: null, fechaIdle: null }, { new: true });
-        } else if (member.presence.status == "idle") {
-            date = new Date();
-            console.log(`Se actualiza fecha IDLE: ${date}`)
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date, fechaDnd: null, fechaOnline: null }, { new: true });
-        } else if (member.presence.status == "dnd") {
-            date = new Date();
-            console.log(`Se actualiza fecha DND: ${date}`)
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date, fechaOnline: null, fechaIdle: null }, { new: true });
-        } else {
-            console.log('WTF!! 5')
+        const recDat = await findOrCreateDocument(member.id, RecapData);
+        var data = {
+            fechaOnline: null,
+            fechaIdle: null,
+            fechaDnd: null
+        };
+        const date = Date.now();
+
+        switch (member.presence.status) {
+            case 'online':
+                data.fechaOnline = date;
+                break;
+            case 'idle':
+                data.fechaIdle = date;
+                break;
+            case 'dnd':
+                data.fechaDnd = date;
+                break;
+            case 'offline':
+                //NADA
+                break;
         }
-    } else if (oldPresence.status != newPresence.status) {
-        console.log(`########${member.user.username}########`)
-        const recDat = await RecapData.find({ idDiscord: member.id })
-        if (recDat[0] == undefined) {
-            const date = new Date();
-            console.log("Se crea un documento nuevo")
-            switch (member.presence.status) {
-                case 'online':
-                    await new RecapData({ idDiscord: member.id, fechaOnline: date }).save();
-                    break;
-                case 'idle':
-                    await new RecapData({ idDiscord: member.id, fechaIdle: date }).save();
-                    break;
-                case 'dnd':
-                    await new RecapData({ idDiscord: member.id, fechaDnd: date }).save();
-                    break;
-                default:
-                    await new RecapData({ idDiscord: member.id }).save();
-                    break;
-            }
-            return;
-        }
-        if (newPresence.status == 'online') {
-            date = new Date();
-            if (oldPresence.status == 'idle') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaIdle);
-                console.log(`Se actualiza fecha ONLINE: ${date}`)
-                console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + t, fechaIdle: null }, { new: true });
-            } else if (oldPresence.status == 'dnd') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaDnd);
-                console.log(`Se actualiza fecha ONLINE: ${date}`)
-                console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + t, fechaDnd: null }, { new: true });
-            } else if (oldPresence.status == 'offline') {
-                console.log(`Se actualiza fecha ONLINE: ${date}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaOnline: date }, { new: true });
-            } else {
-                console.log('WTFFF 1')
-            }
-        } else if (newPresence.status == 'idle') {
-            date = new Date();
-            if (oldPresence.status == 'online') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaOnline);
-                console.log(`Se actualiza fecha IDLE: ${date}`);
-                console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + t, fechaOnline: null }, { new: true });
-            } else if (oldPresence.status == 'dnd') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaDnd);
-                console.log(`Se actualiza fecha IDLE: ${date}`)
-                console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + t, fechaDnd: null }, { new: true });
-            } else if (oldPresence.status == 'offline') {
-                console.log(`Se actualiza fecha IDLE: ${date}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaIdle: date }, { new: true });
-            } else {
-                console.log('WTFFF 2')
-            }
-        } else if (newPresence.status == 'dnd') {
-            date = new Date();
-            if (oldPresence.status == 'online') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaOnline);
-                console.log(`Se actualiza fecha DND: ${date}`)
-                console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + t, fechaOnline: null }, { new: true });
-            } else if (oldPresence.status == 'idle') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaIdle);
-                console.log(`Se actualiza fecha DND: ${date}`)
-                console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + t, fechaIdle: null }, { new: true });
-            } else if (oldPresence.status == 'offline') {
-                console.log(`Se actualiza fecha DND: ${date}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaDnd: date }, { new: true });
-            } else {
-                console.log('WTFFF 3')
-            }
-        } else if (newPresence.status == 'offline') {
-            date = new Date();
-            if (oldPresence.status == 'online') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaOnline);
-                console.log(`Ahora offline`)
-                console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalOnline: recDat[0].tiempoTotalOnline + t, fechaOnline: null }, { new: true });
-            } else if (oldPresence.status == 'idle') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaIdle);
-                console.log(`Ahora offline`)
-                console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalIdle: recDat[0].tiempoTotalIdle + t, fechaIdle: null }, { new: true });
-            } else if (oldPresence.status == 'dnd') {
-                var t = calcularTiempoToAdd(date, recDat[0].fechaDnd);
-                console.log(`Ahora offline`)
-                console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + t}`)
-                await RecapData.findOneAndUpdate({ idDiscord: member.id }, { tiempoTotalDnd: recDat[0].tiempoTotalDnd + t, fechaDnd: null }, { new: true });
-            } else {
-                console.log('WTFFF 4')
-            }
-        }
-        //-------------------------------------------
-    }
-}
-async function actualizarTiemposMovil(member, oldPresence, newPresence) {
-    if (oldPresence == null || newPresence == null) {
+
         const dispositivos = Object.keys(member.presence.clientStatus);
-        var recDat = await RecapData.find({ idDiscord: member.id })
-        date = new Date();
-        //arreglado
-        if (recDat[0] == undefined) {
-            const date = new Date();
-            console.log("Se crea un documento nuevo (Por movil)")
-            switch (member.presence.status) {
+
+        data = actualizarTiemposMovil(dispositivos, recDat, data, date);
+
+        console.log(data);
+        await RecapData.findOneAndUpdate({ idDiscord: member.id }, data);
+        return;
+    }
+
+    let onChangeStatus = (oldPresence.status != newPresence.status);
+    let onChangeClient = (Object.keys(oldPresence.clientStatus).toString() != Object.keys(newPresence.clientStatus).toString());
+
+    if (onChangeStatus || onChangeClient) {
+        console.log(`########${member.user.username}########`)
+        const recDat = await findOrCreateDocument(member.id, RecapData);
+        const date = Date.now();
+        var data = {};
+        if (onChangeStatus) {
+            data = {
+                fechaOnline: null,
+                fechaIdle: null,
+                fechaDnd: null
+            };
+
+            var data_inc = null;
+            switch (oldPresence.status) {
                 case 'online':
-                    await new RecapData({ idDiscord: member.id, fechaOnline: date }).save();
-                    recDat = await RecapData.find({ idDiscord: member.id })
+                    var t = calcularTiempoToAdd(date, recDat.fechaOnline);
+                    console.log(`Tiempo total ONLINE: ${recDat.tiempoTotalOnline + t}`)
+                    data.tiempoTotalOnline = recDat.tiempoTotalOnline + t;
+                    data_inc = create_data_inc(recDat.fechaOnline, 'online');
                     break;
                 case 'idle':
-                    await new RecapData({ idDiscord: member.id, fechaIdle: date }).save();
-                    recDat = await RecapData.find({ idDiscord: member.id })
+                    var t = calcularTiempoToAdd(date, recDat.fechaIdle);
+                    console.log(`Tiempo total IDLE: ${recDat.tiempoTotalIdle + t}`)
+                    data.tiempoTotalIdle = recDat.tiempoTotalIdle + t;
+                    data_inc = create_data_inc(recDat.fechaIdle, 'idle');
                     break;
                 case 'dnd':
-                    await new RecapData({ idDiscord: member.id, fechaDnd: date }).save();
-                    recDat = await RecapData.find({ idDiscord: member.id })
+                    var t = calcularTiempoToAdd(date, recDat.fechaDnd);
+                    console.log(`Tiempo total DND: ${recDat.tiempoTotalDnd + t}`)
+                    data.tiempoTotalDnd = recDat.tiempoTotalDnd + t;
+                    data_inc = create_data_inc(recDat.fechaDnd, 'dnd');
                     break;
-                default:
-                    await new RecapData({ idDiscord: member.id }).save();
-                    recDat = await RecapData.find({ idDiscord: member.id })
+                case 'offline':
+                    //NADA
                     break;
             }
-        }
-        if (dispositivos.includes('mobile') && recDat[0].fechaMovil == null) {
-            console.log(`Se actualiza fecha Movil: ${date}`)
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: date }, { new: true });
-        } else if (recDat[0].fechaMovil != null) {
-            const fechaMovil = new Date(recDat[0].fechaMovil)
-            var t = (date - fechaMovil);
-            if (t == date.getTime()) {
-                t = 0;
-                console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+            data = add_data(data, data_inc);
+            switch (newPresence.status) {
+                case 'online':
+                    data.fechaOnline = date;
+                    break;
+                case 'idle':
+                    data.fechaIdle = date;
+                    break;
+                case 'dnd':
+                    data.fechaDnd = date;
+                    break;
+                case 'offline':
+                    //NADA
+                    break;
             }
-            console.log(`Tiempo total en MOVIL: ${recDat[0].tiempoTotalMovil + t}`)
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: null, tiempoTotalMovil: recDat[0].tiempoTotalMovil + t }, { new: true });
+            console.log(`Se actualiza fecha ${newPresence.status.toUpperCase()}: ${date}`)
         }
-    } else if (Object.keys(oldPresence.clientStatus).toString() != Object.keys(newPresence.clientStatus).toString()) {
-        console.log(`########${member.user.username}########`)
-        const dispositivos = Object.keys(newPresence.clientStatus);
-        const recDat = await RecapData.find({ idDiscord: member.id })
-        date = new Date();
-        if (dispositivos.includes('mobile') && recDat[0].fechaMovil == null) {
-            console.log(`Se actualiza fecha Movil: ${date}`)
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: date }, { new: true });
-        } else if (recDat[0].fechaMovil != null) {
-            const fechaMovil = new Date(recDat[0].fechaMovil)
-            var t = (date - fechaMovil);
-            if (t == date.getTime()) {
-                t = 0;
-                console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
-            }
-            console.log(`Tiempo total en MOVIL: ${recDat[0].tiempoTotalMovil + t}`)
-            await RecapData.findOneAndUpdate({ idDiscord: member.id }, { fechaMovil: null, tiempoTotalMovil: recDat[0].tiempoTotalMovil + t }, { new: true });
+
+        if (onChangeClient) {
+            const dispositivos = Object.keys(newPresence.clientStatus);
+            data = actualizarTiemposMovil(dispositivos, recDat, data, date);
         }
+
+        console.log(data);
+        await RecapData.findOneAndUpdate({ idDiscord: member.id }, data);
     }
 }
+function actualizarTiemposMovil(dispositivos, recDat, data, date) {
+    let enMovil = dispositivos.includes('mobile');
+    if (enMovil && recDat.fechaMovil == null) {
+        console.log(`Se actualiza fecha Movil: ${date}`)
+        data.fechaMovil = date;
+    } else if (!enMovil && recDat.fechaMovil != null) {
+        var t = calcularTiempoToAdd(date, recDat.fechaMovil)
+        console.log(`Tiempo total en MOVIL: ${recDat.tiempoTotalMovil + t}`)
+        data.fechaMovil = null;
+        data.tiempoTotalMovil = recDat.tiempoTotalMovil + t;
+
+        data = add_data(data, create_data_inc(recDat.fechaMovil, 'mobile'))
+    }
+    return data;
+}
+
+
 function espiarUsuario(member, oldPresence, newPresence, client, victima) {
     if (victima.onlyAvatar) return;
     let detective = client.users.cache.get('431071887372845061');

@@ -1,6 +1,6 @@
 ﻿const mongoose = require('mongoose');
 const { varOnUpdateMessageEspia, CONFIG, GUILD, PRIVATE_CONFIG } = require('../../config/constantes');
-const { cambiarEstadoConMensaje, calcularTiempoToAdd } = require('../../handlers/funciones');
+const { cambiarEstadoConMensaje, calcularTiempoToAdd, add_data } = require('../../handlers/funciones');
 const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
 const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
@@ -8,12 +8,14 @@ const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwi
 
 module.exports = async client => {
     const guild = client.guilds.cache.get(GUILD.SERVER_PLATY);
+
+    mongoose.set('strictQuery', false); //Para quitar el warning del futuro cambio a eso (comprobar este cambio)
     mongoose.connect(PRIVATE_CONFIG.MONGODB, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
         console.log(`Conectado a la base de datos`);
-        //schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(guild));
+        schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(guild));
         iniciarMonitorizacionesTwitch(client);
     }).catch((err) => {
         console.log("Error al conectar a la base de datos: " + err);
@@ -22,175 +24,139 @@ module.exports = async client => {
     console.log(`Conectado como ${client.user.tag}`);
     client.channels.cache.get('836734022184861706').send('Bot reiniciado');
 
-    comprobarEstados(await RecapData.find(), guild);
+    comprobarEstados(guild);
     cambiarEstadoConMensaje(client);
     varOnUpdateMessageEspia.setUpdate((await client.channels.cache.get(CONFIG.CANAL_CONFIG).messages.fetch(CONFIG.MENSAJE_ESPIA)).content);
 }
 
-
-async function comprobarEstados(recDat, guild) {
-    for (i = 0; i < recDat.length; i++) {
-        const id = recDat[i].idDiscord;
-        var member = null;
-        try {
-            member = await guild.members.fetch(id);
-        } catch {
-            continue;
+async function comprobarEstados(guild) {
+    let allData = await RecapData.find()
+    allData.forEach(async recDat => {
+        const id = recDat.idDiscord;
+        var member = guild.members.cache.get(id);
+        if (!member) {
+            try {
+                member = await guild.members.fetch(id);
+            } catch {
+                return;
+            }
         }
+
         const s = member?.presence?.status || 'offline';
         const cs = member?.presence?.clientStatus || null;
         var dispositivos = [];
         if (cs != null) dispositivos = Object.keys(cs);
-        const date = new Date();
-        if (s == 'online') {
-            if (recDat[i].fechaOnline == null) {
-                if (recDat[i].fechaDnd != null) {
-                    var t = calcularTiempoToAdd(date, recDat[0].fechaDnd);
-                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + t}`)
-                    console.log(`Se actualiza fecha ONLINE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + t, fechaDnd: null }, { new: true });
-                } else if (recDat[i].fechaIdle != null) {
-                    var t = calcularTiempoToAdd(date, recDat[0].fechaIdle);
-                    console.log(`Tiempo total IDLE: ${recDat[0].tiempoTotalIdle + t}`)
-                    console.log(`Se actualiza fecha ONLINE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + t, fechaIdle: null }, { new: true });
-                } else {
-                    console.log(`Se actualiza fecha ONLINE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaOnline: date }, { new: true });
-                }
+        const date = Date.now();
+
+        var data = {}
+        var data_inc = null;
+
+        if (s == 'online' && recDat.fechaOnline == null) {
+            console.log(`Se actualiza fecha ONLINE: ${date}`)
+            data.fechaOnline = date;
+            if (recDat.fechaDnd != null) {
+                var t = calcularTiempoToAdd(date, recDat.fechaDnd);
+                console.log(`Tiempo total DND: ${recDat.tiempoTotalDnd + t}`)
+                data.tiempoTotalDnd = recDat.tiempoTotalDnd + t;
+                data.fechaDnd = null;
+                data_inc = create_data_inc(recDat.fechaDnd, 'dnd');
+            } else if (recDat.fechaIdle != null) {
+                var t = calcularTiempoToAdd(date, recDat.fechaIdle);
+                console.log(`Tiempo total IDLE: ${recDat.tiempoTotalIdle + t}`)
+                data.tiempoTotalIdle = recDat.tiempoTotalIdle + t;
+                data.fechaIdle = null;
+                data_inc = create_data_inc(recDat.fechaIdle, 'idle');
             }
-        } else if (s == 'idle') {
-            if (recDat[i].fechaIdle == null) {
-                if (recDat[i].fechaDnd != null) {
-                    var t = calcularTiempoToAdd(date, recDat[0].fechaDnd);
-                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalDnd + t}`)
-                    console.log(`Se actualiza fecha IDLE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date, tiempoTotalDnd: recDat[0].tiempoTotalDnd + t, fechaDnd: null }, { new: true });
-                } else if (recDat[i].fechaOnline != null) {
-                    var t = calcularTiempoToAdd(date, recDat[0].fechaOnline);
-                    console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + t}`)
-                    console.log(`Se actualiza fecha IDLE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + t, fechaOnline: null }, { new: true });
-                } else {
-                    console.log(`Se actualiza fecha IDLE: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaIdle: date }, { new: true });
-                }
+        } else if (s == 'idle' && recDat.fechaIdle == null) {
+            console.log(`Se actualiza fecha IDLE: ${date}`)
+            data.fechaIdle = date;
+            if (recDat.fechaDnd != null) {
+                var t = calcularTiempoToAdd(date, recDat.fechaDnd);
+                console.log(`Tiempo total DND: ${recDat.tiempoTotalDnd + t}`)
+                data.tiempoTotalDnd = recDat.tiempoTotalDnd + t;
+                data.fechaDnd = null;
+                data_inc = create_data_inc(recDat.fechaDnd, 'dnd');
+            } else if (recDat.fechaOnline != null) {
+                var t = calcularTiempoToAdd(date, recDat.fechaOnline);
+                console.log(`Tiempo total ONLINE: ${recDat.tiempoTotalOnline + t}`)
+                data.tiempoTotalOnline = recDat.tiempoTotalOnline + t;
+                data.fechaOnline = null;
+                data_inc = create_data_inc(recDat.fechaOnline, 'online');
             }
-        } else if (s == 'dnd') {
-            if (recDat[i].fechaDnd == null) {
-                if (recDat[i].fechaIdle != null) {
-                    var t = calcularTiempoToAdd(date, recDat[0].fechaIdle);
-                    console.log(`Tiempo total DND: ${recDat[0].tiempoTotalIdle + t}`)
-                    console.log(`Se actualiza fecha DND: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date, tiempoTotalIdle: recDat[0].tiempoTotalIdle + t, fechaIdle: null }, { new: true });
-                } else if (recDat[i].fechaOnline != null) {
-                    var t = calcularTiempoToAdd(date, recDat[0].fechaOnline);
-                    console.log(`Tiempo total ONLINE: ${recDat[0].tiempoTotalOnline + t}`)
-                    console.log(`Se actualiza fecha Dnd: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date, tiempoTotalOnline: recDat[0].tiempoTotalOnline + t, fechaOnline: null }, { new: true });
-                } else {
-                    console.log(`Se actualiza fecha Dnd: ${date}`)
-                    await RecapData.findOneAndUpdate({ idDiscord: id }, { fechaDnd: date }, { new: true });
-                }
+        } else if (s == 'dnd' && recDat.fechaDnd == null) {
+            console.log(`Se actualiza fecha DND: ${date}`)
+            data.fechaDnd = date;
+            if (recDat.fechaIdle != null) {
+                var t = calcularTiempoToAdd(date, recDat.fechaIdle);
+                console.log(`Tiempo total IDLE: ${recDat.tiempoTotalIdle + t}`)
+                data.tiempoTotalIdle = recDat.tiempoTotalIdle + t;
+                data.fechaIdle = null;
+                data_inc = create_data_inc(recDat.fechaIdle, 'idle');
+            } else if (recDat.fechaOnline != null) {
+                var t = calcularTiempoToAdd(date, recDat.fechaOnline);
+                console.log(`Tiempo total ONLINE: ${recDat.tiempoTotalOnline + t}`)
+                data.tiempoTotalOnline = recDat.tiempoTotalOnline + t;
+                data.fechaOnline = null;
+                data_inc = create_data_inc(recDat.fechaOnline, 'online');
             }
         }
-        if (dispositivos.includes('mobile') && recDat[i].fechaMovil == null) {
+        data = add_data(data, data_inc);
+
+        let enMovil = dispositivos.includes('mobile');
+        if (enMovil && recDat.fechaMovil == null) {
             console.log(`Se actualiza fecha Movil: ${date}`)
-            await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { fechaMovil: date }, { new: true });
-        } else if (recDat[i].fechaMovil != null && !dispositivos.includes('mobile')) {
-            const fechaMovil = new Date(recDat[i].fechaMovil)
-            console.log(`Tiempo total en MOVIL: ${recDat[i].tiempoTotalMovil + (date - fechaMovil)} ${(member.user.username)}`)
-            await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { fechaMovil: null, tiempoTotalMovil: recDat[i].tiempoTotalMovil + (date - fechaMovil) }, { new: true });
+            data.fechaMovil = date;
+        } else if (!enMovil && recDat.fechaMovil != null) {
+            var t = calcularTiempoToAdd(date, recDat.fechaMovil)
+            console.log(`Tiempo total en MOVIL: ${recDat.tiempoTotalMovil + t}`)
+            data.fechaMovil = null;
+            data.tiempoTotalMovil = recDat.tiempoTotalMovil + t;
+            data_inc = create_data_inc(recDat.fechaMovil, 'mobile');
         }
-    }
+        data = add_data(data, data_inc);
+
+        if (Object.keys(data).length != 0)
+            await RecapData.findOneAndUpdate({ idDiscord: id }, data);
+
+    });
 }
 async function recopilarDatosDiarios(guild) {
-    const recDat = await RecapData.find()
-    var i;
+    const allData = await RecapData.find()
+    let offset = 0, found = 0;
+    const promises = [];
     const date = new Date();
-    var offset = 0;
-    for (i = 0; i < recDat.length; i++) {
-        var total;
-        var tiempos;
-        if (recDat[i].mensajes == undefined) {
-            total = 0;
-            tiempos = []
-        } else {
-            total = recDat[i].mensajes.total
-            tiempos = recDat[i].mensajes.tiempos
+    allData.forEach(async recDat => {
+        let total = 0;
+        let tiempos = [];
+        if (recDat.mensajes !== undefined) {
+            total = recDat.mensajes.total;
+            tiempos = recDat.mensajes.tiempos;
         }
-        var mensajesMasFrecuencia = [];
-        if (recDat[i].mensajesMasFrecuencia == undefined) {
-            mensajesMasFrecuencia = [];
-        } else {
-            mensajesMasFrecuencia = recDat[i].mensajesMasFrecuencia;
-        }
+        const mensajesMasFrecuencia = recDat.mensajesMasFrecuencia || [];
         mensajesMasFrecuencia.push({
             mensajesDia: total,
             date: date,
-            tiempoMedio: masFrecuencia(tiempos, 10)
-        })
-        const mensajes = { total: 0, tiempos: [] }
+            tiempoMedio: masFrecuencia(tiempos, 10),
+        });
+        const mensajes = { total: 0, tiempos: [] };
 
-        var tiempoTotalOnline;
-        var tiempoTotalIdle;
-        var tiempoTotalDnd;
-
-        if (recDat[i].fechaOnline != null) {
-            const fechaOnline = new Date(recDat[i].fechaOnline)
-            tiempoTotalOnline = recDat[i].tiempoTotalOnline + (date - fechaOnline)
-            tiempoTotalIdle = recDat[i].tiempoTotalIdle
-            tiempoTotalDnd = recDat[i].tiempoTotalDnd
-        } else if (recDat[i].fechaIdle != null) {
-            const fechaIdle = new Date(recDat[i].fechaIdle)
-            tiempoTotalOnline = recDat[i].tiempoTotalOnline
-            tiempoTotalIdle = recDat[i].tiempoTotalIdle + (date - fechaIdle)
-            tiempoTotalDnd = recDat[i].tiempoTotalDnd
-        } else if (recDat[i].fechaDnd != null) {
-            const fechaDnd = new Date(recDat[i].fechaDnd)
-            tiempoTotalOnline = recDat[i].tiempoTotalOnline
-            tiempoTotalIdle = recDat[i].tiempoTotalIdle
-            tiempoTotalDnd = recDat[i].tiempoTotalDnd + (date - fechaDnd)
-        } else {
-            tiempoTotalOnline = recDat[i].tiempoTotalOnline
-            tiempoTotalIdle = recDat[i].tiempoTotalIdle
-            tiempoTotalDnd = recDat[i].tiempoTotalDnd
-        }
-
-        const tComienzo = {
-            online: tiempoTotalOnline,
-            idle: tiempoTotalIdle,
-            dnd: tiempoTotalDnd
-        }
-        var tPorDia = recDat[i].tiemposPorDia;
-        const day = date.getDay();
-        tPorDia[day] = {
-            online: tComienzo.online - recDat[i].tiemposEstadoComienzoDia.online + tPorDia[day].online,
-            idle: tComienzo.idle - recDat[i].tiemposEstadoComienzoDia.idle + tPorDia[day].idle,
-            dnd: tComienzo.dnd - recDat[i].tiemposEstadoComienzoDia.dnd + tPorDia[day].dnd
-        }
         try {
-            switch ((await guild.members.fetch(recDat[i].idDiscord)).presence?.status) {
-                case 'online':
-                    await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaOnline: date, fechaIdle: null, fechaDnd: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
-                    break;
-                case 'idle':
-                    await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaIdle: date, fechaOnline: null, fechaDnd: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
-                    break;
-                case 'dnd':
-                    await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaDnd: date, fechaIdle: null, fechaOnline: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
-                    break;
-                default:
-                    await RecapData.findOneAndUpdate({ idDiscord: recDat[i].idDiscord }, { mensajesMasFrecuencia: mensajesMasFrecuencia, mensajes: mensajes, tiemposEstadoComienzoDia: tComienzo, tiemposPorDia: tPorDia, fechaDnd: null, fechaIdle: null, fechaOnline: null, tiempoTotalOnline: tiempoTotalOnline, tiempoTotalIdle: tiempoTotalIdle, tiempoTotalDnd: tiempoTotalDnd })
-                    break;
-            }
+            const member = await guild.members.fetch(recDat.idDiscord);
+            promises.push(
+                RecapData.findOneAndUpdate(
+                    { idDiscord: member.id },
+                    { mensajesMasFrecuencia, mensajes },
+                ),
+            );
+            found++;
         } catch {
             offset++;
-            console.log(`Usuario no existe | Total: ${offset}`);
         }
-    }
+    });
+    Promise.all(promises).then(() => {
+        guild.channels.cache.get('836734022184861706').send(`Hoy debería de ser un día nuevo :) || actualizados ${found} documentos (${offset} saltados) `);
+    });
 
-    guild.channels.cache.get('836734022184861706').send(`Hoy debería de ser un día nuevo :) || actualizados ${i - offset} documentos (${offset} saltados) `);
     console.log('Esto se debería de enviar cada día a las 00:00 UTC');
 }
 function masFrecuencia(array, maximo) {
@@ -232,11 +198,10 @@ function masFrecuencia(array, maximo) {
         return [indexMax - 1, maxLength + 1]
     }
     function media(array) {
-        var sum = 0;
-        for (var i = 0; i < array.length; i++) {
-            sum += array[i];
+        if (array.length == 0) {
+            return NaN;
         }
-        return sum / array.length
+        return array.reduce((a, b) => a + b) / array.length;
     }
     const res = subsecuenciaCerosMaxima(dif)
     return media(array.splice(res[0], res[1]))

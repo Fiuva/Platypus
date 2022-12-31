@@ -19,7 +19,9 @@ module.exports = {
     deepEqual,
     getMentionOrUser,
     createRegaloRandom,
-    shuffle
+    shuffle,
+    add_data,
+    create_data_inc
 }
 function shuffle(array) {
     let currentIndex = array.length, randomIndex;
@@ -275,14 +277,59 @@ async function reenviarMensajeTo(msg, canal, refDelAutor = false) {
 }
 
 function calcularTiempoToAdd(date, fecha) {
-    const fecha1 = new Date(fecha)
-    var t = (date - fecha1);
-    if (t == date.getTime()) {
+    if (!fecha) return 0;
+    //const fecha1 = new Date(fecha).getTime()
+    var t = (date - fecha);
+    if (t == date) { //Esto es imposible que pase, pero por si acaso
         t = 0;
         console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
     }
     return t;
 }
+
+function create_data_inc(fecha, status_atributo) {
+    if (fecha == null) return null;
+    let cambios = []
+    let ultimaConexion = new Date(fecha);
+    let dateObject = new Date();
+
+    let tiempoTotal = dateObject.getTime() - ultimaConexion.getTime();
+    let anteriorUltimaHora = new Date(dateObject.getFullYear(), dateObject.getMonth(), dateObject.getDate(), dateObject.getHours());
+    let ultimaHora = Math.min(dateObject.getTime() - anteriorUltimaHora.getTime(), dateObject.getTime() - ultimaConexion.getTime())
+    let horaActual = dateObject.getHours();
+    let diaActual = dateObject.getDay();
+    cambios.push({ dia: diaActual, hora: horaActual, value: ultimaHora })
+    tiempoTotal -= ultimaHora;
+    while (tiempoTotal > 0) {
+        if (horaActual == 0) {
+            horaActual = 23;
+            if (diaActual == 0) diaActual = 6;
+            else diaActual--;
+        } else {
+            horaActual--;
+        }
+        let valor = Math.min(3600000, tiempoTotal);
+        cambios.push({ dia: diaActual, hora: horaActual, value: valor })
+        tiempoTotal -= valor;
+    }
+
+    let data_inc = {}
+    cambios.forEach(cambio => {
+        data_inc[`tiemposPorDia.${cambio.dia}.${cambio.hora}.${status_atributo}`] = cambio.value
+    })
+    return data_inc
+}
+
+function add_data(data, data_to_add, tipo = "$inc") {
+    if (data_to_add != null) {
+        if (data[tipo])
+            Object.assign(data[tipo], data_to_add)
+        else
+            data[tipo] = data_to_add
+    }
+    return data
+}
+
 
 function calcularPrecioVenta(precioCompra) {
     return Math.floor(precioCompra * (1 - 0.15));
