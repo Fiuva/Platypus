@@ -10,6 +10,7 @@ const { onClickMostrarMascotas } = require("../../handlers/botones/funcionesMost
 
 
 module.exports = async (client, button) => {
+    if (button.channelId == '836734022184861706') return;
     if (button.isCommand()) {
         if (button.commandName == 'hola') {
             try {
