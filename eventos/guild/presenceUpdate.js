@@ -7,8 +7,8 @@ const { MascotasData } = require("../../models/mascotas");
 const RecapData = require("../../models/recapData");
 
 module.exports = async (client, oldPresence, newPresence) => {
-    let member = newPresence.member;
-    if (member.guild.id != GUILD.SERVER_PLATY) return;
+    let member = newPresence?.member || oldPresence?.member;
+    if (member?.guild.id != GUILD.SERVER_PLATY) return;
 
     //-------------------RECAP--------------------
     await actualizarTiempos(member, oldPresence, newPresence);
