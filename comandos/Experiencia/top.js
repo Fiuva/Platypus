@@ -125,15 +125,15 @@ function mostrarRankExpTemporada(interaction, temporada) {
         const top3 = [
             {
                 user: await test(0),
-                expTotal: docs[0 + j].expTotal
+                expTotal: docs[0 + j].expTemporadas[`${temporada}`] ?? 0
             },
             {
                 user: await test(1),
-                expTotal: docs[1 + j].expTotal
+                expTotal: docs[1 + j].expTemporadas[`${temporada}`] ?? 0
             },
             {
                 user: await test(2),
-                expTotal: docs[2 + j].expTotal
+                expTotal: docs[2 + j].expTemporadas[`${temporada}`] ?? 0
             }
         ];
 
@@ -150,8 +150,7 @@ function mostrarRankExpTemporada(interaction, temporada) {
         for (var i = 3; i < 10; i++) {
             let posicion = {
                 user: await test(i),
-                cn: calcularNivel(docs[i + j].expTotal),
-                expTotal: docs[i + j].expTotal
+                expTotal: docs[i + j].expTemporadas[`${temporada}`]
             }
             top.addFields(
                 { name: `#${i + 1} :white_small_square: ${posicion.user}`, value: `:black_small_square: Exp: \`${posicion.expTotal}\`` }
