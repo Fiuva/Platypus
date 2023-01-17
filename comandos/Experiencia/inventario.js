@@ -1,26 +1,52 @@
-const { EmbedBuilder } = require("discord.js");
-const { CANAL_TEXTO, MONEDAS } = require("../../config/constantes");
-const { findOrCreateDocument, getMentionOrUser } = require("../../handlers/funciones");
+﻿const { EmbedBuilder } = require("discord.js");
+const { CANAL_TEXTO, MONEDAS, EVENTOS } = require("../../config/constantes");
+const { OPTION } = require("../../handlers/commandOptions");
+const { findOrCreateDocument, getInteractionUser } = require("../../handlers/funciones");
 const Usuario = require("../../models/usuario");
 
-module.exports = {
+const command_data = {
     name: "inventario",
-    aliases: ["inventory", "bag", "monedas"],
-    canales: [CANAL_TEXTO.COMANDOS],
-    description: "Consulta tu inventario :>",
-    run: async (client, message, args) => {
-        var author = getMentionOrUser(message);
+    description: "🔧 Consulta tú inventario y los logros del servidor :>"
+}
+
+module.exports = {
+    ...command_data,
+    channels: [CANAL_TEXTO.COMANDOS],
+    data: {
+        ...command_data,
+        options: [
+            OPTION.USER
+        ]
+    },
+    run: async (client, interaction) => {
+        try {
+            var author = getInteractionUser(interaction)
+        } catch (e) {
+            return interaction.reply({ content: e.message, ephemeral: true });
+        }
         var user = await findOrCreateDocument(author.id, Usuario);
 
-        const mensajeInventario = new EmbedBuilder()
+        var text_banco = `${user.monedas} ${MONEDAS.PC.EMOTE}`
+        if (EVENTOS.NAVIDAD) text_banco += `\n${user.pavos} ${MONEDAS.NAVIDAD.EMOTE} `
+        let mensajeInventario = new EmbedBuilder()
             .setColor(user.color)
             .setTitle('Inventario')
             .setAuthor({ name: author.username, iconURL: author.displayAvatarURL({ format: 'jpg' }) })
             .setDescription(`Contempla el hermoso inventario de ${author.username}`)
-            .addFields(
-                { name: `Banco: `, value: `${user.monedas} ${MONEDAS.PC.EMOTE} \n${user.pavos} ${MONEDAS.NAVIDAD.EMOTE} ` },
-                { name: 'Anillos: ', value: `${user.anillo}` },
-            )
-        message.channel.send({ embeds: [mensajeInventario] });
+
+        if (Object.keys(user.medallas).length > 0) {
+            var texto_medallas = "";
+            for (const [key, value] of Object.entries(user.medallas))
+                texto_medallas = `**Temporada ${key}**: ${value} \n`
+
+            mensajeInventario.addFields({ name: `🎖️Medallas: `, value: texto_medallas });
+        }
+
+        mensajeInventario.addFields(
+            { name: `Banco: `, value: text_banco, inline: true },
+            { name: 'Anillos: ', value: `${user.anillo} 💍`, inline: true },
+        )
+
+        interaction.reply({ embeds: [mensajeInventario] });
     }
 }

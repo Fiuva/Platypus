@@ -1,5 +1,5 @@
 ﻿const mongoose = require('mongoose');
-const { varOnUpdateMessageEspia, CONFIG, GUILD, PRIVATE_CONFIG } = require('../../config/constantes');
+const { varOnUpdateMessageEspia, CONFIG, GUILD, PRIVATE_CONFIG, CANAL_TEXTO } = require('../../config/constantes');
 const { cambiarEstadoConMensaje, calcularTiempoToAdd, add_data, createDataInc } = require('../../handlers/funciones');
 const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
@@ -7,6 +7,9 @@ const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwi
 
 
 module.exports = async client => {
+    //CREAR COMANDOS (/) ---
+    client.application.commands.set(client.commands.filter(comando => "data" in comando).map(c => c.data)).then().catch(console.error);
+    // -----------------
     const guild = client.guilds.cache.get(GUILD.SERVER_PLATY);
 
     mongoose.set('strictQuery', false); //Para quitar el warning del futuro cambio a eso (comprobar este cambio)
@@ -19,10 +22,10 @@ module.exports = async client => {
         iniciarMonitorizacionesTwitch(client);
     }).catch((err) => {
         console.log("Error al conectar a la base de datos: " + err);
-        client.channels.cache.get('836734022184861706').send('ERROR AL CONECTAR LA BASE DE DATOSSS!!!');
+        client.channels.cache.get(CANAL_TEXTO.PRIVATE_PRUEBAS).send('ERROR AL CONECTAR LA BASE DE DATOSSS!!!');
     });
     console.log(`Conectado como ${client.user.tag}`);
-    client.channels.cache.get('836734022184861706').send('Bot reiniciado');
+    client.channels.cache.get(CANAL_TEXTO.PRIVATE_PRUEBAS).send('Bot reiniciado');
 
     comprobarEstados(guild);
     cambiarEstadoConMensaje(client);

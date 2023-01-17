@@ -10,7 +10,9 @@ const usuarioSchema = new Schema({
     pavos: { type: Number, default: 0 },
     anillo: { type: Number, default: 0 },
     color: { type: String, default: '#7289da' },
-    record2048: { type: Number, default: 0 }
+    record2048: { type: Number, default: 0 },
+    medallas: { type: Object, default: {} },
+    expTemporadas: { type: Object, default: {} }
 })
 
 // crear modelo
@@ -18,6 +20,3 @@ const usuarioSchema = new Schema({
 const Usuario = mongoose.model('Usuario', usuarioSchema);
 
 module.exports = Usuario;
-
-
-// quitar exp limite y añadir exp pareja

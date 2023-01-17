@@ -1,23 +1,30 @@
 ﻿const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
 const { PRECIO, CANAL_TEXTO, MONEDAS } = require("../../config/constantes");
 const { abrir } = require("../../handlers/botones/funcionesTienda");
+const { findOrCreateDocument } = require("../../handlers/funciones");
 const { HUEVOS } = require("../../handlers/juegos/funcionesMascotas");
 const { Tipo_Huevo } = require("../../models/mascotas");
 const Usuario = require("../../models/usuario");
 const { ComponentType } = require("../../node_modules/discord-api-types/v10");
 
+const command_data = {
+    name: "tienda",
+    description: `💵 Compra cosas en la tienda con ${MONEDAS.PC.NOMBRE}`
+}
 
 module.exports = {
-    name: "tienda",
+    ...command_data,
     aliases: ["comprar", "shop"],
-    canales: [CANAL_TEXTO.COMANDOS],
-    description: `Compra cosas en la tienda con ${MONEDAS.PC.NOMBRE}`,
-    run: async (client, message, args) => {
-        var userTienda = (await Usuario.find({ idDiscord: message.author.id }))[0];
+    channels: [CANAL_TEXTO.COMANDOS],
+    data: {
+        ...command_data
+    },
+    run: async (client, interaction) => {
+        var userTienda = await findOrCreateDocument(interaction.user.id, Usuario);
         const mensajeTienda = new EmbedBuilder()
             .setColor('#74d600')
             .setTitle('Tienda')
-            .setAuthor({ name: 'Server de Fiuva', iconURL: message.guild.iconURL() })
+            .setAuthor({ name: 'Server de Fiuva', iconURL: interaction.guild.iconURL() })
             .setDescription(`Aquí puedes comprar cosas lechosas \n con las ${MONEDAS.PC.NOMBRE} que has ganado`)
             .setThumbnail('https://images.vexels.com/media/users/3/160439/isolated/preview/cdb5a4ee06fda3e16b51c90caa45c5c1-platypus-pico-de-pato-cola-plana-by-vexels.png')
             .addFields(
@@ -26,19 +33,19 @@ module.exports = {
                 { name: '💰 Rol Millonario', value: `${PRECIO.MILLONARIO} ${MONEDAS.PC.NOMBRE}` }
             )
             .addFields({ name: '\u200B', value: '\u200B' })
-            .setFooter({ text: `${message.author.username} tienes ${userTienda.monedas} ${MONEDAS.PC.NOMBRE}`, iconURL: message.author.displayAvatarURL() });
+            .setFooter({ text: `${interaction.user.username} tienes ${userTienda.monedas} ${MONEDAS.PC.NOMBRE}`, iconURL: interaction.user.displayAvatarURL() });
 
         var bAnillo = new ButtonBuilder()
             .setEmoji('💍')
-            .setCustomId(`tienda_anillo_${message.author.id}`)
+            .setCustomId(`tienda_anillo_${interaction.user.id}`)
             .setStyle('Secondary')
         var bMillonario = new ButtonBuilder()
             .setEmoji('💰')
-            .setCustomId(`tienda_millonario_${message.author.id}`)
+            .setCustomId(`tienda_millonario_${interaction.user.id}`)
             .setStyle('Secondary')
         var bMusicaPro = new ButtonBuilder()
             .setEmoji('🎶')
-            .setCustomId(`tienda_musica-pro_${message.author.id}`)
+            .setCustomId(`tienda_musica-pro_${interaction.user.id}`)
             .setStyle('Secondary')
         if (userTienda.monedas > PRECIO.ANILLO) {
             bAnillo.setStyle('Success');
@@ -72,7 +79,7 @@ module.exports = {
             .addComponents(bAnillo, bMusicaPro, bMillonario)
 
         const components = [rowTienda, new ActionRowBuilder().addComponents(menu)];
-        const m = await message.channel.send({ embeds: [mensajeTienda], components: components });
+        const m = await interaction.reply({ embeds: [mensajeTienda], components: components });
 
         const collector = m.createMessageComponentCollector({
             componentType: ComponentType.SelectMenu
@@ -81,9 +88,12 @@ module.exports = {
         collector.on('collect', async (collected) => {
             const value = collected.values[0];
             try {
-                var userCollect = (await Usuario.find({ idDiscord: collected.user.id }))[0];
+                var userCollect = userTienda;
+                if (collected.user.id != userTienda.idDiscord)
+                    userCollect = await findOrCreateDocument(collected.user.id, Usuario);
+
                 try {
-                    await abrir(Object.values(HUEVOS).find(huevo => huevo.NOMBRE == value), userCollect, message, collected, components);
+                    await abrir(Object.values(HUEVOS).find(huevo => huevo.NOMBRE == value), userCollect, interaction, collected, components);
                 } catch (e) {
                     collected.reply({ ephemeral: true, content: e.message })
                 }

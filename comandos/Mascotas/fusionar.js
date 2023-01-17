@@ -3,35 +3,51 @@ const { CANAL_TEXTO } = require("../../config/constantes");
 const { findOrCreateDocument } = require("../../handlers/funciones");
 const { calcularNivelMascota, equiparMascota } = require("../../handlers/juegos/funcionesMascotas");
 const { MascotasData, Mascota, Animal } = require("../../models/mascotas");
+const { ApplicationCommandOptionType } = require("../../node_modules/discord-api-types/v10");
+
+const command_data = {
+    name: "fusionar",
+    description: `🐹✨ Fusiona 4 mascotas iguales a nivel máximo para obtener una mascota \"evolucionada\"`
+}
 
 module.exports = {
-    name: "fusionar",
-    canales: [CANAL_TEXTO.COMANDOS],
-    description: "Fusiona 4 mascotas iguales a nivel máximo para obtener una mascota \"evolucionada\"",
-    run: async (client, message, args) => {
-        const userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
+    ...command_data,
+    channels: [CANAL_TEXTO.COMANDOS],
+    data: {
+        ...command_data,
+        options: [
+            {
+                name: `mascota`,
+                description: `(necesitas 4 a nivel máximo) | Ejemplo: Rata`,
+                type: ApplicationCommandOptionType.String,
+                required: false
+            }
+        ]
+    },
+    run: async (client, interaction) => {
+        const userMascotas = await findOrCreateDocument(interaction.user.id, MascotasData);
         const mascotasNivel5 = userMascotas.mascotas.filter(mascota => calcularNivelMascota(mascota)[0] == 5);
         if (userMascotas.mascotas.length < 4) {
-            return message.reply(`No tienes suficientes mascotas a nivel máximo`)
+            return interaction.reply({ content: `No tienes suficientes mascotas a nivel máximo`, ephemeral: true })
         } else {
             const arrArreglado = arreglarArray(mascotasNivel5);
             if (Math.max(...arrArreglado.map(o => o.count)) < 4) {
-                return message.reply(`Tienes que tener al menos 4 mascotas iguales a nivel máximo para fusionarlas`);
+                return interaction.reply({ content: `Tienes que tener al menos 4 mascotas iguales a nivel máximo para fusionarlas`, ephemeral: true });
             } else {
                 const mascotasElegibles = arrArreglado.filter(a => a.count >= 4);
                 if (mascotasElegibles.length > 1) {
-                    if (args[0]) {
-                        const mmmm = mascotasElegibles.filter(a => a.animal.nombre.match(new RegExp(args[0], 'ig')));
+                    if (interaction.options.getString('mascota')) {
+                        const mmmm = mascotasElegibles.filter(a => a.animal.nombre.match(new RegExp(interaction.options.getString('mascota'), 'ig')));
                         if (mmmm.length == 1) {
-                            fusionar(mmmm[0], message, userMascotas);
+                            fusionar(mmmm[0], interaction, userMascotas);
                         } else {
-                            return message.reply(`No se ha encontrado esa mascota`)
+                            return interaction.reply({ content: `No se ha encontrado esa mascota`, ephemeral: true });
                         }
                     } else {
-                        return message.reply(`Tienes más de 1 tipo de animal para fusionar, especifica el *nombre de animal* del que quieres fusionar`);
+                        return interaction.reply({ content: `Tienes **más de una especie** de mascota para fusionar, especifica el *nombre de animal* del que quieres fusionar`, ephemeral: true });
                     }
                 } else {
-                    fusionar(mascotasElegibles[0], message, userMascotas);
+                    fusionar(mascotasElegibles[0], interaction, userMascotas);
                 }
             }
         }
@@ -60,9 +76,9 @@ function arreglarArray(array) {
     return arrArreglado;
 }
 
-async function fusionar(mascotaConCount, message, userMascotas) {
+async function fusionar(mascotaConCount, interaction, userMascotas) {
     const mascotas = userMascotas.mascotas;
-    if (mascotaConCount.animal.nombre.endsWith('👑')) return message.reply(`No se pueden fusionar 👑`);
+    if (mascotaConCount.animal.nombre.endsWith('👑')) return interaction.reply({ content: `No se pueden fusionar 👑`, ephemeral: true });
     mascotas.splice(mascotas.findIndex(m => m.animal.nombre === mascotaConCount.animal.nombre && m.exp === mascotaConCount.exp), 1);
     mascotas.splice(mascotas.findIndex(m => m.animal.nombre === mascotaConCount.animal.nombre && m.exp === mascotaConCount.exp), 1);
     mascotas.splice(mascotas.findIndex(m => m.animal.nombre === mascotaConCount.animal.nombre && m.exp === mascotaConCount.exp), 1);
@@ -74,10 +90,10 @@ async function fusionar(mascotaConCount, message, userMascotas) {
         nuevaMascota = new Mascota(new Animal(mascotaConCount.animal.nombre + '✨', mascotaConCount.animal.clase, mascotaConCount.animal.habitat, mascotaConCount.animal.calidad));
     }
     mascotas.push(nuevaMascota);
-    await MascotasData.updateOne({ idDiscord: message.author.id }, { mascotas: mascotas });
+    await MascotasData.updateOne({ idDiscord: interaction.user.id }, { mascotas: mascotas });
 
     try {
-        await equiparMascota(nuevaMascota, userMascotas, message.member);
+        await equiparMascota(nuevaMascota, userMascotas, interaction.member);
     } catch {
 
     }
@@ -86,7 +102,7 @@ async function fusionar(mascotaConCount, message, userMascotas) {
         .setTitle(nuevaMascota.nombre)
         .setColor(nuevaMascota.animal.calidad.color)
         .setDescription(`Se ha fusionado la mascota y se ha equipado`)
-        .setFooter({ text: `Propiedad de: ${message.author.username}`, iconURL: message.author.displayAvatarURL({ format: 'png' }) })
+        .setFooter({ text: `Propiedad de: ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ format: 'png' }) })
         .setTimestamp(new Date());
-    message.reply({ embeds: [embed] });
+    interaction.reply({ embeds: [embed] });
 }

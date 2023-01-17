@@ -21,8 +21,41 @@ module.exports = {
     createRegaloRandom,
     shuffle,
     add_data,
-    createDataInc
+    createDataInc,
+    getCommandOptionsUser,
+    getInteractionUser
 }
+
+function getCommandOptionsUser(interaction) {
+    try {
+        return interaction.options.getUser('usuario')
+    } catch {
+        return null;
+    }
+}
+function getCommandOptionsMember(interaction) {
+    try {
+        return interaction.options.getMember('usuario')
+    } catch {
+        return null;
+    }
+}
+
+function getInteractionUser(interaction, errorIfBaboso = `Yo no tengo perfil :'<`, notSelf = false, returnMember = false) {
+    if (returnMember) {
+        var author = getCommandOptionsMember(interaction) || interaction.member;
+    } else {
+        var author = getCommandOptionsUser(interaction) || interaction.user;
+    }
+    if (notSelf && author.id == interaction.user.id)
+        throw new Error(`No puedes mencionarte a ti mismo`)
+    if (author.id === "836972868055203850")
+        throw new Error(errorIfBaboso)
+    if (!interaction.guild.members.cache.has(author.id))
+        throw new Error(`No puedes jugar con alguien que no está en el server, invítala si quieres jugar: https://discord.gg/NJf5ewazMk`)
+    return author
+}
+
 function shuffle(array) {
     let currentIndex = array.length, randomIndex;
 
@@ -61,12 +94,12 @@ function calcularNivel(experienciaTotal) {
         if (nivel <= 17) {
             calcularExp = calcularExp + (nivel + 1) * AUMENTA_NIVEL;
         } else {
-            calcularExp = calcularExp + (nivel + 17) + AUMENTA_NIVEL * 17;
+            calcularExp = calcularExp + (nivel + 17) + AUMENTA_NIVEL * 13;
         }
         if (calcularExp < expActual + 1) calcularExpAnterior = calcularExp;
     }
     nivel--;
-    return [nivel, calcularExp, calcularExpAnterior];
+    return { nivel, calcularExp, calcularExpAnterior };
 }
 
 function roundRect(ctx, x, y, width, height, radius = 5, fill, stroke = true, sinBordesArriba = false) {
@@ -143,122 +176,107 @@ async function findOrCreateDocument(id, Modelo) {
 }
 
 async function subirExperiencia(message) {
-    try {
-        var user = await Usuario.find({ idDiscord: message.author.id }).exec();
-        var lim = user[0].expTotal;
-        const calcularNivelConst = calcularNivel(lim - 1);
-        var nivel = calcularNivelConst[0] + 1;
-        var calcularExp = calcularNivelConst[1];
+    var user = await findOrCreateDocument(message.author.id, Usuario);
+    var lim = user.expTotal;
+    const calcularNivelConst = calcularNivel(lim - 1);
+    var nivel = calcularNivelConst.nivel + 1;
+    var calcularExp = calcularNivelConst.calcularExp;
 
-        await Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { expTotal: user[0].expTotal + 1 }, { new: true });
-        if (user[0].expTotal + 1 == calcularExp) {
-            modificarMonedas(message.author.id, AUMENTAR_MONEDAS_NIVEL);
-            var embed = new EmbedBuilder();
-            var rol;
-            switch (nivel) {
-                case 2:
-                    rol = message.guild.roles.cache.get('836941894474268763');
-                    message.member.roles.add(rol);
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres una Hez (el singular de heces)`);
-                    embed.setColor(rol.hexColor);
-                    break;
-                case 5:
-                    rol = message.guild.roles.cache.get('836946522293272596');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836941894474268763'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres una Piña normal`);
-                    embed.setColor(rol.hexColor);
-                    break;
-                case 10:
-                    rol = message.guild.roles.cache.get('836946511199207435');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946522293272596'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Lechuzo Lloroso :'<`);
-                    embed.setColor(rol.hexColor);
-                    break;
-                case 20:
-                    rol = message.guild.roles.cache.get('836946476647186499');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946511199207435'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Cerdo Rotatorio`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 40);
-                    break;
-                case 30:
-                    rol = message.guild.roles.cache.get('836946505490366514');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946476647186499'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Lechuzo Inverso :>`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 60);
-                    break;
-                case 40:
-                    rol = message.guild.roles.cache.get('836946499023142992');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946505490366514'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Mamífero Ovíparo`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 100);
-                    break;
-                case 50:
-                    rol = message.guild.roles.cache.get('836946491733573662');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946499023142992'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Ornitorrinco Venenso`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 100);
-                    break;
-                case 60:
-                    rol = message.guild.roles.cache.get('836946484376502282');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946491733573662'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres una Nutria Sudorosa <3`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 150);
-                    break;
-                case 70:
-                    rol = message.guild.roles.cache.get('836946467469918269');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946484376502282'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Castor con sabor a vainilla`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 250);
-                    break;
-                case 80:
-                    rol = message.guild.roles.cache.get('836946433806041138');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946467469918269'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Roedor Profesional`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 500);
-                    break;
-                case 90:
-                    rol = message.guild.roles.cache.get('836946423139794955');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946433806041138'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres un Castor Sudoroso`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 750);
-                    break;
-                case 100:
-                    rol = message.guild.roles.cache.get('836946407725334548');
-                    message.member.roles.add(rol);
-                    message.member.roles.remove(message.guild.roles.cache.get('836946423139794955'));
-                    embed.setDescription(`Felicidades! ${message.author}, ahora eres una Ornitorrinca Lechosa 🤤`);
-                    embed.setColor(rol.hexColor);
-                    modificarMonedas(message.author.id, 1000);
-                    break;
-                default:
-                    embed.setDescription(`Felicidades! ${message.author}, has subido a nivel ${nivel}`);
-                    embed.setColor("#A1F975");
-                    break;
-            }
-            message.channel.send({ embeds: [embed] });
+    await Usuario.findOneAndUpdate({ idDiscord: message.author.id }, { expTotal: user.expTotal + 1 });
+    if (user.expTotal + 1 == calcularExp) {
+        var monedasGanadas = AUMENTAR_MONEDAS_NIVEL;
+        var embed = new EmbedBuilder();
+        var texto = null;
+        var roles = {
+            nuevo: null,
+            viejo: null
+        };
+        switch (nivel) {
+            case 2:
+                roles.nuevo = '836941894474268763';
+                texto = `Felicidades! ${message.author}, ahora eres una increíble **Rata de Agua**`;
+                break;
+            case 5:
+                roles.nuevo = '836946522293272596';
+                roles.viejo = '836941894474268763';
+                texto = `Felicidades! ${message.author}, ahora eres un **Ornitorrinco Bebé**`;
+                break;
+            case 10:
+                roles.nuevo = '836946511199207435';
+                roles.viejo = '836946522293272596';
+                texto = `Felicidades! ${message.author}, ahora eres una **Nutria Principiante** 🦦`;
+                break;
+            case 20:
+                roles.nuevo = '836946476647186499';
+                roles.viejo = '836946511199207435';
+                texto = `Felicidades! ${message.author}, ahora eres un **Ornitorrinco Explorador** 🤠`;
+                monedasGanadas += 40;
+                break;
+            case 30:
+                roles.nuevo = '836946505490366514';
+                roles.viejo = '836946476647186499';
+                texto = `Felicidades! ${message.author}, ahora eres un **Cazador de Ornitorrincos** 🗡️`;
+                monedasGanadas += 60;
+                break;
+            case 40:
+                roles.nuevo = '836946499023142992';
+                roles.viejo = '836946505490366514';
+                texto = `Felicidades! ${message.author}, ahora eres un **Tigre Compacto** 🐯`;
+                monedasGanadas += 100;
+                break;
+            case 50:
+                roles.nuevo = '836946491733573662';
+                roles.viejo = '836946499023142992';
+                texto = `Felicidades! ${message.author}, ahora eres un **Lechuza Nocturna** 🦉`;
+                monedasGanadas += 100;
+                break;
+            case 60:
+                roles.nuevo = '836946484376502282';
+                roles.viejo = '836946491733573662';
+                texto = `Felicidades! ${message.author}, ahora eres una **Ornitorrinco Lloroso** :<`;
+                monedasGanadas += 150;
+                break;
+            case 70:
+                roles.nuevo = '836946467469918269';
+                roles.viejo = '836946484376502282';
+                texto = `Felicidades! ${message.author}, ahora eres un **Ornitorrinco Maestro**`;
+                monedasGanadas += 250;
+                break;
+            case 80:
+                roles.nuevo = '836946433806041138';
+                roles.viejo = '836946467469918269';
+                texto = `Felicidades! ${message.author}, ahora eres un **Ornitorrinca divina**`;
+                monedasGanadas += 500;
+                break;
+            case 90:
+                roles.nuevo = '836946423139794955';
+                roles.viejo = '836946433806041138';
+                texto = `Felicidades! ${message.author}, ahora eres un **Ornitorrinco Místico**`;
+                monedasGanadas += 750;
+                break;
+            case 100:
+                roles.nuevo = '836946407725334548';
+                roles.viejo = '836946423139794955';
+                texto = `Felicidades! ${message.author}, ahora eres una **Ornitorrinco de Leyenda**`;
+                monedasGanadas += 1000;
+                break;
+            default:
+                texto = `Felicidades! ${message.author}, has subido a nivel ${nivel}`;
+                embed.setColor("#A1F975");
+                break;
         }
-    } catch {
-        await new Usuario({ idDiscord: message.author.id, expTotal: 0 }).save();
+        embed.setDescription(texto);
+        modificarMonedas(message.author.id, monedasGanadas);
+        if (roles.nuevo) {
+            let roles_cache = message.guild.roles.cache;
+            let nuevo_rol = roles_cache.get(roles.nuevo);
+            message.member.roles.add(nuevo_rol);
+            embed.setColor(nuevo_rol.hexColor);
+            if (roles.viejo)
+                message.member.roles.remove(roles_cache.get(roles.viejo));
+        }
+        message.channel.send({ embeds: [embed] });
     }
-
 }
 
 async function modificarMonedas(id, sumar, user = null, navidad = false) {

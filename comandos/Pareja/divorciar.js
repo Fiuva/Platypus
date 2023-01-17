@@ -1,39 +1,53 @@
-const { ButtonBuilder, ActionRowBuilder } = require("discord.js");
+const { ButtonBuilder, ActionRowBuilder, EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO, PRECIO, MONEDAS } = require("../../config/constantes");
+const { findOrCreateDocument } = require("../../handlers/funciones");
 const Usuario = require("../../models/usuario");
 
-module.exports = {
+const command_data = {
     name: "divorciar",
-    canales: [CANAL_TEXTO.GENERAL],
+    description: `💍 Sirve para divorciarse :<`
+}
+
+module.exports = {
+    ...command_data,
+    channels: [CANAL_TEXTO.GENERAL],
     aliases: ["divorcio", "divorciarse"],
-    description: "Sirve para divorciarse :<",
-    run: async (client, message, args) => {
+    data: {
+        ...command_data
+    },
+    run: async (client, interaction) => {
+        var user = await findOrCreateDocument(interaction.user.id, Usuario);
+        if (user.parejaId == '0')
+            return interaction.reply({ content: `${interaction.user} no estás casad@`, ephemeral: true });
+
+        if (user.monedas < PRECIO.DIVORCIO)
+            return interaction.reply({ content: `${interaction.user} necesitas ${PRECIO.DIVORCIO} ${MONEDAS.PC.NOMBRE} para divorciarte` });
+
+        const botonSi = new ButtonBuilder()
+            .setLabel('Si')
+            .setCustomId(`pareja_divorciar-si_${interaction.user.id}`)
+            .setStyle('Success')
+        const botonNo = new ButtonBuilder()
+            .setLabel('No')
+            .setCustomId(`pareja_divorciar-no_${interaction.user.id}`)
+            .setStyle('Danger')
+        const botonesRow = new ActionRowBuilder()
+            .addComponents(botonSi, botonNo)
+
         try {
-            var user = await Usuario.find({ idDiscord: message.author.id }).exec();
-            if (user[0].parejaId === '0') {
-                message.channel.send(`${message.author} no estás casad@`);
-            } else {
-                if (user[0].monedas < PRECIO.DIVORCIO) {
-                    message.channel.send(`${message.author} necesitas ${PRECIO.DIVORCIO} ${MONEDAS.PC.NOMBRE} para divorciarte`);
-                } else {
-                    const botonSi = new ButtonBuilder()
-                        .setLabel('Si')
-                        .setCustomId(`pareja_divorciar-si_${message.author.id}`)
-                        .setStyle('Success')
-                    const botonNo = new ButtonBuilder()
-                        .setLabel('No')
-                        .setCustomId(`pareja_divorciar-no_${message.author.id}`)
-                        .setStyle('Danger')
-                    const botonesRow = new ActionRowBuilder()
-                        .addComponents(botonSi, botonNo)
-                    message.channel.send({
-                        content: `${message.author} seguro que te quieres divorciar de ${await message.guild.members.fetch(user[0].parejaId)} y dejar a los 7 niños abandonados? \n (${PRECIO.DIVORCIO} ${MONEDAS.PC.NOMBRE})`,
-                        components: [botonesRow]
-                    });
-                }
-            }
+            var pareja = await interaction.guild.members.fetch(user.parejaId);
         } catch {
-            message.reply("Error :<")
+            var pareja = null;
         }
+        let embed = new EmbedBuilder()
+            .setDescription(`¿Vas dejar a los 7 niños abandonados?`)
+            .addFields({ name: `Precio del divorcio`, value: `${PRECIO.DIVORCIO} ${MONEDAS.PC.EMOTE}` })
+            .setColor(user.color)
+
+        interaction.reply({
+            content: `¿${interaction.user} seguro que te quieres **divorciar** de ${pareja?.user ?? '\`pareja perdida\`'}?`,
+            embeds: [embed],
+            components: [botonesRow]
+        });
     }
 }

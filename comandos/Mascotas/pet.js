@@ -1,28 +1,69 @@
 ﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO } = require("../../config/constantes");
-const { findOrCreateDocument } = require("../../handlers/funciones");
+const { OPTION } = require("../../handlers/commandOptions");
+const { findOrCreateDocument, getInteractionUser } = require("../../handlers/funciones");
 const { calcularNivelMascota, buscarMejorMascota, mascotaEquipada } = require("../../handlers/juegos/funcionesMascotas");
 const { MascotasData } = require("../../models/mascotas");
+const { ApplicationCommandOptionType } = require("../../node_modules/discord-api-types/v10");
+
+const command_data = {
+    name: "mascota",
+    description: `🐹 Para ver las estadísticas de tú mascota equipada o cualquier otra`
+}
 
 module.exports = {
-    name: "mascota",
+    ...command_data,
     aliases: ["pet"],
-    canales: [CANAL_TEXTO.COMANDOS],
-    description: "Para ver las estadísticas de la mascota equipada o cualquier otra",
-    run: async (client, message, args) => {
-        const userMascotas = await findOrCreateDocument(message.author.id, MascotasData);
-        if (!args[0]) {
-            if (userMascotas.refRolMascota == '0') return message.reply('No tienes ninguna mascota equipada ni has especificado la mascota');
-            if (!message.guild.roles.cache.has(userMascotas.refRolMascota)) return message.reply("Base de datos no sincronizada, por favor equipese de nuevo una mascota o especifique la mascota que quiere ver");
+    channels: [CANAL_TEXTO.COMANDOS],
+    data: {
+        ...command_data,
+        options: [
+            {
+                name: `mascota`,
+                description: `Ejemplo: Rata`,
+                type: ApplicationCommandOptionType.String,
+                required: false
+            },
+            OPTION.USER
+        ]
+    },
+    run: async (client, interaction) => {
+        try {
+            var author = getInteractionUser(interaction, `Yo no tengo mascotas :\'<'`)
+        } catch (e) {
+            return interaction.reply({ content: e.message, ephemeral: true });
+        }
+        let self = author.id == interaction.user.id;
+        const userMascotas = await findOrCreateDocument(author.id, MascotasData);
+        const args = interaction.options.getString('mascota');
+        if (!args) {
+            if (userMascotas.refRolMascota == '0') {
+                if (self) var res = 'No tienes ninguna mascota equipada ni has especificado la mascota';
+                else var res = `${author} no tiene ninguna mascota equipada o no has especificado la mascota`;
+                return interaction.reply({
+                    content: res,
+                    ephemeral: true
+                });
+            }
+            if (!interaction.guild.roles.cache.has(userMascotas.refRolMascota)) {
+                if (self) var res = "Error, tienes que tener la mascota equipada, vuélvete a equipar la mascota </equipar:0>"
+                else var res = `Error, ${author} tiene que re-equiparse la mascota o tenerla equipada`
+                return interaction.reply({
+                    content: res,
+                    ephemeral: true
+                });
+            }
             try {
-                await message.channel.send({ embeds: [embedMascota(mascotaEquipada(userMascotas), message)] });
+                await interaction.reply({ embeds: [embedMascota(mascotaEquipada(userMascotas), author)] });
             } catch {
-                message.reply(`Error, no tienes mascota equipada o vuelve a equipártela`);
+                if (self) var res = `Error, no tienes mascota equipada o vuelve a equipártela (</equipar:0>)`
+                else var res = `Error, ${author} no tiene la mascota equipada o vuelve a se la tiene que volver a equipar`
+                interaction.reply({ content: res, ephemeral: true });
             }
             return;
         }
         try {
-            var mascotaElegida = buscarMejorMascota(userMascotas, args.join(' '));
+            var mascotaElegida = buscarMejorMascota(userMascotas, args);
             if (Array.isArray(mascotaElegida)) {
                 var arrArreglado = mascotaElegida[0];
                 var resultado = '';
@@ -32,18 +73,17 @@ module.exports = {
                 var embed = new EmbedBuilder()
                     .setTitle("Elige una mascota")
                     .setDescription(resultado)
-                return message.reply({ content: mascotaElegida[1], embeds: [embed] })
+                return interaction.reply({ content: mascotaElegida[1], embeds: [embed], ephemeral: true });
             } else {
-                message.channel.send({ embeds: [embedMascota(mascotaElegida, message)] });
+                interaction.reply({ embeds: [embedMascota(mascotaElegida, author)] });
             }
         } catch (e) {
-            message.reply(e.message);
+            interaction.reply({ content: e.message, ephemeral: true });
         }
-
     }
 }
 
-function embedMascota(mascota, message) {
+function embedMascota(mascota, author) {
     const nivel = calcularNivelMascota(mascota);
     var embed = new EmbedBuilder()
         .setTitle(mascota.animal.nombre)
@@ -54,7 +94,7 @@ function embedMascota(mascota, message) {
             { name: `Calidad: `, value: mascota.animal.calidad.nombre, inline: true }
         )
         .setColor(mascota.animal.calidad.color)
-        .setFooter({ text: `Propiedad de: ${message.author.username}`, iconURL: message.author.displayAvatarURL({ format: 'png' }) })
+        .setFooter({ text: `Propiedad de: ${author.username}`, iconURL: author.displayAvatarURL({ format: 'png' }) })
         .setTimestamp(new Date());
     if (mascota.nombre != mascota.animal.nombre) embed.setAuthor({ name: mascota.nombre })
     return embed;

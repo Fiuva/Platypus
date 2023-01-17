@@ -3,15 +3,22 @@ const { CANAL_TEXTO, MONEDAS } = require("../../config/constantes");
 const { HUEVOS } = require("../../handlers/juegos/funcionesMascotas");
 const { Calidad, Tipo_Huevo } = require("../../models/mascotas");
 
+const command_data = {
+    name: "huevos",
+    description: `🥚 Mira los huevos disponibles en la tienda y sus probabilides`
+}
 
 module.exports = {
-    name: "huevos",
+    ...command_data,
     aliases: ["eggs", "probabilidades"],
-    canales: [CANAL_TEXTO.COMANDOS],
-    description: "Mira los huevos disponibles en la tienda y sus probabilides",
-    run: async (client, message, args) => {
+    channels: [CANAL_TEXTO.COMANDOS],
+    data: {
+        ...command_data
+    },
+    run: async (client, interaction) => {
         var embed = new EmbedBuilder()
             .setTitle(`Huevos disponibles ✨`)
+            .setColor("#E1DFA8")
 
         Object.values(HUEVOS).forEach(huevo => {
             if (!huevo.TIENDA) return;
@@ -26,7 +33,7 @@ module.exports = {
             })
         })
 
-        message.channel.send({ embeds: [embed] });
+        interaction.reply({ embeds: [embed] });
     }
 }
 

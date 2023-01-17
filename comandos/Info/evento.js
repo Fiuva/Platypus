@@ -1,22 +1,34 @@
 ﻿const { EmbedBuilder } = require("discord.js");
-const { CANAL_TEXTO, MONEDAS } = require("../../config/constantes");
+const { CANAL_TEXTO, MONEDAS, EVENTOS } = require("../../config/constantes");
+
+const command_data = {
+    name: "evento",
+    description: `🎟️ Eventos del servidor`
+}
 
 module.exports = {
-    name: "evento",
+    ...command_data,
     aliases: ["event", "eventhelp"],
-    canales: [CANAL_TEXTO.COMANDOS],
-    description: "Sirve para ver los comandos disponibles",
-    run: async (client, message, args) => {
-        const mensajeAyuda = new EmbedBuilder()
-            .setColor('#A0E6FE')
-            .setTitle('❄️ EVENTO DE NAVIDAD ❄️')
-            .setDescription(`Evento activo hasta... que acaben mis exámenes xDDD`)
-            .addFields(
-                { name: 'Nuevas monedas exclusivas', value: `Gana **${MONEDAS.NAVIDAD.NOMBRE} ${MONEDAS.NAVIDAD.EMOTE}** abriendo regalos que aparecen en el chat cuando está activo` },
-                { name: 'Mascotas navideñas exclusivas', value: `Compra nuevos huevos con **${MONEDAS.NAVIDAD.NOMBRE} ${MONEDAS.NAVIDAD.EMOTE}** y consigue las **10** nuevas mascotas` }
-            )
-            .setFooter({ text: `Pronto habrá más` })
+    channels: [CANAL_TEXTO.COMANDOS],
+    data: {
+        ...command_data
+    },
+    run: async (client, interaction) => {
 
-        message.channel.send({ embeds: [mensajeAyuda] });
+        if (EVENTOS.NAVIDAD) {
+            const mensajeAyuda = new EmbedBuilder()
+                .setColor('#A0E6FE')
+                .setTitle('❄️ EVENTO DE NAVIDAD ❄️')
+                .setDescription(`Evento activo hasta... que acaben mis exámenes xDDD`)
+                .addFields(
+                    { name: 'Nuevas monedas exclusivas', value: `Gana **${MONEDAS.NAVIDAD.NOMBRE} ${MONEDAS.NAVIDAD.EMOTE}** abriendo regalos que aparecen en el chat cuando está activo` },
+                    { name: 'Mascotas navideñas exclusivas', value: `Compra nuevos huevos con **${MONEDAS.NAVIDAD.NOMBRE} ${MONEDAS.NAVIDAD.EMOTE}** y consigue las **10** nuevas mascotas` }
+                )
+                .setFooter({ text: `Pronto habrá más` })
+
+            interaction.reply({ embeds: [mensajeAyuda] });
+        } else {
+            interaction.reply({ embeds: [new EmbedBuilder().setDescription(`Actualmente no hay eventos activos`)] })
+        }
     }
 }

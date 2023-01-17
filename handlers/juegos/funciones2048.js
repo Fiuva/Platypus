@@ -1,6 +1,7 @@
 ﻿const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require('discord.js');
 const Usuario = require('../../models/usuario');
 const { ButtonStyle } = require('../../node_modules/discord-api-types/v10');
+const { findOrCreateDocument } = require('../funciones');
 
 
 function nuevoNumeroAzar2048(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33) {
@@ -534,103 +535,103 @@ var onClick2048 = function (button) {
             break;
     }
 }
-var iniciar2048 = async function (message) {
-    const user = await Usuario.find({ idDiscord: message.author.id }).exec()
+var iniciar2048 = async function (interaction) {
+    const user = await findOrCreateDocument(interaction.user.id, Usuario);
     const b00 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_00_${message.author.id}_0`)
+        .setCustomId(`2048_00_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b01 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_01_${message.author.id}_0`)
+        .setCustomId(`2048_01_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b02 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_02_${message.author.id}_0`)
+        .setCustomId(`2048_02_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b03 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_03_${message.author.id}_0`)
+        .setCustomId(`2048_03_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b10 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_10_${message.author.id}_0`)
+        .setCustomId(`2048_10_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b11 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_11_${message.author.id}_0`)
+        .setCustomId(`2048_11_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b12 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_12_${message.author.id}_0`)
+        .setCustomId(`2048_12_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b13 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_13_${message.author.id}_0`)
+        .setCustomId(`2048_13_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b20 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_20_${message.author.id}_0`)
+        .setCustomId(`2048_20_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b21 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_21_${message.author.id}_0`)
+        .setCustomId(`2048_21_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b22 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_22_${message.author.id}_0`)
+        .setCustomId(`2048_22_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b23 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_23_${message.author.id}_0`)
+        .setCustomId(`2048_23_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b30 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_30_${message.author.id}_0`)
+        .setCustomId(`2048_30_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b31 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_31_${message.author.id}_0`)
+        .setCustomId(`2048_31_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b32 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_32_${message.author.id}_0`)
+        .setCustomId(`2048_32_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const b33 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`2048_33_${message.author.id}_0`)
+        .setCustomId(`2048_33_${interaction.user.id}_0`)
         .setStyle('Secondary')
         .setDisabled(true)
     const bIz = new ButtonBuilder()
         .setLabel('←')
-        .setCustomId(`2048_bIz_${message.author.id}_0`)
+        .setCustomId(`2048_bIz_${interaction.user.id}_0`)
         .setStyle('Primary')
     const bAr = new ButtonBuilder()
         .setLabel('↑')
-        .setCustomId(`2048_bAr_${message.author.id}_0`)
+        .setCustomId(`2048_bAr_${interaction.user.id}_0`)
         .setStyle('Primary')
     const bAb = new ButtonBuilder()
         .setLabel('↓')
-        .setCustomId(`2048_bAb_${message.author.id}_0`)
+        .setCustomId(`2048_bAb_${interaction.user.id}_0`)
         .setStyle('Primary')
     const bDe = new ButtonBuilder()
         .setLabel('→')
-        .setCustomId(`2048_bDe_${message.author.id}_0`)
+        .setCustomId(`2048_bDe_${interaction.user.id}_0`)
         .setStyle('Primary')
     nuevoNumeroAzar2048(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33);
     nuevoNumeroAzar2048(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33);
@@ -644,20 +645,19 @@ var iniciar2048 = async function (message) {
         .addComponents(b30, b31, b32, b33)
     var rC = new ActionRowBuilder()
         .addComponents(bIz, bAr, bAb, bDe)
-    message.channel.send({
-        content: `Puntuación: 0 | Record personal: ${user[0].record2048}`,
+    interaction.reply({
+        content: `Puntuación: 0 | Record personal: ${user.record2048}`,
         components: [r0, r1, r2, r3, rC]
     })
-
 }
-var rank2048 = async function (message) {
-    Usuario.find({}).sort({ record2048: -1 }).exec(async function (err, docs) {
+var rank2048 = async function (interaction) {
+    Usuario.find().sort({ record2048: -1 }).exec(async (err, docs) => {
         var j = 0;
         var top = new EmbedBuilder()
-            .setTitle(message.guild.name)
-            .setThumbnail(message.guild.iconURL())
+            .setTitle(interaction.guild.name)
+            .setThumbnail(interaction.guild.iconURL())
             .setColor('#FFCB00')
-            .setDescription(`Este es el top de 10 personas en el !2048 :sparkles:`)
+            .setDescription(`Este es el top de 10 personas en el **</2048:0>** :sparkles:`)
             .addFields(
                 { name: `:first_place: :white_small_square: ${await test(0)}`, value: `:black_small_square: Puntuación: \`${docs[0 + j].record2048}\`` },
                 { name: `:second_place: :white_small_square: ${await test(1)}`, value: `:black_small_square: Puntuación: \`${docs[1 + j].record2048}\`` },
@@ -669,10 +669,10 @@ var rank2048 = async function (message) {
             )
         }
 
-        message.channel.send({ embeds: [top] });
+        interaction.reply({ embeds: [top] });
         async function test(i) {
             try {
-                let member = await message.guild.members.fetch(docs[i + j].idDiscord)
+                let member = await interaction.guild.members.fetch(docs[i + j].idDiscord)
                 return member.user.username;
             } catch {
                 j++;

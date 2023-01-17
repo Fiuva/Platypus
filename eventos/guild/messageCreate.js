@@ -1,6 +1,6 @@
 ﻿const { EmbedBuilder, ChannelType } = require("discord.js");
 const antiSpam = require("../../config/antiSpam");
-const { CANAL_TEXTO, GUILD } = require("../../config/constantes");
+const { CANAL_TEXTO, GUILD, EVENTOS } = require("../../config/constantes");
 const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument, createRegaloRandom } = require("../../handlers/funciones");
 const { subirExpMascota, subirExperienciaMascotaPareja } = require("../../handlers/juegos/funcionesMascotas");
 const { MonitorizarTwitch, getIDbyName, getToken, mostrarStatsTwitch, funcionStart, funcionStop, calcularPlan, getNamebyID, buscarTwitch } = require("../../models/monitorizarTwitch");
@@ -119,9 +119,11 @@ module.exports = async (client, message) => {
     if (!message.content.startsWith(config.prefix)) { //MENSAJES SIN PREFIJO
         //SUBIR EXP -------------------- 
         if (!talkedRecently.has(message.author.id) && message.author.id != ultimoIdQueHabla) {
-            if (Math.random() < 0.05) {
-                const [embed, components] = createRegaloRandom();
-                message.channel.send({ embeds: [embed], components: [components] });
+            if (EVENTOS.NAVIDAD) {
+                if (Math.random() < 0.05) {
+                    const [embed, components] = createRegaloRandom();
+                    message.channel.send({ embeds: [embed], components: [components] });
+                }
             }
             ultimoIdQueHabla = message.author.id;
             talkedRecently.add(message.author.id);
@@ -144,6 +146,8 @@ module.exports = async (client, message) => {
             if (command.roles && !command.roles?.some(r => message.member.roles.cache.map(r => r.id).includes(r)))
                 return message.reply('No tienes autorización para hacer eso');
 
+            if ("data" in command)
+                return message.reply({ content: 'Ahora los comandos son con "/"', ephemeral: true });
             command.run(client, message, args);
         } else {
             return console.log("No existe este comando")

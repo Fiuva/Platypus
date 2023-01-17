@@ -1,34 +1,37 @@
-const Canvas = require('canvas');
+﻿const Canvas = require('canvas');
 const { AttachmentBuilder } = require('discord.js');
 const { CANAL_TEXTO } = require('../../config/constantes');
-const { findOrCreateDocument } = require('../../handlers/funciones');
-const { msg, calcularNivel, roundRect } = require(`${process.cwd()}/handlers/funciones.js`);
+const { OPTION } = require('../../handlers/commandOptions');
+const { findOrCreateDocument, getInteractionUser } = require('../../handlers/funciones');
+const { calcularNivel, roundRect } = require(`${process.cwd()}/handlers/funciones.js`);
 const Usuario = require(`${process.cwd()}/models/usuario`);
 Canvas.registerFont('./config/Fonts/Impacted.ttf', { family: "Impacted" });
 
+const command_data = {
+    name: "rank",
+    description: "🔧 Mira tu nivel de experiencia"
+}
 
 module.exports = {
-    name: "rank",
+    ...command_data,
     aliases: ["perfil", "nivel"],
-    description: "Mira tu nivel de experiencia",
-    canales: [CANAL_TEXTO.COMANDOS],
-    run: async (client, message, args) => {
-        var username;
-        var user;
-        if (msg(message, 1, 2)) {
-            if (message.mentions.users.first().id == "836972868055203850") return message.reply(`Yo no tengo perfil :'<`);
-            user = await findOrCreateDocument(message.mentions.users.first().id, Usuario);
-            username = message.mentions.users.first();
+    channels: [CANAL_TEXTO.COMANDOS],
+    data: {
+        ...command_data,
+        options: [
+            OPTION.USER
+        ]
+    },
+    run: async (client, interaction) => {
+        try {
+            var author = getInteractionUser(interaction)
+        } catch (e) {
+            return interaction.reply({ content: e.message, ephemeral: true });
         }
-        else {
-            user = await findOrCreateDocument(message.author.id, Usuario);
-            username = message.author;
-        }
+        const user = await findOrCreateDocument(author.id, Usuario);
+
         var expActual = user.expTotal;
-        const calcularNivelConst = calcularNivel(expActual);
-        var nivel = calcularNivelConst[0];
-        var calcularExp = calcularNivelConst[1];
-        var calcularExpAnterior = calcularNivelConst[2];
+        const { nivel, calcularExp, calcularExpAnterior } = calcularNivel(expActual);
 
         const canvas = Canvas.createCanvas(1920, 480);
         const ctx = canvas.getContext('2d');
@@ -51,19 +54,14 @@ module.exports = {
         //_____________________________________________
         ctx.font = 'bold 100px "Impacted"';
         ctx.fillStyle = '#ffffffaa';
-        var usersNotInServer = 0;
-        const ordenado = await Usuario.find({}).sort({ expTotal: -1 }).exec();
-        for (i = 0; i < ordenado.length; i++) {
-            if (ordenado[i].idDiscord == username.id) {
-                ctx.fillText(`#${i + 1 - usersNotInServer}`, 1030, 370);
-                break;
-            } else if (message.guild.members.cache.get(ordenado[i].idDiscord) == undefined) {
-                usersNotInServer++;
-            }
-        }
+        let filteredUsers = await Usuario.find().sort({ expTotal: -1 });
+        filteredUsers = filteredUsers.filter(user => interaction.member.guild.members.cache.get(user.idDiscord) !== undefined)
+        const userIndex = filteredUsers.findIndex(user => user.idDiscord === author.id)
+        ctx.fillText(`#${userIndex + 1}`, 1030, 370)
+
         ctx.font = 'bold 100px Arial';
         ctx.fillStyle = color;
-        ctx.fillText(`${username.username}`, 450, 150);
+        ctx.fillText(`${author.username}`, 450, 150);
         var mensajePareja;
         var y;
         if (user.parejaId == '0') {
@@ -73,7 +71,7 @@ module.exports = {
         } else {
             ctx.font = '55px Arial';
             try {
-                let member = await message.guild.members.fetch(user.parejaId);
+                let member = await interaction.guild.members.fetch(user.parejaId);
                 mensajePareja = member.user.username;
             } catch {
                 mensajePareja = 'PERDIDA'
@@ -88,7 +86,7 @@ module.exports = {
             ctx.fillStyle = '#ffffffaa';
             ctx.fillText(`D\u00edas: ${diasCasados}`, 450, 350);
 
-            if (message.guild.members.cache.get(user.parejaId) == undefined) {
+            if (interaction.guild.members.cache.get(user.parejaId) == undefined) {
                 ctx.fillStyle = '#000000';
             } else if (diasCasados >= 150) {
                 ctx.fillStyle = '#37FF19'; //esmeralda
@@ -119,14 +117,14 @@ module.exports = {
         ctx.fillText(`${expActual}/${calcularExp}`, 1597 - ctx.measureText(`${expActual}/${calcularExp}`).width / 2 + 20, 385);
         ctx.font = 'italic 80px Arial';
         ctx.fillStyle = color + '88';
-        ctx.fillText(`${username.tag.replace(username.username, '')}`, 440 + ctx.measureText(username.username).width * 1.4, 151.5);
+        ctx.fillText(`${author.tag.replace(author.username, '')}`, 440 + ctx.measureText(author.username).width * 1.4, 151.5);
         ctx.beginPath();
         ctx.arc(240, 240, 125, 0, Math.PI * 2, true); //ref1: 1700, 250, 200
         ctx.closePath();
         ctx.clip();
-        const avatar = await Canvas.loadImage(username.displayAvatarURL({ extension: 'jpg' }));
+        const avatar = await Canvas.loadImage(author.displayAvatarURL({ extension: 'jpg' }));
         ctx.drawImage(avatar, 115, 115, 250, 250); //ref1: 1500, 50, 400, 400
         const attachment = new AttachmentBuilder(canvas.toBuffer(), 'imagenRank.png');
-        message.channel.send({ files: [attachment] });
+        interaction.reply({ files: [attachment] });
     }
 }

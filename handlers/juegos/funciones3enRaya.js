@@ -1,8 +1,11 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
+const { getInteractionUser } = require('../funciones');
 
-var cambiarTurno = function (button, b00, b01, b02, b10, b11, b12, b20, b21, b22, content) {
+var cambiarTurno = function (button, b00, b01, b02, b10, b11, b12, b20, b21, b22) {
     var id = button.customId.split('_');
     var idCambio;
+    var content;
     if (id[4] == id[2]) {
         idCambio = id[3];
         content = `Turno de ${button.message.guild.members.cache.get(id[3])}`
@@ -77,22 +80,23 @@ var comprobarSiWin = function (button, content) {
     var p20 = b20.data.custom_id.slice(-1);
     var p21 = b21.data.custom_id.slice(-1);
     var p22 = b22.data.custom_id.slice(-1);
+    let embed = new EmbedBuilder(button.message.embeds[0]);
     if (p00 != '0') {
         if (p00 == p01 && p01 == p02) {
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('01', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            return `${button.user} ha ganado!!`;
+            return haGanado()
         } else if (p00 == p10 && p10 == p20) {
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('10', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            return `${button.user} ha ganado!!`;
+            return haGanado();
         } else if (p00 == p11 && p11 == p22) {
             editButtons3enRaya('00', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            return `${button.user} ha ganado!!`;
+            return haGanado();
         }
     }
     if (p11 != '0') {
@@ -100,12 +104,12 @@ var comprobarSiWin = function (button, content) {
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('10', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('12', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            return `${button.user} ha ganado!!`;
+            return haGanado();
         } else if (p11 == p01 && p01 == p21) {
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('01', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('21', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            return `${button.user} ha ganado!!`;
+            return haGanado();
         }
     }
     if (p20 != '0') {
@@ -113,12 +117,12 @@ var comprobarSiWin = function (button, content) {
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('21', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            return `${button.user} ha ganado!!`;
+            return haGanado();
         } else if (p20 == p11 && p11 == p02) {
             editButtons3enRaya('20', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('11', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            return `${button.user} ha ganado!!`;
+            return haGanado();
         }
     }
     if (p22 != '0') {
@@ -126,15 +130,24 @@ var comprobarSiWin = function (button, content) {
             editButtons3enRaya('22', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('12', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
             editButtons3enRaya('02', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-            return `${button.user} ha ganado!!`;
+            return haGanado();
         }
     }
     if (p01 != '0' && p02 != '0' && p10 != '0' && p12 != '0' && p21 != '0' && p22 != '0' && p20 != '0' && p00 != '0' && p11 != '0') {
         editButtons3enRaya('3', button, b00, b01, b02, b10, b11, b12, b20, b21, b22, 3)
-        return `Tremendo empate`;
+        embed.setTitle(`Empate :<`);
+        embed.setColor("#C1E736");
     }
-    return content
+    return { embed, content }
+
+    function haGanado() {
+        embed.setTitle(`${button.user.username} ha ganado!!`);
+        embed.setColor("#30A6EF")
+        content = 'Fin de la partida'
+        return { embed, content }
+    }
 }
+
 function editButtons3enRaya(id1, button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo) {
     var label, style;
     if (tipo == 1) {
@@ -216,66 +229,76 @@ var tresEnRaya = function (button) {
     var b22 = button.message.components[2].components[2];
     var id = button.customId.split('_');
     var tipo = button.user.id == id[2] ? 1 : 2;
-    var content;
     if (id[5] == '0' && id[4] == button.user.id) {
         editButtons3enRaya(id[1], button, b00, b01, b02, b10, b11, b12, b20, b21, b22, tipo)
-        content = cambiarTurno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22, content);
-        content = comprobarSiWin(button, content);
+        var content = cambiarTurno(button, b00, b01, b02, b10, b11, b12, b20, b21, b22);
+        var embedAndContent = comprobarSiWin(button, content);
         const aRow = new ActionRowBuilder()
             .addComponents(b00, b01, b02)
         const bRow = new ActionRowBuilder()
             .addComponents(b10, b11, b12)
         const cRow = new ActionRowBuilder()
             .addComponents(b20, b21, b22)
-        button.deferUpdate().catch(e => null);
-        button.message.edit({
-            content: content,
+
+        button.update({
+            content: embedAndContent.content,
+            embeds: [embedAndContent.embed],
             components: [aRow, bRow, cRow]
         })
 
     } else {
-        button.deferUpdate().catch(e => null);
+        button.deferUpdate();
     }
 }
-var tres = async function (message) {
-    if (message.mentions.users.first() == undefined || message.mentions.users.first() == message.author || message.mentions.users.first().bot) return message.channel.send(`${message.author} menciona con quien quieres jugar`);
+var tres = async function (interaction) {
     const a = Math.random() * 2 << 0
-    const turno3enRayaID = [message.author.id, message.mentions.users.first().id][a]
+    let jugadores;
+    try {
+        jugadores = {
+            player1: interaction.user,
+            player2: getInteractionUser(interaction, `Lo siento, no puedo jugar contigo :<`, true)
+        }
+    } catch (e) {
+        interaction.reply({ content: e.message, ephemeral: true });
+        return;
+    }
+
+    const turno3enRayaID = [jugadores.player1, jugadores.player2][a]
     var b00 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_00_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_00_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var b01 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_01_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_01_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var b02 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_02_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_02_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var b10 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_10_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_10_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var b11 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_11_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_11_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var b12 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_12_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_12_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var b20 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_20_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_20_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var b21 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_21_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_21_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var b22 = new ButtonBuilder()
         .setLabel(' ')
-        .setCustomId(`3enRaya_22_${message.author.id}_${message.mentions.users.first().id}_${turno3enRayaID}_0`)
+        .setCustomId(`3enRaya_22_${jugadores.player1.id}_${jugadores.player2.id}_${turno3enRayaID.id}_0`)
         .setStyle('Secondary')
     var aRow = new ActionRowBuilder()
         .addComponents(b00, b01, b02)
@@ -283,8 +306,14 @@ var tres = async function (message) {
         .addComponents(b10, b11, b12)
     var cRow = new ActionRowBuilder()
         .addComponents(b20, b21, b22)
-    await message.channel.send({
-        content: `Empieza ${message.guild.members.cache.get(turno3enRayaID)}`,
+
+    let embed = new EmbedBuilder()
+        .setDescription(`${jugadores.player1.toString()} vs ${jugadores.player2.toString()}`)
+        .setColor("#5BDC69")
+
+    await interaction.reply({
+        content: `Empieza -> ${turno3enRayaID}`,
+        embeds: [embed],
         components: [aRow, bRow, cRow]
     })
 }

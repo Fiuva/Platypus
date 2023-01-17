@@ -2,16 +2,23 @@
 const { CANAL_TEXTO, MONEDAS, PRECIO } = require("../../config/constantes");
 const { calcularPrecioVenta } = require("../../handlers/funciones");
 
-module.exports = {
+const command_data = {
     name: "vender",
+    description: `💷 Vende cosas de la tienda`
+}
+
+module.exports = {
+    ...command_data,
     aliases: ["sell"],
-    canales: [CANAL_TEXTO.COMANDOS],
-    description: "Vende cosas de la tienda",
-    run: async (client, message, args) => {
+    channels: [CANAL_TEXTO.COMANDOS],
+    data: {
+        ...command_data
+    },
+    run: async (client, interaction) => {
         const mensajeTienda = new EmbedBuilder()
             .setColor('#AB0101')
             .setTitle('Vender')
-            .setAuthor({ name: 'Server de Fiuva', iconURL: message.guild.iconURL() })
+            .setAuthor({ name: 'Server de Fiuva', iconURL: interaction.guild.iconURL() })
             .setDescription(`Aquí puedes vender maravillas \n y recuperar ${MONEDAS.PC.NOMBRE}`)
             .setThumbnail('https://images.vexels.com/media/users/3/160439/isolated/preview/cdb5a4ee06fda3e16b51c90caa45c5c1-platypus-pico-de-pato-cola-plana-by-vexels.png')
             .addFields(
@@ -21,18 +28,18 @@ module.exports = {
             )
         const botonAnillo = new ButtonBuilder()
             .setEmoji('💍')
-            .setCustomId(`vender_anillo_${message.author.id}`)
+            .setCustomId(`vender_anillo_${interaction.user.id}`)
             .setStyle('Danger')
         const botonMusica = new ButtonBuilder()
             .setEmoji('🎶')
-            .setCustomId(`vender_musica-pro_${message.author.id}`)
+            .setCustomId(`vender_musica-pro_${interaction.user.id}`)
             .setStyle('Danger')
         const botonMillonario = new ButtonBuilder()
             .setEmoji('💰')
-            .setCustomId(`vender_millonario_${message.author.id}`)
+            .setCustomId(`vender_millonario_${interaction.user.id}`)
             .setStyle('Danger')
         const row = new ActionRowBuilder()
             .addComponents(botonAnillo, botonMusica, botonMillonario)
-        message.channel.send({ embeds: [mensajeTienda], components: [row] });
+        interaction.reply({ embeds: [mensajeTienda], components: [row] });
     }
 }

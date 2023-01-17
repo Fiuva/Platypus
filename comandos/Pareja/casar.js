@@ -1,41 +1,84 @@
-const { ButtonBuilder, ActionRowBuilder } = require("discord.js");
+const { ButtonBuilder, ActionRowBuilder, EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO } = require("../../config/constantes");
+const { OPTION } = require("../../handlers/commandOptions");
+const { getInteractionUser, findOrCreateDocument } = require("../../handlers/funciones");
 const Usuario = require("../../models/usuario");
 
-module.exports = {
+const command_data = {
     name: "casar",
-    canales: [CANAL_TEXTO.GENERAL],
+    description: `💍 Sirve para formar una bonita pareja :))`
+}
+
+module.exports = {
+    ...command_data,
+    channels: [CANAL_TEXTO.GENERAL],
     aliases: ["casarse"],
-    description: "Sirve para formar una bonita pareja :))",
-    run: async (client, message, args) => {
-        if (message.mentions.users.size == 0) return message.channel.send(`${message.author} menciona a quien quieres enviar tu solicitud para casarte`);
-        if (message.mentions.users.first().id == message.author.id) return message.channel.send(`${message.author} perdone, no le permito casarse con una persona tan fea`);
-        try {
-            var user = await Usuario.find({ idDiscord: message.author.id }).exec();
-            var toUser = await Usuario.find({ idDiscord: message.mentions.users.first().id }).exec();
-            if (user[0].parejaId == '0' && toUser[0].parejaId == '0' && user[0].anillo >= 2) {
-                const casar = new ButtonBuilder()
-                    .setLabel('Casarse')
-                    .setCustomId(`pareja_casar_${message.mentions.users.first().id}_${message.author.id}`)
-                    .setStyle('Success')
-                    .setEmoji('✅')
-                const rechazar = new ButtonBuilder()
-                    .setLabel('Rechazar')
-                    .setCustomId(`pareja_rechazar_${message.mentions.users.first().id}_${message.author.id}`)
-                    .setStyle('Danger')
-                    .setEmoji('❌')
-                const casarRow = new ActionRowBuilder()
-                    .addComponents(casar, rechazar)
-                message.channel.send({ content: `${message.author.username} se quiere casar con ${message.mentions.users.first().username}, aceptas ${message.mentions.users.first()}?`, components: [casarRow] });
-            } else if (user[0].parejaId != '0') {
-                message.channel.send(`${message.author} ya tienes a ${await message.guild.members.fetch(user[0].parejaId)} como pareja, para poder casarte con otra persona divórciate antes`);
-            } else if (toUser[0].parejaId != '0') {
-                message.reply(`${message.mentions.users.first().username} ya tiene pareja`);
-            } else {
-                message.channel.send(`${message.author} necesitas dos anillos para casarte, ve a la tienda`);
+    data: {
+        ...command_data,
+        options: [
+            {
+                ...OPTION.USER,
+                required: true
             }
-        } catch {
-            message.channel.send(`${message.author} no puedo acceder a los datos de esa persona, intentelo más tarde :'D`);
+        ]
+    },
+    run: async (client, interaction) => {
+        try {
+            var parejaUser = getInteractionUser(interaction, `No te puedes casar conmigo :c`, true);
+        } catch (e) {
+            return interaction.reply({ content: e.message, ephemeral: true });
+        }
+
+        var user = await findOrCreateDocument(interaction.user.id, Usuario);
+        var toUser = await findOrCreateDocument(parejaUser.id, Usuario);
+
+        if (user.parejaId != '0') {
+            try {
+                var parejaName = (await interaction.guild.members.fetch(user.parejaId)).displayName
+            } catch {
+                var parejaName = '\`pareja perdida\`'
+            }
+
+            let embed = new EmbedBuilder()
+                .setDescription(`${interaction.user.username} ya tienes a ${parejaName} como pareja, para poder casarte con otra persona **divórciate antes** -> </divoraciar:0>`)
+                .setColor("#E93E3E")
+
+            return interaction.reply({ embeds: [embed] });
+        }
+
+        if (toUser.parejaId != '0') {
+            let embed = new EmbedBuilder()
+                .setDescription(`${parejaUser.username} ya tiene pareja`)
+                .setColor("#E93E3E")
+            return interaction.reply({ embeds: [embed] });
+        }
+
+        if (user.anillo >= 2) {
+            const casar = new ButtonBuilder()
+                .setLabel('Casarse')
+                .setCustomId(`pareja_casar_${parejaUser.id}_${interaction.user.id}`)
+                .setStyle('Success')
+                .setEmoji('✅')
+            const rechazar = new ButtonBuilder()
+                .setLabel('Rechazar')
+                .setCustomId(`pareja_rechazar_${parejaUser.id}_${interaction.user.id}`)
+                .setStyle('Danger')
+                .setEmoji('❌')
+            const casarRow = new ActionRowBuilder()
+                .addComponents(casar, rechazar)
+            let embed = new EmbedBuilder()
+                .setDescription(`${interaction.user.username} se quiere casar con ${parejaUser.username}`)
+                .setColor(user.color)
+            interaction.reply({
+                content: `Aceptas ${parejaUser}?`,
+                embeds: [embed],
+                components: [casarRow]
+            });
+        } else {
+            let embed = new EmbedBuilder()
+                .setDescription(`${interaction.user.username} necesitas dos anillos para casarte, ve a la tienda (<#${CANAL_TEXTO.COMANDOS}> -> </tienda:0>)`)
+                .setColor("#1D1D1D")
+            interaction.reply({ embeds: [embed] });
         }
     }
 }

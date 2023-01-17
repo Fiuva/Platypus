@@ -1,29 +1,67 @@
-const { EmbedBuilder } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { inspect } = require("util");
 const { ROL } = require("../../config/constantes");
 const CONSTANTES = require("../../config/constantes");
 const RecapData = require("../../models/recapData");
 const Usuario = require("../../models/usuario");
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require("../../node_modules/discord-api-types/v10");
+
+const command_data = {
+    name: "eval",
+    description: `👑 Sirve para evaluar código`
+}
 
 module.exports = {
-    name: "eval",
+    ...command_data,
     roles: [ROL.ADMIN],
-    description: "Comando para evaluar codigo (solo para el admin)",
-    run: async (client, message, args) => {
-        if (!args.length) return;
-
+    data: {
+        ...command_data,
+        options: [
+            {
+                name: `código`,
+                description: `Escribe el código para evaluar`,
+                type: ApplicationCommandOptionType.String,
+                required: true
+            },
+            {
+                name: 'consola',
+                description: 'Modo de respuesta de la consola',
+                type: ApplicationCommandOptionType.String,
+                required: false,
+                choices: [
+                    {
+                        name: '🔴 Mostrar',
+                        value: 'mostrar'
+                    },
+                    {
+                        name: '🟡 Ocultar',
+                        value: 'ocultar'
+                    },
+                    {
+                        name: '🟢 Omitir',
+                        value: 'omitir'
+                    }
+                ]
+            }
+        ],
+        defaultMemberPermissions: PermissionFlagsBits.Administrator
+    },
+    run: async (client, interaction) => {
+        let codigo = interaction.options.getString('código');
+        let modo_consola = interaction.options.getString('consola') ?? 'ocultar';
         try {
-            const evaluado = await eval(args.join(' ').replace('-nd', ''));
-            enviarSinLimite(inspect(evaluado), message, args.includes('-nd'), '#26FF00');
+            const evaluado = await eval(codigo);
+            enviarSinLimite(inspect(evaluado), interaction, modo_consola, '#26FF00');
 
         } catch (e) {
-            enviarSinLimite(e.toString(), message, args.includes('-nd'), '#FF0000');
+            enviarSinLimite(e.toString(), interaction, modo_consola, '#FF0000');
         }
     }
 }
 
-function enviarSinLimite(s, message, nd, color) {
-    if (nd) return;
+async function enviarSinLimite(s, interaction, modo_consola, color) {
+    if (modo_consola == 'omitir')
+        return interaction.reply({ embeds: [new EmbedBuilder().setDescription('Hecho').setColor(color)], ephemeral: true });
     const embeds = [];
     var n = 1983;
     for (var i = 0; i < s.length; i += n) {
@@ -38,6 +76,6 @@ function enviarSinLimite(s, message, nd, color) {
     embeds[0].setTitle('Debug');
     embeds[embeds.length - 1].setTimestamp(new Date());
     for (var i = 0; i < embeds.length; i += 3) {
-        message.channel.send({ embeds: embeds.slice(i, i + 3) });
+        interaction.reply({ embeds: embeds.slice(i, i + 3), ephemeral: modo_consola == 'ocultar' });
     }
 }

@@ -53,7 +53,7 @@ var onClickTienda = async function (button) {
     }
 }
 
-async function abrir(huevo, userUsuario, message, collected, components) {
+async function abrir(huevo, userUsuario, interaction, collected, components) {
     let monedas, tipo_huevo, nombreMonedas;
     if (huevo.TIPO == Tipo_Huevo.Navidad) {
         monedas = userUsuario.pavos;
@@ -128,7 +128,7 @@ async function abrir(huevo, userUsuario, message, collected, components) {
             .setLabel('Equipar ahora')
             .setCustomId(`equiparAhora_${mascotaQueSale.refUltimoRol}_${userMascotas.idDiscord}`)
             .setStyle('Success')
-        await message.channel.send({ content: `${user} has comprado un huevo :>`, embeds: [embed], components: [new ActionRowBuilder().addComponents(botonEquipar)] });
+        await interaction.reply({ content: `${user} has comprado un huevo :>`, embeds: [embed], components: [new ActionRowBuilder().addComponents(botonEquipar)] });
         try {
             await collected.deferUpdate();
             collected.editReply({ embeds: collected.message.embeds, components: components })

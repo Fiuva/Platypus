@@ -2,7 +2,8 @@
 const Usuario = require("../../models/usuario");
 const { modificarMonedas, findOrCreateDocument } = require("../funciones");
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
-const { ButtonStyle } = require("../../node_modules/discord-api-types/v10");
+const { ButtonStyle, PermissionFlagsBits } = require("../../node_modules/discord-api-types/v10");
+const { EVENTOS } = require("../../config/constantes");
 
 const HUEVOS = {
     HUEVO_COMUN: {
@@ -59,7 +60,7 @@ const HUEVOS = {
         },
         PRECIO: 500,
         EMOJI: '❄️',
-        TIENDA: true
+        TIENDA: EVENTOS.NAVIDAD
     }
 }
 
@@ -159,7 +160,7 @@ async function subirExpMascota(message, member = message.member) {
 }
 async function subirExperienciaMascotaPareja(message) {
     try {
-        let memberPareja = await message.guild.members.fetch((await Usuario.find({ idDiscord: message.author.id }))[0].parejaId);
+        let memberPareja = await message.guild.members.fetch((await findOrCreateDocument(message.author.id, Usuario)).parejaId);
         subirExpMascota(message, memberPareja);
     } catch {
     }
@@ -180,12 +181,7 @@ async function reEquipar(userMascotas, member) {
     let mascotaElegida = mascotaEquipada(userMascotas);
     if (!mascotaElegida) return console.log(`${member.user.username} no tiene mascota equipada`);
     try {
-        member.guild.roles.create({
-            name: nombreRol(mascotaElegida),
-            color: mascotaElegida.animal.calidad.color,
-            mentionable: false,
-            reason: `${userMascotas.idDiscord} equipa una mascota`
-        }).then(async role => {
+        crearRolMascota(mascotaElegida, member).then(async role => {
             userMascotas = await findOrCreateDocument(userMascotas.idDiscord, MascotasData);
             if (member.roles.cache.has(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
             await MascotasData.findOneAndUpdate({ idDiscord: userMascotas.idDiscord, "mascotas.refUltimoRol": userMascotas.refRolMascota }, { refRolMascota: role.id, "mascotas.$.refUltimoRol": role.id });
@@ -197,7 +193,7 @@ async function reEquipar(userMascotas, member) {
                     console.log(`Error al asignarte el rol`)
                 })
             try {
-                let memberPareja = await member.guild.members.fetch((await Usuario.find({ idDiscord: userMascotas.idDiscord }))[0].parejaId);
+                let memberPareja = await member.guild.members.fetch((await findOrCreateDocument(userMascotas.idDiscord, Usuario)).parejaId);
                 let parejaMascotas = await findOrCreateDocument(memberPareja.id, MascotasData);
                 await MascotasData.findOneAndUpdate({ idDiscord: memberPareja.id }, { refRolMascotaP: role.id });
                 if (memberPareja.presence == null || memberPareja.presence.status == "offline") return;
@@ -352,12 +348,7 @@ async function equiparMascota(mascotaElegida, userMascotas, member) {
     if (!member.presence || member.presence.status == 'offline') throw new Error('No puedes equipar mascotas estando \"offline\"');
 
     await desequipar(member.guild, userMascotas);
-    member.guild.roles.create({
-        name: nombreRol(mascotaElegida),
-        color: mascotaElegida.animal.calidad.color,
-        mentionable: false,
-        reason: `${member.user.username} equipa una mascota`
-    }).then(async role => {
+    crearRolMascota(mascotaElegida, member).then(async role => {
         userMascotas = await findOrCreateDocument(userMascotas.idDiscord, MascotasData);
         if (member.roles.cache.has(userMascotas.refRolMascota)) return console.log("Mascota ya equipada después de crear el rol");
         await MascotasData.findOneAndUpdate({ idDiscord: userMascotas.idDiscord, "mascotas.refUltimoRol": userMascotas.mascotas.find(filtro).refUltimoRol }, { refRolMascota: role.id, "mascotas.$.refUltimoRol": role.id });
@@ -488,4 +479,43 @@ function mostrarMascotas(userMascotas, author, idAuthorMessage, deNavidad) {
             .addComponents(b)
         return rowBotones;
     }
+}
+
+function crearRolMascota(mascotaElegida, member) {
+    const calidadMascota = mascotaElegida.animal.calidad;
+    var permisos = [];
+    switch (calidadMascota.nombre) {
+        case Calidad.Legendario.nombre:
+            permisos = [
+                PermissionFlagsBits.AttachFiles,
+                PermissionFlagsBits.EmbedLinks,
+                PermissionFlagsBits.AddReactions
+            ]
+            break;
+        case Calidad.Ultra_raro.nombre:
+            permisos = [
+                PermissionFlagsBits.AttachFiles,
+                PermissionFlagsBits.EmbedLinks,
+                PermissionFlagsBits.AddReactions
+            ]
+            break;
+        case Calidad.Raro.nombre:
+            permisos = [
+                PermissionFlagsBits.EmbedLinks,
+                PermissionFlagsBits.AddReactions
+            ]
+            break;
+        case Calidad.Especial.nombre:
+            permisos = [
+                PermissionFlagsBits.EmbedLinks
+            ]
+            break;
+    }
+    return member.guild.roles.create({
+        name: nombreRol(mascotaElegida),
+        color: mascotaElegida.animal.calidad.color,
+        mentionable: false,
+        permissions: permisos,
+        reason: `${member.id} equipa una mascota`
+    })
 }

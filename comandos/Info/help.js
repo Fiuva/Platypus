@@ -1,24 +1,51 @@
 ﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO, MONEDAS, CANAL_VOZ } = require("../../config/constantes");
-const config = require('../../config/config.json')
+const config = require('../../config/config.json');
+const { ApplicationCommandOptionType } = require("../../node_modules/discord-api-types/v10");
+
+const command_data = {
+    name: "help",
+    description: `❓ Sirve para ver los comandos disponibles`
+}
 
 module.exports = {
-    name: "ayuda",
+    ...command_data,
     aliases: ["help", "comandos", "commands"],
-    canales: [CANAL_TEXTO.COMANDOS, CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
-    description: "Sirve para ver los comandos disponibles",
-    run: async (client, message, args) => {
-        let channelId = message.channel.id;
-        if (channelId == CANAL_TEXTO.COMANDOS) {
-            mostrarHelpComandos(client.commands, message);
-        } else if (channelId == CANAL_TEXTO.MUSICA || channelId == CANAL_VOZ.MUSICA) {
-            mostrarHelpMusica(client.commands, message);
+    channels: [CANAL_TEXTO.COMANDOS, CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
+    data: {
+        ...command_data,
+        options: [
+            {
+                name: `general`,
+                description: command_data.description,
+                type: ApplicationCommandOptionType.Subcommand
+            },
+            {
+                name: 'mascotas',
+                description: command_data.description,
+                type: ApplicationCommandOptionType.Subcommand
+            }
+        ]
+    },
+    run: async (client, interaction) => {
+        let channelId = interaction.channelId;
+        switch (interaction.options.getSubcommand()) {
+            case 'general':
+                if (channelId == CANAL_TEXTO.COMANDOS) {
+                    mostrarHelpComandos(client.commands, interaction);
+                } else if (channelId == CANAL_TEXTO.MUSICA || channelId == CANAL_VOZ.MUSICA) { //Poner otro case cuando se arregle la musica
+                    mostrarHelpMusica(client.commands, interaction);
+                }
+                break;
+            case 'mascotas':
+                mostrarHelpComandosMascotas(client.commands, interaction);
+                break
         }
+
     }
 }
 
-function mostrarHelpComandos(comandos, message) {
-    const p = config.prefix;
+function mostrarHelpComandos(comandos, interaction) {
     const mensajeAyuda = new EmbedBuilder()
         .setColor('#FEA0FA')
         .setTitle('COMANDOS')
@@ -26,24 +53,45 @@ function mostrarHelpComandos(comandos, message) {
         .setDescription(`Veo que necesitas ayuda`)
         .addFields(
             { name: `#〔🦦〕comandos-platypus`, value: `- - - - - - - - - - - - - - - - - -` },
-            { name: `${p}${comandos.get('rank').name}`, value: comandos.get('rank').description, inline: true },
-            { name: `${p}${comandos.get('color').name}`, value: comandos.get('color').description, inline: true },
-            { name: `${p}${comandos.get('top').name}`, value: comandos.get('top').description },
-            { name: `${p}${comandos.get('tienda').name}`, value: comandos.get('tienda').description },
-            { name: `${p}${comandos.get('vender').name}`, value: comandos.get('vender').description },
-            { name: `${p}${comandos.get('inventario').name}`, value: comandos.get('inventario').description, inline: true },
-            { name: `${p}${comandos.get('rank2048').name}`, value: comandos.get('rank2048').description },
+            { name: `</${comandos.get('rank').name}:0>`, value: comandos.get('rank').description, inline: true },
+            { name: `</${comandos.get('color').name}:0>`, value: comandos.get('color').description, inline: true },
+            { name: `</${comandos.get('top').name}:0>`, value: comandos.get('top').description },
+            { name: `</${comandos.get('evento').name}:0>`, value: comandos.get('evento').description },
+            { name: `</${comandos.get('tienda').name}:0>`, value: comandos.get('tienda').description },
+            { name: `</${comandos.get('vender').name}:0>`, value: comandos.get('vender').description },
+            { name: `</${comandos.get('inventario').name}:0>`, value: comandos.get('inventario').description, inline: true },
+            { name: `</${comandos.get('rank2048').name}:0>`, value: comandos.get('rank2048').description },
             { name: '#〔💬〕general', value: `- - - - - - - - - - - -` },
-            { name: `${p}${comandos.get('casar').name}`, value: comandos.get('casar').description, inline: true },
-            { name: `${p}${comandos.get('divorciar').name}`, value: comandos.get('divorciar').description, inline: true },
-            { name: `${p}${comandos.get('3').name}`, value: comandos.get('3').description },
-            { name: `${p}${comandos.get('2048').name}`, value: comandos.get('2048').description, inline: true },
+            { name: `</${comandos.get('casar').name}:0>`, value: comandos.get('casar').description, inline: true },
+            { name: `</${comandos.get('divorciar').name}:0>`, value: comandos.get('divorciar').description, inline: true },
+            { name: `</${comandos.get('3').name}:0>`, value: comandos.get('3').description },
+            { name: `</${comandos.get('2048').name}:0>`, value: comandos.get('2048').description, inline: true },
             { name: 'Nivel', value: `Gana **experiencia** siendo activo en el chat para conseguir ${MONEDAS.PC.NOMBRE} \n y consigue **roles** en función de tu nivel` },
         );
-    message.channel.send({ embeds: [mensajeAyuda] });
+    interaction.reply({ embeds: [mensajeAyuda] });
 }
 
-function mostrarHelpMusica(comandos, message) {
+function mostrarHelpComandosMascotas(comandos, interaction) {
+    const mensajeAyuda = new EmbedBuilder()
+        .setColor('#A0FEFE')
+        .setTitle('COMANDOS DE MASCOTAS')
+        .setAuthor({ name: 'PLATYPUS', iconURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Adopt_Me%21_Wordmark.svg/1280px-Adopt_Me%21_Wordmark.svg.png' })
+        .setDescription(`Veo que necesitas ayuda, compra **huevos** en la **</tienda:0>**`)
+        .addFields(
+            { name: `#〔🦦〕comandos-platypus`, value: `- - - - - - - - - - - - - - - - - -` },
+            { name: `</${comandos.get('equipar').name}:0>`, value: comandos.get('equipar').description, inline: true },
+            { name: `</${comandos.get('nombre').name}:0>`, value: comandos.get('nombre').description, inline: true },
+            { name: `</${comandos.get('mascota').name}:0>`, value: comandos.get('mascota').description, inline: true },
+            { name: `</${comandos.get('mascotas').name}:0>`, value: comandos.get('mascotas').description },
+            { name: `</${comandos.get('intercambiar').name}:0>`, value: comandos.get('intercambiar').description },
+            { name: `</${comandos.get('fusionar').name}:0>`, value: comandos.get('fusionar').description },
+            { name: `</${comandos.get('huevos').name}:0>`, value: comandos.get('huevos').description },
+            { name: 'Niveles de mascota', value: `Sube de **nivel** a tu mascota equipada (*y a la de tu pareja*) para ganar ${MONEDAS.PC.NOMBRE} *hablando con gente*` }
+        );
+    interaction.reply({ embeds: [mensajeAyuda] });
+}
+
+function mostrarHelpMusica(comandos, interaction) {
     const p = config.prefix;
     const mensajeAyuda = new EmbedBuilder()
         .setColor('#FEA0FA')
@@ -65,5 +113,5 @@ function mostrarHelpMusica(comandos, message) {
             { name: `${p}${comandos.get('mezclar').name}`, value: comandos.get('mezclar').description },
             { name: `${p}${comandos.get('filtro').name}`, value: comandos.get('filtro').description },
         );
-    message.channel.send({ embeds: [mensajeAyuda] });
+    interaction.reply({ embeds: [mensajeAyuda] });
 }
