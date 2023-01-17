@@ -100,10 +100,7 @@ async function abrir(huevo, userUsuario, interaction, collected, components) {
         .setTimestamp(new Date());
 
     await MascotasData.findOneAndUpdate({ idDiscord: userMascotas.idDiscord }, { $push: { mascotas: mascotaQueSale } });
-    if (tipo_huevo == Tipo_Huevo.Normal)
-        await modificarMonedas(userMascotas.idDiscord, -huevo.PRECIO, userUsuario);
-    else
-        await modificarMonedas(userMascotas.idDiscord, -huevo.PRECIO, userUsuario, true);
+    await modificarMonedas(userMascotas.idDiscord, -huevo.PRECIO, userUsuario, tipo_huevo == Tipo_Huevo.Navidad);
 
     var opts = {
         searchTerm: mascotaQueSale.nombre,
@@ -128,10 +125,9 @@ async function abrir(huevo, userUsuario, interaction, collected, components) {
             .setLabel('Equipar ahora')
             .setCustomId(`equiparAhora_${mascotaQueSale.refUltimoRol}_${userMascotas.idDiscord}`)
             .setStyle('Success')
-        await interaction.reply({ content: `${user} has comprado un huevo :>`, embeds: [embed], components: [new ActionRowBuilder().addComponents(botonEquipar)] });
+        await collected.reply({ content: `${user} has comprado un huevo :>`, embeds: [embed], components: [new ActionRowBuilder().addComponents(botonEquipar)] });
         try {
-            await collected.deferUpdate();
-            collected.editReply({ embeds: collected.message.embeds, components: components })
+            interaction.editReply({ embeds: collected.message.embeds, components: components })
         } catch { }
     });
 }
