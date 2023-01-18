@@ -116,6 +116,7 @@ module.exports = async (client, message) => {
     //------------------------------------
     antiSpam.message(message);
 
+    if (message.channel.id == CANAL_TEXTO.CARCEL) return;
     if (!message.content.startsWith(config.prefix)) { //MENSAJES SIN PREFIJO
         //SUBIR EXP -------------------- 
         if (!talkedRecently.has(message.author.id) && message.author.id != ultimoIdQueHabla) {
