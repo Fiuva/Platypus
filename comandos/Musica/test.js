@@ -9,7 +9,7 @@ module.exports = {
     run: async (client, message, args) => {
         let vc = message.member.voice.channel;
         if (!vc) {
-            return message.reply({ content: ":warning: **- Vous devez être dans un salon vocal pour pouvoir jouer de la musique !**", ephemeral: true });
+            return console.log("No estás en un canal de voz");
         }
 
         const stream = ytdl("https://www.youtube.com/watch?v=2Vv-BfVoq4g", {
