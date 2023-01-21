@@ -35,7 +35,8 @@ module.exports = (client, Discord) => {
             }),
             new SoundCloudPlugin(),
             new YtDlpPlugin()
-        ]
+        ],
+        streamType: 1
     });
 
     client.distube.on("playSong", (queue, song) => {
