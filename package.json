@@ -27,7 +27,8 @@
     "mongoose": "^6.7.5",
     "node-fetch": "^3.2.10",
     "node-schedule": "^2.1.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "sodium-native": "^4.0.0"
   },
   "keywords": [
     "bot"
