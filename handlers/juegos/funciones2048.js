@@ -288,7 +288,7 @@ async function comprobarFinJuego(button, b00, b01, b02, b03, b10, b11, b12, b13,
     const transpuesta = valores[0].map((_, colIndex) => valores.map(row => row[colIndex]))
     if (!(!valores[0].every(noTieneIgualAlLado) || !valores[1].every(noTieneIgualAlLado) || !valores[2].every(noTieneIgualAlLado) || !valores[3].every(noTieneIgualAlLado) || !transpuesta[0].every(noTieneIgualAlLado) || !transpuesta[1].every(noTieneIgualAlLado) || !transpuesta[2].every(noTieneIgualAlLado) || !transpuesta[3].every(noTieneIgualAlLado)) && !valores[0].includes('0') && !valores[1].includes('0') && !valores[2].includes('0') && !valores[3].includes('0')) {
         //FIN DEL JUEGO
-        const user = await Usuario.find({ idDiscord: button.user.id }).exec()
+        const user = await Usuario.find({ idDiscord: button.user.id });
         const punt = parseInt(message2.content.split(' ')[1]);
         if (punt > user[0].record2048) {
             await Usuario.findOneAndUpdate({ idDiscord: button.user.id }, { record2048: punt }, { new: true });
@@ -651,35 +651,34 @@ var iniciar2048 = async function (interaction) {
     })
 }
 var rank2048 = async function (interaction) {
-    Usuario.find().sort({ record2048: -1 }).exec(async (err, docs) => {
-        var j = 0;
-        var top = new EmbedBuilder()
-            .setTitle(interaction.guild.name)
-            .setThumbnail(interaction.guild.iconURL())
-            .setColor('#FFCB00')
-            .setDescription(`Este es el top de 10 personas en el **</2048:0>** :sparkles:`)
-            .addFields(
-                { name: `:first_place: :white_small_square: ${await test(0)}`, value: `:black_small_square: Puntuación: \`${docs[0 + j].record2048}\`` },
-                { name: `:second_place: :white_small_square: ${await test(1)}`, value: `:black_small_square: Puntuación: \`${docs[1 + j].record2048}\`` },
-                { name: `:third_place: :white_small_square: ${await test(2)}`, value: `:black_small_square: Puntuación: \`${docs[2 + j].record2048}\`` }
-            )
-        for (var i = 3; i < 10; i++) {
-            top.addFields(
-                { name: `#${i + 1} :white_small_square: ${await test(i)}`, value: `:black_small_square: Puntuación: \`${docs[i + j].record2048}\`` }
-            )
-        }
+    const docs = await Usuario.find().sort({ record2048: -1 });
+    var j = 0;
+    var top = new EmbedBuilder()
+        .setTitle(interaction.guild.name)
+        .setThumbnail(interaction.guild.iconURL())
+        .setColor('#FFCB00')
+        .setDescription(`Este es el top de 10 personas en el **</2048:0>** :sparkles:`)
+        .addFields(
+            { name: `:first_place: :white_small_square: ${await test(0)}`, value: `:black_small_square: Puntuación: \`${docs[0 + j].record2048}\`` },
+            { name: `:second_place: :white_small_square: ${await test(1)}`, value: `:black_small_square: Puntuación: \`${docs[1 + j].record2048}\`` },
+            { name: `:third_place: :white_small_square: ${await test(2)}`, value: `:black_small_square: Puntuación: \`${docs[2 + j].record2048}\`` }
+        )
+    for (var i = 3; i < 10; i++) {
+        top.addFields(
+            { name: `#${i + 1} :white_small_square: ${await test(i)}`, value: `:black_small_square: Puntuación: \`${docs[i + j].record2048}\`` }
+        )
+    }
 
-        interaction.reply({ embeds: [top] });
-        async function test(i) {
-            try {
-                let member = await interaction.guild.members.fetch(docs[i + j].idDiscord)
-                return member.user.username;
-            } catch {
-                j++;
-                return test(i);
-            }
+    interaction.reply({ embeds: [top] });
+    async function test(i) {
+        try {
+            let member = await interaction.guild.members.fetch(docs[i + j].idDiscord)
+            return member.user.username;
+        } catch {
+            j++;
+            return test(i);
         }
-    });
+    }
 }
 
 module.exports = { onClick2048, iniciar2048, rank2048 };

@@ -11,7 +11,7 @@ var onClickTienda = async function (button) {
     var id = button.customId.split('_');
     var idUser = button.user.id;
     var authorInteraction = await button.guild.members.fetch(idUser);
-    var userInteraction = await Usuario.find({ idDiscord: idUser }).exec();
+    var userInteraction = await Usuario.find({ idDiscord: idUser });
     var monedasUser = userInteraction[0].monedas;
 
     switch (id[1]) {

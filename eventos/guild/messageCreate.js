@@ -295,7 +295,7 @@ async function funcionBuscar(message, member) {
 function funcionHelp(message) {
     const embed = new EmbedBuilder()
         .setTitle(`Monitorizar usuarios de TWITCH`)
-        .setColor("DARK_VIVID_PINK")
+        .setColor("#F639DA")
         .setFooter({ text: `✨Si necesitas más ayuda habla con Fiuva :>` })
         .setDescription(`Los usuarios monitorizados son privados 🕵️`)
         .setFields(
