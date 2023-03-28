@@ -29,7 +29,7 @@ module.exports = {
             .setThumbnail('https://images.vexels.com/media/users/3/160439/isolated/preview/cdb5a4ee06fda3e16b51c90caa45c5c1-platypus-pico-de-pato-cola-plana-by-vexels.png')
             .addFields(
                 { name: '💍 Anillo', value: `${PRECIO.ANILLO} ${MONEDAS.PC.NOMBRE}` },
-                { name: '🎶 Musica ⟬*más comandos*⟭', value: `${PRECIO.MUSICA_PRO} ${MONEDAS.PC.NOMBRE}` },
+                //{ name: '🎶 Musica ⟬*más comandos*⟭', value: `${PRECIO.MUSICA_PRO} ${MONEDAS.PC.NOMBRE}` },
                 { name: '💰 Rol Millonario', value: `${PRECIO.MILLONARIO} ${MONEDAS.PC.NOMBRE}` }
             )
             .addFields({ name: '\u200B', value: '\u200B' })
@@ -43,18 +43,20 @@ module.exports = {
             .setEmoji('💰')
             .setCustomId(`tienda_millonario_${interaction.user.id}`)
             .setStyle('Secondary')
+        /*
         var bMusicaPro = new ButtonBuilder()
             .setEmoji('🎶')
             .setCustomId(`tienda_musica-pro_${interaction.user.id}`)
             .setStyle('Secondary')
+        */
         if (userTienda.monedas > PRECIO.ANILLO) {
             bAnillo.setStyle('Success');
-            if (userTienda.monedas > PRECIO.MUSICA_PRO) {
-                bMusicaPro.setStyle('Success');
-                if (userTienda.monedas > PRECIO.MILLONARIO) {
-                    bMillonario.setStyle('Success');
-                }
+            //if (userTienda.monedas > PRECIO.MUSICA_PRO) {
+            //bMusicaPro.setStyle('Success');
+            if (userTienda.monedas > PRECIO.MILLONARIO) {
+                bMillonario.setStyle('Success');
             }
+            //}
         }
 
         const tituloMenu = `Compra huevos✨`;
@@ -76,8 +78,11 @@ module.exports = {
         })
 
         var rowTienda = new ActionRowBuilder()
-            .addComponents(bAnillo, bMusicaPro, bMillonario)
-
+            .addComponents(
+                bAnillo,
+                //bMusicaPro,
+                bMillonario
+            );
         const components = [rowTienda, new ActionRowBuilder().addComponents(menu)];
         const m = await interaction.reply({ embeds: [mensajeTienda], components: components });
 

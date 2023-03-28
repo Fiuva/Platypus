@@ -2,6 +2,8 @@ const { AUMENTA_NIVEL, CONFIG, AUMENTAR_MONEDAS_NIVEL } = require("../config/con
 const Usuario = require("../models/usuario");
 const { ActivityType, EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { ButtonStyle } = require("../node_modules/discord-api-types/v10");
+const Genius = require("genius-lyrics");
+const Client = new Genius.Client();
 
 module.exports = {
     msg,
@@ -23,7 +25,8 @@ module.exports = {
     add_data,
     createDataInc,
     getCommandOptionsUser,
-    getInteractionUser
+    getInteractionUser,
+    buscarCancion
 }
 
 function getCommandOptionsUser(interaction) {
@@ -465,4 +468,77 @@ function createRegaloRandom() {
             res.push(arr[Math.random() * l << 0]);
         return res;
     }
+}
+
+async function buscarCancion(titulo, interaction) {
+    var mensInfo = await interaction.reply({ embeds: [new EmbedBuilder().setColor('#DED500').setDescription(`Obteniendo info de la canción...`)] });
+    try {
+        const searches = await Client.songs.search(titulo);
+        const firstSong = await searches[0];
+        if (firstSong) {
+            var lyrics = await firstSong.lyrics();
+            var embeds = [];
+
+            var n = 2048;
+            for (var i = 0; i < lyrics.length; i += n) {
+                var trimmedString = lyrics.substring(i, i + 2048);
+                if (trimmedString.length < 2048) trimmedString += "\n";
+                n = Math.max(Math.min(trimmedString.length, trimmedString.lastIndexOf("\n")), 1000);
+                if (i == 0) {
+                    embeds.push(
+                        new EmbedBuilder()
+                            .setTitle(firstSong.title)
+                            .setAuthor({ name: firstSong.artist.name, iconURL: firstSong.artist.thumbnail })
+                            .setThumbnail(firstSong.thumbnail)
+                            .setDescription(lyrics.substring(i, i + n))
+                            .setURL(firstSong.url)
+                            .setColor('#49D414')
+                    );
+                } else {
+                    embeds.push(
+                        new EmbedBuilder()
+                            .setDescription(lyrics.substring(i, i + n))
+                            .setColor('#49D414')
+                    );
+                }
+            }
+
+            embeds[embeds.length - 1].setTimestamp(new Date(`${firstSong._raw.release_date_for_display}`)).setFooter({ text: `Fecha de lanzamiento` });
+            //---Enviar embeds de 6k como max
+            var i = 0;
+            var j = 0;
+            var len = 0;
+            var primerMensaje = true;
+            while (i < embeds.length) {
+                if (len + embeds[i].data.description.length <= 6000) {
+                    len += embeds[i].data.description.length;
+                    i++;
+                    if (i < embeds.length) continue;
+                    else {
+                        if (primerMensaje) {
+                            mensInfo.edit({ embeds: embeds.slice(j, i) });
+                            primerMensaje = false;
+                            break;
+                        }
+                        interaction.channel.send({ embeds: embeds.slice(j, i) });
+                        break;
+                    }
+                }
+                len = 0;
+                if (primerMensaje) {
+                    mensInfo.edit({ embeds: embeds.slice(j, i) });
+                    primerMensaje = false;
+                } else
+                    interaction.channel.send({ embeds: embeds.slice(j, i) });
+                j = i;
+            }
+            //----
+
+        } else {
+            mensInfo.edit({ embeds: [new EmbedBuilder().setColor('#DE2B00').setDescription(`Canción no encontrada :(`)] });
+        }
+    } catch {
+        mensInfo.edit({ embeds: [new EmbedBuilder().setColor('#DE2B00').setDescription(`No se ha podido conectar con genius.com | Probablemente esté caída la página`)] });
+    }
+
 }

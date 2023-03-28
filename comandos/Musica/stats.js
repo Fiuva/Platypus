@@ -1,14 +1,22 @@
-const { EmbedBuilder } = require("discord.js");
+﻿const { EmbedBuilder } = require("discord.js");
 const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 
-module.exports = {
+const command_data = {
     name: "stats",
-    aliases: ["estadisticas"],
-    description: "Sirve para ver las canciones en cola",
-    canales: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
-    run: async (client, message, args) => {
-        const queue = client.distube.getQueue(message);
-        var songs = queue.songs
+    description: `🎶 Para ver las canciones en cola`
+}
+
+module.exports = {
+    ...command_data,
+    channels: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
+    data: {
+        ...command_data
+    },
+    run: async (client, interaction) => {
+        var songs = client.player.queue
+        if (songs.length == 0) {
+            return interaction.reply({ content: `No hay canciones en la cola`, ephemeral: true });
+        }
         var mensajeCanciones = '';
         var tiempo = 0;
         for (i = 0; i < songs.length; i++) {
@@ -30,6 +38,6 @@ module.exports = {
             .setTitle('Stats de la musica')
             .setFooter({ text: `${songs.length} canciones en cola | ${horas != '' ? horas + 'h ' : ''}${minutos}min` })
             .setDescription(mensajeCanciones)
-        message.channel.send({ embeds: [stats] });
+        interaction.reply({ embeds: [stats] });
     }
 }

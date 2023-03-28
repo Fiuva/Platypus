@@ -1,15 +1,18 @@
 ﻿const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 
-module.exports = {
+const command_data = {
     name: "stop",
-    aliases: ["desconectar", "leave", "disconnect"],
-    description: "Desconecta al platypus de música 🛑",
-    canales: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
-    run: async (client, message, args) => {
-        if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return message.reply("Tienes que meterte al canal de musica... cara alcachofa!");
-        const queue = client.distube.getQueue(message);
-        if (!queue) return message.reply("No hay canciones :<");
+    description: `🛑 Desconecta al platypus de música.`
+}
 
-        client.distube.stop(message);
+module.exports = {
+    ...command_data,
+    channels: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
+    data: {
+        ...command_data
+    },
+    run: async (client, interaction) => {
+        if (interaction.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return interaction.reply({ content: "Tienes que meterte al canal de musica!", ephemeral: true });
+        client.player.stop(interaction);
     }
 }

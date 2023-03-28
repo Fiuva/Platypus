@@ -4,18 +4,23 @@ const Client = new Genius.Client();
 const { ROL } = require("../../config/constantes");
 const { CANAL_TEXTO, CANAL_VOZ } = require("../../config/constantes");
 
-module.exports = {
-    name: "guardar",
-    aliases: ["save"],
-    description: "Te enviaré la canción que suena por MD",
-    canales: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
-    roles: [ROL.MUSICA_PRO],
-    run: async (client, message, args) => {
-        if (message.member.voice?.channel?.id != CANAL_VOZ.MUSICA) return message.reply("Tienes que meterte al canal de musica... cara alcachofa!");
-        const queue = client.distube.getQueue(message);
-        if (!queue) return message.reply("No hay canciones sonando para guardar :<");
+const command_data = {
+    name: "save",
+    description: `⭐ Te enviaré la canción que suena por MD`
+}
 
-        const qSong = queue.songs[0];
+module.exports = {
+    ...command_data,
+    channels: [CANAL_TEXTO.MUSICA, CANAL_VOZ.MUSICA],
+    //roles: [ROL.MUSICA_PRO],
+    data: {
+        ...command_data
+    },
+    run: async (client, interaction) => {
+        const queue = client.player.queue;
+        if (queue.length == 0) return interaction.reply({ content: "No hay canciones sonando para guardar :<", ephemeral: true });
+
+        const qSong = queue[0];
         const song = await buscarCancion(arreglarTitulo(qSong.name));
         var embedGuardado;
         if (song != undefined) {
@@ -36,9 +41,10 @@ module.exports = {
                 .setThumbnail(qSong.thumbnail)
         }
         try {
-            await message.author.send({ embeds: [embedGuardado] });
+            await interaction.user.send({ embeds: [embedGuardado] });
+            interaction.reply({ content: "Te acabo de enviar la canción ⭐", ephemeral: true });
         } catch {
-            message.reply("No tienes los MD activados :<")
+            interaction.reply({ content: "No tienes los MD activados :<", ephemeral: true });
         }
 
 

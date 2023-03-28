@@ -6,7 +6,7 @@ const { EmbedBuilder } = require('discord.js');
 const { PRIVATE_CONFIG, CANAL_TEXTO } = require('../config/constantes');
 
 module.exports = (client, Discord) => {
-    console.log("Módulo de música cargado!");
+    console.log("Distube cargado (deprecated)");
     client.distube = new DisTube(client, {
         emitNewSongOnly: false,
         leaveOnEmpty: true,
@@ -38,6 +38,7 @@ module.exports = (client, Discord) => {
         ]
     });
 
+    /*
     client.distube.on("playSong", (queue, song) => {
         client.distube.setVolume(queue, 100);
         var mensajeBucle;
@@ -62,8 +63,6 @@ module.exports = (client, Discord) => {
         if (song.user.bot) escuchando.setDescription('Recomendación del ornitorrinco :>');
         queue.textChannel.send({ embeds: [escuchando] });
     });
-
-
     client.distube.on("addSong", (queue, song) => {
         const canciones = queue.songs;
         var tiempoDeEspera = 0;
@@ -85,11 +84,9 @@ module.exports = (client, Discord) => {
 
         queue.textChannel.send({ embeds: [mensCancion] });
     });
-
     client.distube.on("initQueue", (queue) => {
         queue.autoplay = true;
     });
-
     client.distube.on("addList", (queue, playlist) => {
         const mensPlaylist = new EmbedBuilder()
             .setTitle(playlist.name)
@@ -108,4 +105,5 @@ module.exports = (client, Discord) => {
             .messages.cache.get(playlist.metadata.messageId)
             .delete();
     });
+    */
 };
