@@ -36,7 +36,7 @@ var onClickPareja = async function (button) {
                 try { //Quitar mascotas
                     let userMascotas = await findOrCreateDocument(user.idDiscord, MascotasData);
                     try { await button.guild.members.fetch(user.idDiscord).roles.remove(userMascotas.refRolMascotaP) } catch { };
-                    await button.guild.members.fetch(user.parejaId).roles.remove(userMascotas.refRolMascota);
+                    await (await button.guild.members.fetch(user.parejaId)).roles.remove(userMascotas.refRolMascota);
                 } catch { }
                 try {
                     var pareja = await button.guild.members.fetch(user.parejaId);
