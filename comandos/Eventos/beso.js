@@ -35,7 +35,6 @@ const delay = 30; //min
 
 module.exports = {
     ...command_data,
-    roles: [ROL.ADMIN],
     data: {
         ...command_data
     },
