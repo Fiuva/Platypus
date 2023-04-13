@@ -282,12 +282,12 @@ async function subirExperiencia(message) {
     }
 }
 
-async function modificarMonedas(id, sumar, user = null, navidad = false) {
-    if (!user) user = await findOrCreateDocument(id, Usuario);
+async function modificarMonedas(id, sumar, usuario = null, navidad = false) {
+    if (!usuario) usuario = await findOrCreateDocument(id, Usuario);
     if (navidad)
-        await Usuario.findOneAndUpdate({ idDiscord: id }, { pavos: user.pavos + sumar });
+        await Usuario.findOneAndUpdate({ idDiscord: id }, { pavos: usuario.pavos + sumar });
     else
-        await Usuario.findOneAndUpdate({ idDiscord: id }, { monedas: user.monedas + sumar });
+        await Usuario.findOneAndUpdate({ idDiscord: id }, { monedas: usuario.monedas + sumar });
 }
 
 async function reenviarMensajeTo(msg, canal, refDelAutor = false) {

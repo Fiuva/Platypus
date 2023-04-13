@@ -14,17 +14,6 @@ module.exports = {
         ...command_data
     },
     run: async (client, interaction) => {
-        const mensajeAyuda = new EmbedBuilder()
-            .setColor('#FEDCA0')
-            .setTitle('DIA DE LA MARMOTA')
-            .setDescription(`Evento activo hasta... pues un par de días xD`)
-            .addFields(
-                { name: 'Gana una marmota de mascota ⭐', value: `Haz y envía un dibujo tuyo relacionado con la marmota a <#840124539375583262> y gana una marmota gratis :>` }
-            )
-            .setFooter({ text: `Dia de la marmota: 2/2/2023` })
-
-        interaction.reply({ embeds: [mensajeAyuda] });
-        return;
 
         if (EVENTOS.NAVIDAD) {
             const mensajeAyuda = new EmbedBuilder()
@@ -39,6 +28,20 @@ module.exports = {
 
             interaction.reply({ embeds: [mensajeAyuda] });
         } else {
+            // ---------------------------
+            const mensajeAyuda = new EmbedBuilder()
+                .setColor('#FEA0FA')
+                .setTitle('😘 Día internacional del beso')
+                .setDescription(`Evento activo un par de días desde el 13/04/2023`)
+                .addFields(
+                    { name: 'Comando </beso:0>', value: `Gana **${MONEDAS.PC.NOMBRE} ${MONEDAS.PC.EMOTE}** si una persona random del servidor, __acepta tu beso__ 😳` }
+                )
+                .setFooter({ text: `Pronto habrá más` })
+
+            interaction.reply({ embeds: [mensajeAyuda] });
+            return;
+            // ---------------------------
+
             interaction.reply({ embeds: [new EmbedBuilder().setDescription(`Actualmente no hay eventos activos`)] })
         }
     }

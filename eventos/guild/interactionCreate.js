@@ -7,10 +7,11 @@ const { onClickVender } = require("../../handlers/botones/funcionesVender");
 const { onClickIntercambio } = require("../../handlers/botones/funcionesIntercambiar");
 const { onClickRegalo } = require("../../handlers/botones/funcionesRegalo");
 const { onClickMostrarMascotas } = require("../../handlers/botones/funcionesMostrarMascota");
+const { onClickEvento } = require("../../handlers/botones/funcionesEventos");
 const { CANAL_TEXTO } = require("../../config/constantes");
 
 module.exports = async (client, interaction) => {
-    if (interaction.channel.id == CANAL_TEXTO.PRIVATE_PRUEBAS) return;
+    if (interaction.channel.id != CANAL_TEXTO.PRIVATE_PRUEBAS) return; //Solo para pruebas, quitar en el definitvo _modificar_
     if (interaction.isCommand()) {
         let command = client.commands.get(interaction.commandName);
         if (command.channels && !command.channels.includes(interaction.channelId))
@@ -44,4 +45,6 @@ module.exports = async (client, interaction) => {
         onClickRegalo(interaction);
     else if (interaction.customId.startsWith('mostrarMascotas_'))
         onClickMostrarMascotas(interaction);
+    else if (interaction.customId.startsWith('evento_'))
+        onClickEvento(interaction);
 }
