@@ -4,6 +4,7 @@ module.exports = (client) => {
     try {
         let comandos = 0;
         fs.readdirSync("./comandos/").forEach((carpeta) => {
+            if (carpeta.endsWith('_inactive')) return;
             const commands = fs.readdirSync(`./comandos/${carpeta}`).filter((archivo) => archivo.endsWith(".js"));
             for (let archivo of commands) {
                 let comando = require(`../comandos/${carpeta}/${archivo}`);
