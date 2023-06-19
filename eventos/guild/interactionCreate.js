@@ -11,6 +11,7 @@ const { onClickEvento } = require("../../handlers/botones/funcionesEventos");
 const { CANAL_TEXTO } = require("../../config/constantes");
 
 module.exports = async (client, interaction) => {
+    if (interaction.channel.id == CANAL_TEXTO.PRIVATE_PRUEBAS) return;
     if (interaction.isCommand()) {
         let command = client.commands.get(interaction.commandName);
         if (command.channels && !command.channels.includes(interaction.channelId))

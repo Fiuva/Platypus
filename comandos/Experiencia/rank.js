@@ -115,9 +115,6 @@ module.exports = {
         ctx.fillText(nivel, 1597 - ctx.measureText(nivel).width / 2 + 20, 162); // 1597 162
         ctx.font = '50px Arial';
         ctx.fillText(`${expActual}/${calcularExp}`, 1597 - ctx.measureText(`${expActual}/${calcularExp}`).width / 2 + 20, 385);
-        ctx.font = 'italic 80px Arial';
-        ctx.fillStyle = color + '88';
-        ctx.fillText(`${author.tag.replace(author.username, '')}`, 440 + ctx.measureText(author.username).width * 1.4, 151.5);
         ctx.beginPath();
         ctx.arc(240, 240, 125, 0, Math.PI * 2, true); //ref1: 1700, 250, 200
         ctx.closePath();
