@@ -5,8 +5,6 @@ const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
 const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
 const diainternacionalde = require('../../models/diainternacionalde');
-const express = require('express');
-const http = require('http');
 
 
 module.exports = async client => {
@@ -41,31 +39,6 @@ module.exports = async client => {
     comprobarEstados(guild);
     cambiarEstadoConMensaje(client);
     varOnUpdateMessageEspia.setUpdate((await client.channels.cache.get(CONFIG.CANAL_CONFIG).messages.fetch(CONFIG.MENSAJE_ESPIA)).content);
-
-    const server = http.createServer(async (req, res) => {
-        if (req.url === '/api/actual') {
-            //const data = await getCategorizedResultsWithDate();
-            const messageData = {hola: "aaa"};
-
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(messageData));
-        } else if (req.url.startsWith('/api/custom/')) {
-            const [_, mes, dia] = req.url.split('/');
-            //const data = await getCategorizedResultsWithDate(mes, dia);
-            const messageData = { hola: "eeee"+mes };
-
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(messageData));
-        } else {
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end('Not found');
-        }
-    });
-
-    const port = process.env.PORT || 3000;
-    server.listen(port, () => {
-        console.log(`API server listening on port ${port}`);
-    });
 }
 
 async function comprobarEstados(guild) {
