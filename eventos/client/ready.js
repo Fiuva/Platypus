@@ -6,6 +6,7 @@ const schedule = require('node-schedule');
 const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
 const diainternacionalde = require('../../models/diainternacionalde');
 const express = require('express');
+const http = require('http');
 
 
 module.exports = async client => {
@@ -41,26 +42,29 @@ module.exports = async client => {
     cambiarEstadoConMensaje(client);
     varOnUpdateMessageEspia.setUpdate((await client.channels.cache.get(CONFIG.CANAL_CONFIG).messages.fetch(CONFIG.MENSAJE_ESPIA)).content);
 
-    const app = express();
-    const port = 3000; // Puerto en el que se ejecutará la aplicación
+    const server = http.createServer(async (req, res) => {
+        if (req.url === '/api/actual') {
+            //const data = await getCategorizedResultsWithDate();
+            const messageData = {hola: "aaa"};
 
-    // Ruta para obtener los datos del día actual
-    app.get('/api/actual', (req, res) => {
-        // Aquí puedes realizar la lógica para obtener los datos del día actual
-        const data = { message: 'Datos para el día actual' };
-        res.json(data);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(messageData));
+        } else if (req.url.startsWith('/api/custom/')) {
+            const [_, mes, dia] = req.url.split('/');
+            //const data = await getCategorizedResultsWithDate(mes, dia);
+            const messageData = { hola: "eeee"+mes };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(messageData));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('Not found');
+        }
     });
 
-    // Ruta para obtener los datos personalizados según la fecha
-    app.get('/api/custom/:month/:day', (req, res) => {
-        const { month, day } = req.params;
-        // Aquí puedes realizar la lógica para obtener los datos personalizados según la fecha proporcionada
-        const data = { message: `Datos para el día ${day}/${month}` };
-        res.json(data);
-    });
-
-    app.listen(port, () => {
-        console.log(`API server is running on port ${port}`);
+    const port = process.env.PORT || 3000;
+    server.listen(port, () => {
+        console.log(`API server listening on port ${port}`);
     });
 }
 
