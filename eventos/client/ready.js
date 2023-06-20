@@ -21,15 +21,15 @@ module.exports = async client => {
         console.log(`Conectado a la base de datos`);
         const rule = new schedule.RecurrenceRule();
         rule.hour = 1;
-        rule.minute = 1;
+        rule.minute = 2;
         rule.tz = 'Europe/Madrid';
         schedule.scheduleJob(rule, async () => {
             const did = await diainternacionalde.getCategorizedResults();
             const data = diainternacionalde.getMessageDataActual(did);
             let index = 0;
             while (index < data.embeds.length) {
-                if (index == 0) client.channels.cache.get(CANAL_TEXTO.PRIVATE_PRUEBAS).send({ content: data.content, embeds: data.embeds.slice(index, index + 9) });
-                else client.channels.cache.get(CANAL_TEXTO.PRIVATE_PRUEBAS).send({ embeds: data.embeds.slice(index, index + 9) });
+                if (index == 0) client.channels.cache.get(CANAL_TEXTO.ANUNCIOS).send({ content: data.content, embeds: data.embeds.slice(index, index + 9) });
+                else client.channels.cache.get(CANAL_TEXTO.ANUNCIOS).send({ embeds: data.embeds.slice(index, index + 9) });
                 index += 9;
             }
         });
