@@ -21,7 +21,7 @@ module.exports = async client => {
         console.log(`Conectado a la base de datos`);
         const rule = new schedule.RecurrenceRule();
         rule.hour = 1;
-        rule.minute = 2;
+        rule.minute = 4;
         rule.tz = 'Europe/Madrid';
         schedule.scheduleJob(rule, async () => {
             const did = await diainternacionalde.getCategorizedResults();
