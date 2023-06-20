@@ -5,6 +5,7 @@ const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
 const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
 const diainternacionalde = require('../../models/diainternacionalde');
+const express = require('express');
 
 
 module.exports = async client => {
@@ -39,6 +40,28 @@ module.exports = async client => {
     comprobarEstados(guild);
     cambiarEstadoConMensaje(client);
     varOnUpdateMessageEspia.setUpdate((await client.channels.cache.get(CONFIG.CANAL_CONFIG).messages.fetch(CONFIG.MENSAJE_ESPIA)).content);
+
+    const app = express();
+    const port = 3000; // Puerto en el que se ejecutará la aplicación
+
+    // Ruta para obtener los datos del día actual
+    app.get('/api/actual', (req, res) => {
+        // Aquí puedes realizar la lógica para obtener los datos del día actual
+        const data = { message: 'Datos para el día actual' };
+        res.json(data);
+    });
+
+    // Ruta para obtener los datos personalizados según la fecha
+    app.get('/api/custom/:month/:day', (req, res) => {
+        const { month, day } = req.params;
+        // Aquí puedes realizar la lógica para obtener los datos personalizados según la fecha proporcionada
+        const data = { message: `Datos para el día ${day}/${month}` };
+        res.json(data);
+    });
+
+    app.listen(port, () => {
+        console.log(`API server is running on port ${port}`);
+    });
 }
 
 async function comprobarEstados(guild) {
