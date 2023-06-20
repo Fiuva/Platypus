@@ -4,6 +4,7 @@ const { cambiarEstadoConMensaje, calcularTiempoToAdd, add_data, createDataInc } 
 const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
 const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
+const diainternacionalde = require('../../models/diainternacionalde');
 
 
 module.exports = async client => {
@@ -18,6 +19,14 @@ module.exports = async client => {
         useUnifiedTopology: true
     }).then(() => {
         console.log(`Conectado a la base de datos`);
+        const rule = new schedule.RecurrenceRule();
+        rule.hour = 0;
+        rule.minute = 0;
+        rule.tz = 'Europe/Madrid';
+        schedule.scheduleJob(rule, async () => {
+            const did = await diainternacionalde.getCategorizedResults();
+            client.channels.cache.get(CANAL_TEXTO.ANUNCIOS).send(diainternacionalde.getMessageDataActual(did));
+        });
         schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(guild));
         iniciarMonitorizacionesTwitch(client);
     }).catch((err) => {
