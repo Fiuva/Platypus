@@ -160,13 +160,12 @@ const diainternacionalde = {
                         texto += `\n - ${evento.paises}`
                     }
                     texto += `\n\n ${evento.date}`
-                    console.log(did.imageUrl);
-                    if (did.imageUrl) {
+                    if (evento.imageUrl) {
                         let mediaIds = await Promise.all([
                             // file path
                             //client.v1.uploadMedia('./my-image.jpg'),
                             // from a buffer
-                            client.v1.uploadMedia(Buffer.from(await loadImageFromUrl(did.imageUrl)), { mimeType: 'png' }),
+                            client.v1.uploadMedia(Buffer.from(await loadImageFromUrl(evento.imageUrl)), { mimeType: 'png' }),
                         ]);
                         client.v2.tweet({ text: texto, media: { media_ids: mediaIds } });
                     } else {
