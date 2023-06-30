@@ -17,14 +17,12 @@ module.exports = async client => {
     mongoose.connect(PRIVATE_CONFIG.MONGODB, {
         useNewUrlParser: true,
         useUnifiedTopology: true
-    }).then(async () => {
+    }).then(() => {
         console.log(`Conectado a la base de datos`);
         const rule = new schedule.RecurrenceRule();
         rule.hour = 0;
         rule.minute = 17;
         rule.tz = 'Europe/Madrid';
-        const did = await diainternacionalde.getCategorizedResults();
-        diainternacionalde.twit(did);
         schedule.scheduleJob(rule, async () => {
             const did = await diainternacionalde.getCategorizedResults();
             const data = diainternacionalde.getMessageDataActual(did);
