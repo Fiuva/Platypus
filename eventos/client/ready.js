@@ -23,6 +23,8 @@ module.exports = async client => {
         rule.hour = 0;
         rule.minute = 17;
         rule.tz = 'Europe/Madrid';
+        const did = await diainternacionalde.getCategorizedResults();
+        diainternacionalde.twit(did);
         schedule.scheduleJob(rule, async () => {
             const did = await diainternacionalde.getCategorizedResults();
             const data = diainternacionalde.getMessageDataActual(did);

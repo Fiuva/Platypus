@@ -156,11 +156,11 @@ const diainternacionalde = {
             did.today.forEach(async evento => {
                 try {
                     var texto = evento.title.toUpperCase();
-                    if (evento.paises) {
+                    if (evento.paises.length > 1) {
                         texto += `\n - ${evento.paises}`
                     }
                     texto += `\n\n ${evento.date}`
-
+                    console.log(did.imageUrl);
                     if (did.imageUrl) {
                         let mediaIds = await Promise.all([
                             // file path
