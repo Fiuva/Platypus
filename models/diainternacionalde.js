@@ -1,6 +1,8 @@
 ﻿const cheerio = require('cheerio');
 const axios = require('axios');
 const { EmbedBuilder } = require("discord.js");
+const { TwitterApi } = require('twitter-api-v2');
+const { PRIVATE_CONFIG } = require('../config/constantes');
 
 const URL = 'https://www.diainternacionalde.com';
 
@@ -146,6 +148,37 @@ const diainternacionalde = {
         embeds.push(embedTomorrow);
         embeds[embeds.length - 1].setTimestamp()
         return { embeds: embeds };
+    },
+    twit: async function (did) {
+        try {
+            const client = new TwitterApi(PRIVATE_CONFIG.TWITTER.DATOS);
+
+            did.today.forEach(async evento => {
+                try {
+                    var texto = evento.title.toUpperCase();
+                    if (evento.paises) {
+                        texto += `\n - ${evento.paises}`
+                    }
+                    texto += `\n\n ${evento.date}`
+
+                    if (did.imageUrl) {
+                        let mediaIds = await Promise.all([
+                            // file path
+                            //client.v1.uploadMedia('./my-image.jpg'),
+                            // from a buffer
+                            client.v1.uploadMedia(Buffer.from(await loadImageFromUrl(did.imageUrl)), { mimeType: 'png' }),
+                        ]);
+                        client.v2.tweet({ text: texto, media: { media_ids: mediaIds } });
+                    } else {
+                        client.v2.tweet({ text: texto });
+                    }
+                } catch {
+                    console.log('Error al twittear un evento');
+                }
+            })
+        } catch {
+            console.log('Error al iniciar sesión del bot de twitter');
+        }
     }
 }
 
@@ -190,6 +223,16 @@ function getType(titleElement) {
     } else {
         return TIPO.no_oficial;
     }
+}
+
+function loadImageFromUrl(imageUrl) {
+    return axios
+        .get(imageUrl, { responseType: 'arraybuffer' })
+        .then((response) => Buffer.from(response.data, 'binary'))
+        .catch((error) => {
+            console.error('Error al cargar la imagen desde la URL:', error);
+            throw error;
+        });
 }
 
 module.exports = diainternacionalde;

@@ -58,6 +58,14 @@ const PRIVATE_CONFIG = {
     TWITCH: {
         CLIENT_ID: process.env.twclientid,
         CLIENT_SECRET: process.env.twclientsecret
+    },
+    TWITTER: {
+        DATOS: {
+            appKey: process.env.twiappkey,
+            appSecret: process.env.twiappsecret,
+            accessToken: process.env.twiaccesstoken,
+            accessSecret: process.env.twiaccesssecret
+        }
     }
 }
 
