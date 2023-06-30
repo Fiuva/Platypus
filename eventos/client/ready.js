@@ -26,7 +26,7 @@ module.exports = async client => {
         schedule.scheduleJob(rule, async () => {
             const did = await diainternacionalde.getCategorizedResults();
             const data = diainternacionalde.getMessageDataActual(did);
-            diainternacionalde.twit();
+            diainternacionalde.twit(did);
             let index = 0;
             while (index < data.embeds.length) {
                 if (index == 0) client.channels.cache.get(CANAL_TEXTO.ANUNCIOS).send({ content: data.content, embeds: data.embeds.slice(index, index + 9) });
