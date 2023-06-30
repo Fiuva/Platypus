@@ -17,7 +17,7 @@ module.exports = async client => {
     mongoose.connect(PRIVATE_CONFIG.MONGODB, {
         useNewUrlParser: true,
         useUnifiedTopology: true
-    }).then(() => {
+    }).then(async () => {
         console.log(`Conectado a la base de datos`);
         const rule = new schedule.RecurrenceRule();
         rule.hour = 0;
