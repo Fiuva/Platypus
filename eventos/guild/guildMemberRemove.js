@@ -6,12 +6,6 @@ const RecapData = require("../../models/recapData");
 module.exports = async (client, member) => {
     if (member.guild.id != GUILD.SERVER_PLATY) return;
 
-    if (member.id == "959157740591259658") {
-        member.guild.channels.fetch("836734022184861706")
-            .then(channel => channel.send(`${member.user} ha abandonado la familia de ornitorrincos :'<`))
-        return;
-    }
-
     member.guild.channels.fetch("837367366227853423")
         .then(channel => channel.setName('Ornitorrincos: ' + member.guild.memberCount));
 
