@@ -66,7 +66,8 @@ const PRIVATE_CONFIG = {
             accessToken: process.env.twiaccesstoken,
             accessSecret: process.env.twiaccesssecret
         }
-    }
+    },
+    COOKIE_LEONARDO: process.env.cookieLeonardo
 }
 
 const EVENTOS = {
