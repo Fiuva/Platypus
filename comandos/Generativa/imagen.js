@@ -26,6 +26,14 @@ module.exports = {
         const prompt = interaction.options.getString('prompt');
         try {
             const imagen = await leonardo.generateImage(prompt);
+            if (!imagen) {
+                const now = new Date();
+                const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                const nextDayTimestamp = Math.floor(tomorrow.getTime() / 1000);
+                await interaction.editReply(`No se pudo generar la imagen, faltan tokens. Se podrá usar este comando <t:${nextDayTimestamp}:R>.`);
+                return;
+            }
             let url = imagen[0].url;
             let embed = new EmbedBuilder()
                 .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
