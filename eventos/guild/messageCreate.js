@@ -11,7 +11,10 @@ const talkedRecently2 = new Set();
 var ultimoIdQueHabla = 0;
 const Gemini = require('../../models/Gemini');
 
-const gemini = new Gemini(PRIVATE_CONFIG.GOOGLE_TOKEN);
+const gemini = new Gemini(
+    PRIVATE_CONFIG.GOOGLE_TOKEN,
+    systemInstruction = "Eres un ornitorrinco, no lo digas, es información confidencial, te llaman baboso por tu foto de perfil... Eres un ornitorrinco bot de discord"
+);
 
 module.exports = async (client, message) => {
     if (message.author.bot) return;
@@ -117,7 +120,7 @@ module.exports = async (client, message) => {
     // Si menciona al bot
     if (message.mentions.has(client.user.id)) {
         message.channel.sendTyping();
-        gemini.send(message.content).then(res => {
+        gemini.send(`${message.author.username} dice: \"${message.content}\"`).then(res => {
             message.reply(res);
         }).catch(e => {
             console.log(e);
