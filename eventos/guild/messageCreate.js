@@ -1,6 +1,6 @@
 ﻿const { EmbedBuilder, ChannelType } = require("discord.js");
 const antiSpam = require("../../config/antiSpam");
-const { CANAL_TEXTO, GUILD, EVENTOS } = require("../../config/constantes");
+const { CANAL_TEXTO, GUILD, EVENTOS, PRIVATE_CONFIG } = require("../../config/constantes");
 const { subirExperiencia, reenviarMensajeTo, findOrCreateDocument, createRegaloRandom } = require("../../handlers/funciones");
 const { subirExpMascota, subirExperienciaMascotaPareja } = require("../../handlers/juegos/funcionesMascotas");
 const { MonitorizarTwitch, getIDbyName, getToken, mostrarStatsTwitch, funcionStart, funcionStop, calcularPlan, getNamebyID, buscarTwitch } = require("../../models/monitorizarTwitch");
@@ -110,6 +110,8 @@ module.exports = async (client, message) => {
         }
         return;
     }
+
+    if (PRIVATE_CONFIG.ENVIRONMENT == "development" && message.channel.id != CANAL_TEXTO.GENERAL) return;
 
     //---------------RECAP------------------
     actualizarMensajesRecap(message) 

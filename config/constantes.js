@@ -1,4 +1,6 @@
-﻿const GUILD = {
+﻿require('dotenv').config();
+
+const GUILD = {
     SERVER_PLATY: '836721843955040337'
 }
 const CATEGORIA = {
@@ -49,6 +51,7 @@ const CONFIG = {
     MENSAJE_ESPIA: '981684496736870461'
 }
 const PRIVATE_CONFIG = {
+    ENVIRONMENT: process.env.environment,
     TOKEN: process.env.token,
     MONGODB: process.env.mongodb,
     SPOTIFY: {
@@ -71,7 +74,7 @@ const PRIVATE_CONFIG = {
 }
 
 const EVENTOS = {
-    NAVIDAD: true,
+    NAVIDAD: false,
     TEMPORADA: 2
 }
 

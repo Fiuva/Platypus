@@ -3,7 +3,7 @@ const allevents = [];
 module.exports = async (client) => {
     try {
         try {
-            console.log("Carfando los comandos...");
+            console.log("Cargando los comandos...");
         } catch { }
         let cantidad = 0;
         const cargar_dir = (dir) => {
@@ -20,7 +20,7 @@ module.exports = async (client) => {
                 }
             }
         }
-        await ["client", "guild"].forEach(e => cargar_dir(e));
+        ["client", "guild"].forEach(e => cargar_dir(e));
         console.log(`${cantidad} eventos cargados`);
         try {
             console.log(`Iniciando sesión el Bot...`);

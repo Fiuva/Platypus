@@ -8,10 +8,11 @@ const { onClickIntercambio } = require("../../handlers/botones/funcionesIntercam
 const { onClickRegalo } = require("../../handlers/botones/funcionesRegalo");
 const { onClickMostrarMascotas } = require("../../handlers/botones/funcionesMostrarMascota");
 const { onClickEvento } = require("../../handlers/botones/funcionesEventos");
-const { CANAL_TEXTO } = require("../../config/constantes");
+const { CANAL_TEXTO, PRIVATE_CONFIG } = require("../../config/constantes");
 
 module.exports = async (client, interaction) => {
-    if (interaction.channel.id == CANAL_TEXTO.PRIVATE_PRUEBAS) return;
+    if ((PRIVATE_CONFIG.ENVIRONMENT === "development") ? interaction.channel.id != CANAL_TEXTO.PRIVATE_PRUEBAS : interaction.channel.id == CANAL_TEXTO.PRIVATE_PRUEBAS) 
+        return;
     if (interaction.isCommand()) {
         let command = client.commands.get(interaction.commandName);
         if (command.channels && !command.channels.includes(interaction.channelId))
