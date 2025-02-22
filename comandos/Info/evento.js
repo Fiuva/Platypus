@@ -27,8 +27,7 @@ module.exports = {
                 .setFooter({ text: `Pronto habrá más` })
 
             interaction.reply({ embeds: [mensajeAyuda] });
-        } else {
-            // ---------------------------
+        } else if (EVENTOS.DIA_BESO) {
             const mensajeAyuda = new EmbedBuilder()
                 .setColor('#FEA0FA')
                 .setTitle('😘 Día internacional del beso')
@@ -39,9 +38,7 @@ module.exports = {
                 .setFooter({ text: `Pronto habrá más` })
 
             interaction.reply({ embeds: [mensajeAyuda] });
-            return;
-            // ---------------------------
-
+        } else {
             interaction.reply({ embeds: [new EmbedBuilder().setDescription(`Actualmente no hay eventos activos`)] })
         }
     }

@@ -1,5 +1,5 @@
 ﻿const { EmbedBuilder } = require("discord.js");
-const { GUILD, varOnUpdateMessageEspia } = require("../../config/constantes");
+const { GUILD, varOnUpdateMessageEspia, PRIVATE_CONFIG } = require("../../config/constantes");
 const { calcularTiempoToAdd, deepEqual, findOrCreateDocument, add_data, createDataInc } = require("../../handlers/funciones");
 const { parseMensajeEspia, bbddVictimas } = require("../../handlers/funcionesVictimas");
 const { desequipar, reEquipar } = require("../../handlers/juegos/funcionesMascotas");
@@ -7,6 +7,7 @@ const { MascotasData } = require("../../models/mascotas");
 const RecapData = require("../../models/recapData");
 
 module.exports = async (client, oldPresence, newPresence) => {
+    if (PRIVATE_CONFIG.ENVIRONMENT === "development") return;
     let member = newPresence?.member || oldPresence?.member;
     if (member?.guild.id != GUILD.SERVER_PLATY) return;
 

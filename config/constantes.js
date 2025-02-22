@@ -75,6 +75,7 @@ const PRIVATE_CONFIG = {
 
 const EVENTOS = {
     NAVIDAD: false,
+    DIA_BESO: false,
     TEMPORADA: 2
 }
 
