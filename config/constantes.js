@@ -70,7 +70,8 @@ const PRIVATE_CONFIG = {
             accessSecret: process.env.twiaccesssecret
         }
     },
-    COOKIE_LEONARDO: process.env.cookieLeonardo
+    COOKIE_LEONARDO: process.env.cookieLeonardo,
+    GOOGLE_TOKEN: process.env.googleToken,
 }
 
 const EVENTOS = {

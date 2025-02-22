@@ -9,6 +9,9 @@ const config = require(`${process.cwd()}/config/config.json`);
 const talkedRecently = new Set();
 const talkedRecently2 = new Set();
 var ultimoIdQueHabla = 0;
+const Gemini = require('../../models/Gemini');
+
+const gemini = new Gemini(PRIVATE_CONFIG.GOOGLE_TOKEN);
 
 module.exports = async (client, message) => {
     if (message.author.bot) return;
@@ -109,6 +112,17 @@ module.exports = async (client, message) => {
             message.channel.send('Para enviar un mensaje a un canal primero pon el canal \"#general hola\"')
         }
         return;
+    }
+
+    // Si menciona al bot
+    if (message.mentions.has(client.user.id)) {
+        message.channel.sendTyping();
+        gemini.send(message.content).then(res => {
+            message.reply(res);
+        }).catch(e => {
+            console.log(e);
+            message.reply('No puedo responder a eso :<');
+        });
     }
 
     if (PRIVATE_CONFIG.ENVIRONMENT == "development" && message.channel.id != CANAL_TEXTO.GENERAL) return;

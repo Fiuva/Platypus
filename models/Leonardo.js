@@ -10,18 +10,11 @@ class Leonardo {
         try {
             const response = await fetch("https://app.leonardo.ai/api/auth/session", {
                 headers: {
-                    "accept": "*/*",
-                    "accept-language": "es-ES,es;q=0.9,en;q=0.8,ru;q=0.7",
-                    "content-type": "application/json",
-                    "sec-ch-ua": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": "\"Windows\"",
-                    "cookie": this.cookie,
-                    "Referer": "https://app.leonardo.ai/",
-                    "Referrer-Policy": "strict-origin-when-cross-origin"
+                    "cookie": this.cookie
                 },
                 method: "GET"
             });
+
 
             if (!response.ok) {
                 throw new Error(`Error al actualizar token: ${response.statusText}`);
