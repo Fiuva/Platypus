@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy Node.js app to Azure Web App - Platypus
 
 on:
@@ -23,7 +26,9 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install
-          node index.js
+          npm run build --if-present
+          npm run test --if-present
+
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
@@ -55,10 +60,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4CBC9B1F9B764B10AE147914C9DA4DB0 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DF4AC875AB7F42998E31EC8CF587DCA0 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5B748BAB6CB8436285468B0038BC780E }}
-          token: ${{ secrets.token }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_74CC5263F93A4249965D6CC95775002C }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B4DBC94E4EB842919FFB2266269BE5FA }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DFB8CC49BDE24B28B87445402A182E35 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -67,3 +71,4 @@ jobs:
           app-name: 'Platypus'
           slot-name: 'Production'
           package: .
+          
