@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 class Gemini {
-  constructor(apiKey, systemInstruction, model = "gemini-2.0-flash-lite-preview-02-05") {
+  constructor(apiKey, systemInstruction, model = "gemini-2.0-flash-lite-001") {
     this.genAI = new GoogleGenerativeAI(apiKey);
 
     this.model = this.genAI.getGenerativeModel({
