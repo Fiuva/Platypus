@@ -51,27 +51,27 @@ const CONFIG = {
     MENSAJE_ESPIA: '981684496736870461'
 }
 const PRIVATE_CONFIG = {
-    ENVIRONMENT: process.env.environment,
-    TOKEN: process.env.token,
-    MONGODB: process.env.mongodb,
+    ENVIRONMENT: process.env.ENVIRONMENT,
+    TOKEN: process.env.TOKEN,
+    MONGODB: process.env.MONGODB,
     SPOTIFY: {
-        clientId: process.env.spclientid,
-        clientSecret: process.env.spclientsecret
+        clientId: process.env.SPCLIENTID,
+        clientSecret: process.env.SPCLIENTSECRET
     },
     TWITCH: {
-        CLIENT_ID: process.env.twclientid,
-        CLIENT_SECRET: process.env.twclientsecret
+        CLIENT_ID: process.env.TWCLIENTID,
+        CLIENT_SECRET: process.env.TWCLIENTSECRET
     },
     TWITTER: {
         DATOS: {
-            appKey: process.env.twiappkey,
-            appSecret: process.env.twiappsecret,
-            accessToken: process.env.twiaccesstoken,
-            accessSecret: process.env.twiaccesssecret
+            appKey: process.env.TWIAPPKEY,
+            appSecret: process.env.TWIAPPSECRET,
+            accessToken: process.env.TWIACCESSTOKEN,
+            accessSecret: process.env.TWIACCESSSECRET
         }
     },
-    COOKIE_LEONARDO: process.env.cookieLeonardo,
-    GOOGLE_TOKEN: process.env.googleToken,
+    COOKIE_LEONARDO: null,
+    GOOGLE_TOKEN: process.env.GOOGLETOKEN,
 }
 
 const EVENTOS = {
