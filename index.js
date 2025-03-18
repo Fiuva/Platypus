@@ -33,5 +33,6 @@ function requerirhandlers() {
 	})
 }
 requerirhandlers();
+console.log(process.env)
 
 client.login(PRIVATE_CONFIG.TOKEN);
