@@ -20,4 +20,15 @@ jobs:
       - name: Run bot with environment variables
         run: node index.js
         env:
-          token: ${{ secrets.TOKEN }}
+          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+          TOKEN: ${{ secrets.TOKEN }}
+          MONGODB: ${{ secrets.MONGODB }}
+          SPCLIENTID: ${{ secrets.SPCLIENTID }}
+          SPCLIENTSECRET: ${{ secrets.SPCLIENTSECRET }}
+          TWCLIENTID: ${{ secrets.TWCLIENTID }}
+          TWCLIENTSECRET: ${{ secrets.TWCLIENTSECRET }}
+          TWIAPPKEY: ${{ secrets.TWIAPPKEY }}
+          TWIAPPSECRET: ${{ secrets.TWIAPPSECRET }}
+          TWIACCESSTOKEN: ${{ secrets.TWIACCESSTOKEN }}
+          TWIACCESSSECRET: ${{ secrets.TWIACCESSSECRET }}
+          GOOGLETOKEN: ${{ secrets.GOOGLETOKEN }}
