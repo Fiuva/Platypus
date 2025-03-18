@@ -19,10 +19,6 @@ jobs:
         run: npm install
       - name: Run bot with environment variables
         env:
-          token: ${{ secrets.token }}
+          token: ${{ secrets.TOKEN }}
         run: |
-          if [ -z "$token" ]; then
-            echo "Error: token is not set!"
-            exit 1
-          fi
           node index.js
