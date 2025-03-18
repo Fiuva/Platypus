@@ -18,7 +18,6 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run bot with environment variables
+        run: node index.js
         env:
-          token: ${{ secrets.token }}
-        run: |
-          node index.js
+          token: ${{ secrets.TOKEN }}
