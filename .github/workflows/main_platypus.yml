@@ -31,4 +31,4 @@ jobs:
           TWIAPPSECRET: ${{ secrets.TWIAPPSECRET }}
           TWIACCESSTOKEN: ${{ secrets.TWIACCESSTOKEN }}
           TWIACCESSSECRET: ${{ secrets.TWIACCESSSECRET }}
-          COOKIELEONARDO: ${{ secrets.COOKIELEONARDO }}
+          GOOGLETOKEN: ${{ secrets.GOOGLETOKEN }}
