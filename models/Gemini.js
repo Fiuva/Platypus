@@ -29,7 +29,6 @@ class Gemini {
       }
     })
 
-    console.log(this.textChat);
 
     // this.chat = this.model.startChat({
     //   generationConfig: {
@@ -37,19 +36,19 @@ class Gemini {
     //   }
     // });
 
-    this.imageChat = this.genAI.chats.create({
-      model: imageModel,
-      config: {
-        // systemInstruction: {
-        //   role: "model",
-        //   parts: [{
-        //     text: systemInstruction
-        //   }]
-        // },
-        // maxOutputTokens: 100,
-        responseModalities: ['Text', 'Image']
-      }
-    })
+    // this.imageChat = this.genAI.chats.create({
+    //   model: imageModel,
+    //   config: {
+    //     // systemInstruction: {
+    //     //   role: "model",
+    //     //   parts: [{
+    //     //     text: systemInstruction
+    //     //   }]
+    //     // },
+    //     // maxOutputTokens: 100,
+    //     responseModalities: ['Text', 'Image']
+    //   }
+    // })
   }
 
   async send(prompt) {
@@ -64,8 +63,12 @@ class Gemini {
     let text = null;
 
     try {
-      const response = await this.imageChat.sendMessage({
-        message: prompt
+      const response = await this.genAI.models.generateContent({
+        model: "gemini-2.0-flash-exp-image-generation",
+        contents: prompt,
+        config: {
+          responseModalities: ['Text', 'Image']
+        }
       });
 
       
