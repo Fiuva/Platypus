@@ -9,15 +9,13 @@ const diainternacionalde = require('../../models/diainternacionalde');
 
 module.exports = async client => {
     //CREAR COMANDOS (/) ---
-    client.application.commands.set(client.commands.filter(comando => "data" in comando).map(c => c.data)).then().catch(console.error);
+    // client.application.commands.set(client.commands.filter(comando => "data" in comando).map(c => c.data)).then().catch(console.error);
+    await client.application.commands.set(client.commands.filter(comando => "data" in comando).map(c => c.data), GUILD.SERVER_PLATY)
     // -----------------
     const guild = client.guilds.cache.get(GUILD.SERVER_PLATY);
 
     mongoose.set('strictQuery', false); //Para quitar el warning del futuro cambio a eso (comprobar este cambio)
-    mongoose.connect(PRIVATE_CONFIG.MONGODB, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }).then(() => {
+    mongoose.connect(PRIVATE_CONFIG.MONGODB).then(() => {
         console.log(`Conectado a la base de datos`);
         const rule = new schedule.RecurrenceRule();
         rule.hour = 0;

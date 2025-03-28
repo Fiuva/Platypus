@@ -1,56 +1,85 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+// const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { PRIVATE_CONFIG } = require("../config/constantes");
+const {GoogleGenAI} = require('@google/genai');
 
 class Gemini {
   constructor(apiKey, systemInstruction, textModel = "gemini-2.0-flash", imageModel = "gemini-2.0-flash-exp-image-generation") {
-    this.genAI = new GoogleGenerativeAI(apiKey);
+    this.genAI = new GoogleGenAI({apiKey: apiKey});
 
-    this.model = this.genAI.getGenerativeModel({
+    // this.model = this.genAI.getGenerativeModel({
+    //   model: textModel,
+    //   systemInstruction: {
+    //     role: "system",
+    //     parts: [{
+    //       text: systemInstruction
+    //     }]
+    //   }   
+    // });
+    
+    this.textChat = this.genAI.chats.create({
       model: textModel,
-      systemInstruction: {
-        role: "system",
-        parts: [{
-          text: systemInstruction
-        }]
+      config: {
+        systemInstruction: {
+          role: "model",
+          parts: [{
+            text: systemInstruction
+          }]
+        },
+        maxOutputTokens: 200
       }
-    });
+    })
 
-    this.chat = this.model.startChat({
-      generationConfig: {
-        maxOutputTokens: 100
+    console.log(this.textChat);
+
+    // this.chat = this.model.startChat({
+    //   generationConfig: {
+    //     maxOutputTokens: 100
+    //   }
+    // });
+
+    this.imageChat = this.genAI.chats.create({
+      model: imageModel,
+      config: {
+        // systemInstruction: {
+        //   role: "model",
+        //   parts: [{
+        //     text: systemInstruction
+        //   }]
+        // },
+        // maxOutputTokens: 100,
+        responseModalities: ['Text', 'Image']
       }
-    });
-
-    this.imageModel = imageModel;
+    })
   }
 
   async send(prompt) {
-    const result = await this.chat.sendMessage(prompt);
-    return result.response.text();
+    const result = await this.textChat.sendMessage({
+      message: prompt
+    });
+    return result.text;
   }
 
   async generateImage(prompt) {
+    let base64Image = null;
+    let text = null;
+
     try {
-      const response = await ai.models.generateContent({
-        model: this.imageModel,
-        contents: prompt,
-        config: {
-          responseModalities: ['Text', 'Image']
-        },
+      const response = await this.imageChat.sendMessage({
+        message: prompt
       });
 
-      let imageData = null;
-      let text = null;
+      
       for (const part of response.candidates[0].content.parts) {
         if (part.text) {
           text = part.text;
         } else if (part.inlineData) {
-          imageData = part.inlineData.data;
+          base64Image = Buffer.from(part.inlineData.data, 'base64')
         }
       }
-      return { text, imageData };
     } catch (error) {
       console.error("Error generating content:", error);
     }
+    return { text, base64Image };
   }
 }
 

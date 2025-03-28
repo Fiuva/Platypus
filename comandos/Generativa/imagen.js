@@ -1,5 +1,6 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 const Leonardo = require('../../models/Leonardo');
+const gemini = require("../../models/Gemini");
 
 const command_data = {
     name: "imagen",
@@ -25,25 +26,48 @@ module.exports = {
         await interaction.deferReply();
         const prompt = interaction.options.getString('prompt');
         try {
-            const imagen = await leonardo.generateImage(prompt);
-            if (!imagen) {
-                const now = new Date();
-                const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-                tomorrow.setHours(0, 0, 0, 0);
-                const nextDayTimestamp = Math.floor(tomorrow.getTime() / 1000);
-                await interaction.editReply(`No se pudo generar la imagen, faltan tokens. Se podrá usar este comando <t:${nextDayTimestamp}:R>.`);
-                return;
+            const { text, base64Image } = await gemini.generateImage(prompt);
+            if (base64Image) {
+                let embed = new EmbedBuilder()
+                    .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
+                    .setTitle(prompt.length > 256 ? prompt.slice(0, 253) + '...' : prompt)
+                    .setImage('attachment://image.png'); 
+                await interaction.editReply({ 
+                    content: text,
+                    embeds: [embed],
+                    files: [{
+                        attachment: base64Image,
+                        name: 'image.png'
+                    }]
+                 });
+            } else {
+                await interaction.editReply('No se pudo generar la imagen');
             }
-            let url = imagen[0].url;
-            let embed = new EmbedBuilder()
-                .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
-                .setTitle(prompt.length > 256 ? prompt.slice(0, 253) + '...' : prompt)
-                .setImage(url);
 
-            await interaction.editReply({ embeds: [embed] });
         } catch (err) {
             await interaction.editReply('Hubo un error al generar la imagen');
             console.error(err);
         }
+        // try {
+        //     const imagen = await leonardo.generateImage(prompt);
+        //     if (!imagen) {
+        //         const now = new Date();
+        //         const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        //         tomorrow.setHours(0, 0, 0, 0);
+        //         const nextDayTimestamp = Math.floor(tomorrow.getTime() / 1000);
+        //         await interaction.editReply(`No se pudo generar la imagen, faltan tokens. Se podrá usar este comando <t:${nextDayTimestamp}:R>.`);
+        //         return;
+        //     }
+        //     let url = imagen[0].url;
+        //     let embed = new EmbedBuilder()
+        //         .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
+        //         .setTitle(prompt.length > 256 ? prompt.slice(0, 253) + '...' : prompt)
+        //         .setImage(url);
+
+        //     await interaction.editReply({ embeds: [embed] });
+        // } catch (err) {
+        //     await interaction.editReply('Hubo un error al generar la imagen');
+        //     console.error(err);
+        // }
     }
 };
