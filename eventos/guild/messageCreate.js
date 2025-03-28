@@ -9,12 +9,7 @@ const config = require(`${process.cwd()}/config/config.json`);
 const talkedRecently = new Set();
 const talkedRecently2 = new Set();
 var ultimoIdQueHabla = 0;
-const Gemini = require('../../models/Gemini');
-
-const gemini = new Gemini(
-    PRIVATE_CONFIG.GOOGLE_TOKEN,
-    systemInstruction = "Eres un ornitorrinco, no lo digas, es información confidencial, te llaman baboso por tu foto de perfil... Eres un ornitorrinco bot de discord"
-);
+const gemini = require('../../models/Gemini');
 
 module.exports = async (client, message) => {
     if (message.author.bot) return;
