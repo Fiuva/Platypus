@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const { IntentsBitField, Collection, Client, Partials } = require('discord.js');
 const { PRIVATE_CONFIG } = require('./config/constantes');
-require('./keep-alive');
 
 const myIntents = new IntentsBitField();
 myIntents.add(

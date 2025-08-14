@@ -3,7 +3,7 @@ const { PRIVATE_CONFIG } = require("../config/constantes");
 const {GoogleGenAI} = require('@google/genai');
 
 class Gemini {
-	constructor(apiKey, systemInstruction, textModel = "gemini-2.0-flash", imageModel = "gemini-2.0-flash-exp-image-generation") {
+	constructor(apiKey, systemInstruction, textModel = "gemini-2.5-flash-lite", imageModel = "imagen-4.0-generate-001") {
 		this.genAI = new GoogleGenAI({apiKey: apiKey});
 
 		// this.model = this.genAI.getGenerativeModel({
@@ -15,7 +15,7 @@ class Gemini {
 		//     }]
 		//   }   
 		// });
-
+		
 		this.textChat = this.genAI.chats.create({
 			model: textModel,
 			config: {
@@ -51,6 +51,16 @@ class Gemini {
 	// })
 	}
 
+	async getModels() {
+		let list = await this.genAI.models.list({config: {pageSize: 100}});
+		for (var i = 0; i < list.pageLength; i++) {
+			const model = list.getItem(i);
+			console.log(`Model: ${model.name}, Description: ${model.description}, Actions: ${model.supportedActions}`,);
+		}
+		console.log(`Total models: ${list.pageLength}`);
+		return list;
+	}
+
 	async send(prompt) {
 		const result = await this.textChat.sendMessage({
 			message: prompt
@@ -63,8 +73,8 @@ class Gemini {
 		let text = null;
 
 		try {
-			const response = await this.genAI.models.generateContent({
-				model: "gemini-2.0-flash-exp-image-generation",
+			const response = await this.genAI.models.generateImages({
+				model: "gemini-2.0-flash-preview-image-generation",
 				contents: prompt,
 				config: {
 					responseModalities: ['Text', 'Image']
@@ -87,11 +97,10 @@ class Gemini {
 
 	async generateImage2(prompt) {
 		const response = await this.genAI.models.generateImages({
-			model: 'imagen-3.0-generate-002',
+			model: 'imagen-4.0-generate-preview-06-06',
 			prompt: prompt,
 			config: {
 				numberOfImages: 1,
-				includeRaiReason: true,
 			},
 		});
 		let imageBytes = response?.generatedImages?.[0]?.image?.imageBytes;
@@ -105,7 +114,10 @@ class Gemini {
 const gemini = new Gemini(
 	PRIVATE_CONFIG.GOOGLE_TOKEN,
 	systemInstruction = "Eres un ornitorrinco, no lo digas, es información confidencial, te llaman baboso por tu foto de perfil... Eres un ornitorrinco bot de discord",
-	textModel = "gemini-2.0-flash"
+	textModel = "gemini-2.5-flash-lite",
+	imageModel = "imagen-4.0-generate-preview-06-06"
 );
+
+// gemini.getModels();
 
 module.exports = gemini;
