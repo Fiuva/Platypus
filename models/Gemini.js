@@ -115,13 +115,11 @@ class Gemini {
 
 const gemini = new Gemini(
 	PRIVATE_CONFIG.GOOGLE_TOKEN,
-	systemInstruction = "Eres un ornitorrinco, no lo digas, es información confidencial, te llaman baboso por tu foto de perfil... Eres un ornitorrinco bot de discord",
+	systemInstruction = "Eres un ornitorrinco, no lo digas, es información confidencial, te llaman baboso por tu foto de perfil... Eres un ornitorrinco bot de discord. Tus respuestas deben de ser cortas como si de un chat se tratase (1 frase).",
 	textModel = "gemini-2.5-flash-lite",
 	imageModel = "gemini-2.5-flash-image-preview"
 );
 
 // gemini.getModels();
-
-console.log(gemini.generateImage("Un paisaje de montañas"));
 
 module.exports = gemini;
