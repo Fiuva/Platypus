@@ -1,5 +1,5 @@
 ﻿const { EmbedBuilder } = require("discord.js");
-const { GUILD, varOnUpdateMessageEspia, PRIVATE_CONFIG } = require("../../config/constantes");
+const { GUILD, varOnUpdateMessageEspia, PRIVATE_CONFIG, EVENTOS } = require("../../config/constantes");
 const { calcularTiempoToAdd, deepEqual, findOrCreateDocument, add_data, createDataInc } = require("../../handlers/funciones");
 const { parseMensajeEspia, bbddVictimas } = require("../../handlers/funcionesVictimas");
 const { desequipar, reEquipar } = require("../../handlers/juegos/funcionesMascotas");
@@ -12,7 +12,8 @@ module.exports = async (client, oldPresence, newPresence) => {
     if (member?.guild.id != GUILD.SERVER_PLATY) return;
 
     //-------------------RECAP--------------------
-    await actualizarTiempos(member, oldPresence, newPresence);
+    if (EVENTOS.RECAP_RUNNING) 
+        await actualizarTiempos(member, oldPresence, newPresence);
     //--------------------------------------------
     actualizarRolesMascotas(member, oldPresence, newPresence);
 

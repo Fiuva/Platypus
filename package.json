@@ -20,7 +20,7 @@
     "@distube/spotify": "^2.0.2",
     "@distube/yt-dlp": "^2.0.1",
     "@distube/ytdl-core": "^4.16.4",
-    "@google/genai": "^1.14.0",
+    "@google/genai": "^1.16.0",
     "@google/generative-ai": "^0.24.0",
     "axios": "^1.4.0",
     "canvas": "^3.1.0",

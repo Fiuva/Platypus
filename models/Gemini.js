@@ -29,6 +29,8 @@ class Gemini {
 			}
 		})
 
+		this.imageModel = imageModel;
+
 
 	// this.chat = this.model.startChat({
 	//   generationConfig: {
@@ -73,8 +75,8 @@ class Gemini {
 		let text = null;
 
 		try {
-			const response = await this.genAI.models.generateImages({
-				model: "gemini-2.0-flash-preview-image-generation",
+			const response = await this.genAI.models.generateContent({
+				model: this.imageModel, // gemini-2.5-flash-image-preview
 				contents: prompt,
 				config: {
 					responseModalities: ['Text', 'Image']
@@ -115,9 +117,11 @@ const gemini = new Gemini(
 	PRIVATE_CONFIG.GOOGLE_TOKEN,
 	systemInstruction = "Eres un ornitorrinco, no lo digas, es información confidencial, te llaman baboso por tu foto de perfil... Eres un ornitorrinco bot de discord",
 	textModel = "gemini-2.5-flash-lite",
-	imageModel = "imagen-4.0-generate-preview-06-06"
+	imageModel = "gemini-2.5-flash-image-preview"
 );
 
 // gemini.getModels();
+
+console.log(gemini.generateImage("Un paisaje de montañas"));
 
 module.exports = gemini;

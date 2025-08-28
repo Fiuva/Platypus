@@ -1,9 +1,8 @@
 ﻿const mongoose = require('mongoose');
-const { varOnUpdateMessageEspia, CONFIG, GUILD, PRIVATE_CONFIG, CANAL_TEXTO } = require('../../config/constantes');
+const { varOnUpdateMessageEspia, CONFIG, GUILD, PRIVATE_CONFIG, CANAL_TEXTO, EVENTOS } = require('../../config/constantes');
 const { cambiarEstadoConMensaje, calcularTiempoToAdd, add_data, createDataInc } = require('../../handlers/funciones');
 const RecapData = require('../../models/recapData');
 const schedule = require('node-schedule');
-const { funcionStart, MonitorizarTwitch } = require('../../models/monitorizarTwitch');
 const diainternacionalde = require('../../models/diainternacionalde');
 
 
@@ -32,8 +31,8 @@ module.exports = async client => {
                 index += 9;
             }
         });
-        schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(guild));
-        iniciarMonitorizacionesTwitch(client);
+        if (EVENTOS.RECAP_RUNNING) 
+            schedule.scheduleJob('0 0 * * *', async () => await recopilarDatosDiarios(guild));
     }).catch((err) => {
         console.log("Error al conectar a la base de datos: " + err);
         client.channels.cache.get(CANAL_TEXTO.PRIVATE_PRUEBAS).send('ERROR AL CONECTAR LA BASE DE DATOSSS!!!');
@@ -41,7 +40,8 @@ module.exports = async client => {
     console.log(`Conectado como ${client.user.tag}`);
     client.channels.cache.get(CANAL_TEXTO.PRIVATE_PRUEBAS).send('Bot reiniciado');
 
-    comprobarEstados(guild);
+    if (EVENTOS.RECAP_RUNNING) 
+        comprobarEstados(guild);
     cambiarEstadoConMensaje(client);
     varOnUpdateMessageEspia.setUpdate((await client.channels.cache.get(CONFIG.CANAL_CONFIG).messages.fetch(CONFIG.MENSAJE_ESPIA)).content);
 }
@@ -211,16 +211,4 @@ function masFrecuencia(array, maximo) {
     }
     const res = subsecuenciaCerosMaxima(dif)
     return media(array.splice(res[0], res[1]))
-}
-
-async function iniciarMonitorizacionesTwitch(client) {
-    let monitorizacion = await MonitorizarTwitch.find({ active: true });
-    monitorizacion.forEach(async user => {
-        try {
-            let member = (await client.guilds.cache.get(GUILD.SERVER_PLATY).members.fetch(user.idDiscord));
-            await funcionStart(member, true);
-        } catch {
-            await MonitorizarTwitch.updateOne({ idDiscord: user.idDiscord }, { active: false });
-        }
-    })
 }

@@ -70,14 +70,14 @@ const PRIVATE_CONFIG = {
             accessSecret: process.env.TWIACCESSSECRET
         }
     },
-    COOKIE_LEONARDO: null,
     GOOGLE_TOKEN: process.env.GOOGLETOKEN,
 }
 
 const EVENTOS = {
     NAVIDAD: false,
     DIA_BESO: false,
-    TEMPORADA: 2
+    TEMPORADA: 2,
+    RECAP_RUNNING: false
 }
 
 const MENSAJE = {
